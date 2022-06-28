@@ -1,0 +1,18 @@
+name: remote_storage_iot_api
+description: An implementation of IoT API that uses remote storage.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  http: ^ 0.13.4
+  iot_api:
+    path: ../iot_api
+
+dev_dependencies:
+  coverage: ^1.1.0
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^3.0.0

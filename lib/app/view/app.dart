@@ -6,28 +6,57 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/counter/counter.dart';
-import 'package:flutter_firestore/l10n/l10n.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_firestore/app/app.dart';
+import 'package:flutter_firestore/home/view/home_page.dart';
+import 'package:iot_repository/iot_repository.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({
+    super.key,
+    required this.iotRepository,
+  });
+
+  final IotRepository iotRepository;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-        colorScheme: ColorScheme.fromSwatch(
-          accentColor: const Color(0xFF13B9FF),
-        ),
+    return RepositoryProvider.value(
+      value: iotRepository,
+      child: BlocProvider(
+        create: (context) => ThemeCubit(),
+        child: const AppView(),
       ),
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+    );
+  }
+}
+
+class AppView extends StatelessWidget {
+  const AppView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = context.select((ThemeCubit cubit) => cubit.state.isDark);
+    if (isDark) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.light, // dark text for status bar
+          statusBarColor: Colors.transparent,
+        ),
+      );
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark, // dark text for status bar
+          statusBarColor: Colors.transparent,
+        ),
+      );
+    }
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: isDark ? AppTheme.dark : AppTheme.light,
+      home: const HomePage(),
     );
   }
 }

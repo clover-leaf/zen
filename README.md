@@ -10,6 +10,19 @@ An example firestore app.
 
 ---
 
+## Todo
+
+- create home page | 2h
+- create device list page | 2h
+- create device page | 2h
+- create dashboard page | 2h
+- create add/edit device page | 2h
+- create login page | 1h
+- create station list page | 1h30
+- create station page | 1h
+- create add/edit station page | 1h
+
+
 ## Getting Started 🚀
 
 This project contains 3 flavors:

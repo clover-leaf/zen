@@ -1,0 +1,18 @@
+name: iot_repository
+description: A repository that handles iot related requests.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  iot_api:
+    path: ../iot_api
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^3.0.1

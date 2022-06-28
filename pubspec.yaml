@@ -8,12 +8,20 @@ environment:
 
 dependencies:
   bloc: ^8.0.3
+  equatable: ^2.0.3
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
-  flutter_localizations:
-    sdk: flutter
+  flutter_svg: ^1.1.0
+  font_awesome_flutter: ^10.1.0
+  http: ^ 0.13.4
   intl: ^0.17.0
+  iot_api:
+    path: packages/iot_api
+  iot_repository:
+    path: packages/iot_repository
+  remote_storage_iot_api:
+    path: packages/remote_storage_iot_api
 
 dev_dependencies:
   bloc_test: ^9.0.3
@@ -25,3 +33,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/icons/
