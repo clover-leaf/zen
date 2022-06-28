@@ -7,6 +7,6 @@ class DeviceOverviewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ExamOverviewFetch extends DeviceOverviewEvent {
-  const ExamOverviewFetch();
+class DeviceOverviewFetched extends DeviceOverviewEvent {
+  const DeviceOverviewFetched();
 }

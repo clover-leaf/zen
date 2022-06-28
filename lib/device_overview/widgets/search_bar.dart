@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/common.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Searchbar extends StatelessWidget {
   const Searchbar({
@@ -9,50 +9,53 @@ class Searchbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: Space.searchbarHeight.value,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(Space.globalBorderRadius.value),
+    return Expanded(
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20),
+          ),
+          border: Border.all(
+            color: const Color(0xffee345f),
+            width: 1.6,
+          ),
+          color: const Color(0xffffffff),
         ),
-        color: const Color(0xFFF0F1F2),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(left: Space.searchbarContentPaddingLeft.value),
-        child: Row(
-          children: [
-            SvgPicture.asset(
-              SvgIcon.search.getPath(),
-              height: 20,
-              width: 20,
-              color: const Color(0xFF4D4D4D),
-            ),
-            SizedBox(
-              width: Space.searchbarContentPaddingLeft.value,
-            ),
-            SizedBox(
-              width: Space.searchbarTextWidth.value,
-              height: Space.searchbarHeight.value,
-              child: TextField(
-                autocorrect: false,
-                decoration: const InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF4D4D4D),
-                  ),
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFF242424),
-                ),
-                onSubmitted: (_) {},
-                textInputAction: TextInputAction.search,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Row(
+            children: [
+              const FaIcon(
+                FontAwesomeIcons.magnifyingGlass,
+                size: 16,
+                color: Color(0xff7a7a7a),
               ),
-            ),
-          ],
+              const SizedBox(width: 8),
+              SizedBox(
+                width: Space.searchbarTextWidth.value,
+                height: Space.searchbarHeight.value,
+                child: TextField(
+                  autocorrect: false,
+                  decoration: const InputDecoration(
+                    hintText: 'Search',
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xff7a7a7a),
+                    ),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                  ),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF242424),
+                  ),
+                  onSubmitted: (_) {},
+                  textInputAction: TextInputAction.search,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

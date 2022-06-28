@@ -1,11 +1,11 @@
 part of 'device_overview_bloc.dart';
 
-enum DeviceOverviewStatus { loading, success }
+enum DeviceOverviewStatus { initial, success, failure }
 
 class DeviceOverviewState extends Equatable {
   const DeviceOverviewState({
     this.devices = const [],
-    this.status = DeviceOverviewStatus.loading,
+    this.status = DeviceOverviewStatus.initial,
     this.filter = const DeviceOverviewFilter(),
   });
 
