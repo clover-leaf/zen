@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/app_overview/app_overview.dart';
 import 'package:flutter_firestore/common/common.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_firestore/device_overview/view/device_overview_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppOverviewPage extends StatelessWidget {
@@ -36,23 +36,59 @@ class AppOverviewView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
-                    color: Color(0xffffffff),
-                  ),
-                  child: const FaIcon(
-                    FontAwesomeIcons.solidUser,
-                    size: 20,
-                    color: Color(0xff7a7a7a),
-                  ),
-                )
+              children: const [
+                UserButton(),
+                SizedBox(width: 16),
+                Searchbar(),
               ],
-            )
+            ),
+            const SizedBox(height: 16),
+            Container(
+              alignment: Alignment.topLeft,
+              height: 120,
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Color(0xff4568dc),
+                    Color(0xffb06ab3),
+                  ],
+                ),
+              ),
+              // child: Row(
+              //   children: const [
+              //     FaIcon(
+              //       FontAwesomeIcons.bullhorn,
+              //       color: Color(0xffffffff),
+              //       size: 16,
+              //     ),
+              //     SizedBox(width: 8),
+              //     Text(
+              //       'Switch to a Pro plan to get more feature!',
+              //       style: TextStyle(
+              //         fontSize: 15,
+              //         fontWeight: FontWeight.bold,
+              //         color: Color(0xffffffff),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+            ),
+            const SizedBox(height: 16),
+            const FeaturePart(),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  color: Color(0xffffffff),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -60,51 +96,62 @@ class AppOverviewView extends StatelessWidget {
   }
 }
 
-class FeatureBox extends StatelessWidget {
-  const FeatureBox({
+class FeaturePart extends StatelessWidget {
+  const FeaturePart({
     super.key,
-    required this.label,
-    required this.iconPath,
-    required this.onTapped,
   });
-
-  final String label;
-  final String iconPath;
-  final Function() onTapped;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTapped,
-      child: Container(
-        height: 96,
-        width: 96,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(Space.globalBorderRadius.value),
+    return Container(
+      height: 172,
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        color: Color(0xffffffff),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Feature',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff000000),
+            ),
           ),
-          color: const Color(0xFFF0F1F2),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              iconPath,
-              height: 32,
-              width: 32,
-              color: const Color(0xFF4D4D4D),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF4D4D4D),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              FeatureBox(
+                text: 'Projects',
+                iconData: FontAwesomeIcons.barsProgress,
+                onTapped: () {},
               ),
-            ),
-          ],
-        ),
+              FeatureBox(
+                text: 'Stations',
+                iconData: FontAwesomeIcons.towerObservation,
+                onTapped: () {},
+              ),
+              FeatureBox(
+                text: 'Devices',
+                iconData: FontAwesomeIcons.microchip,
+                onTapped: () => Navigator.push<void>(
+                  context,
+                  DeviceOverviewPage.route(),
+                ),
+              ),
+              FeatureBox(
+                text: 'Reports',
+                iconData: FontAwesomeIcons.newspaper,
+                onTapped: () {},
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
