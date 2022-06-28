@@ -5,6 +5,7 @@ import 'package:flutter_firestore/app_configure/app_configure.dart';
 import 'package:flutter_firestore/app_dashboard/app_dashboard.dart';
 import 'package:flutter_firestore/app_notification/app_notification.dart';
 import 'package:flutter_firestore/app_overview/app_overview.dart';
+import 'package:flutter_firestore/app_task/app_task.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/home/home.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,6 +25,10 @@ class HomePage extends StatelessWidget {
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
+  void testOutside() {
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedTab = context.select((HomeCubit cubit) => cubit.state.tab);
@@ -37,6 +42,7 @@ class HomeView extends StatelessWidget {
           AppOverviewPage(),
           AppDashboardPage(),
           AppNotificationPage(),
+          AppTaskPage(),
           AppConfigurePage(),
         ],
       ),
@@ -53,7 +59,12 @@ class HomeView extends StatelessWidget {
                 value: HomeTab.overview,
                 iconData: FontAwesomeIcons.house,
                 width: homeTabButtonWidth,
-                // iconPath: SvgIcon.overview.getPath(),
+              ),
+              _HomeTabButton(
+                groupValue: selectedTab,
+                value: HomeTab.task,
+                iconData: FontAwesomeIcons.clipboard,
+                width: homeTabButtonWidth,
               ),
               _HomeTabButton(
                 groupValue: selectedTab,
@@ -63,8 +74,8 @@ class HomeView extends StatelessWidget {
               ),
               _HomeTabButton(
                 groupValue: selectedTab,
-                value: HomeTab.notification,
-                iconData: FontAwesomeIcons.solidBell,
+                value: HomeTab.notice,
+                iconData: FontAwesomeIcons.bell,
                 width: homeTabButtonWidth,
               ),
               _HomeTabButton(
@@ -101,11 +112,11 @@ class _HomeTabButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => context.read<HomeCubit>().setTab(value),
-      child: Container(
+      child: SizedBox(
         width: width,
-        alignment: Alignment.center,
+        // alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FaIcon(
               iconData,
@@ -114,7 +125,7 @@ class _HomeTabButton extends StatelessWidget {
                   : const Color(0xff7a7a7a),
                   size: 24,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               value.getName(),
               style: TextStyle(
@@ -123,7 +134,8 @@ class _HomeTabButton extends StatelessWidget {
                     : const Color(0xff7a7a7a),
                 fontSize: 11,
               ),
-            )
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),

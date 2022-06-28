@@ -1,6 +1,6 @@
 part of 'home_cubit.dart';
 
-enum HomeTab { overview, dashboard, notification, configure }
+enum HomeTab { overview, dashboard, notice, task, configure }
 
 extension HomeTabX on HomeTab {
   String getName() {
@@ -9,8 +9,10 @@ extension HomeTabX on HomeTab {
         return 'Home';
       case HomeTab.dashboard:
         return 'Dashboard';
-      case HomeTab.notification:
-        return 'Notification';
+      case HomeTab.notice:
+        return 'Notices';
+      case HomeTab.task:
+        return 'Tasks';
       case HomeTab.configure:
         return 'Setting';
     }
