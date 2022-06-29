@@ -13,22 +13,21 @@ void main() {
     late http.Client client;
 
     final device = Device(
-      id: 1,
-      deviceName: '',
+      id: 4,
+      deviceName: 'Air sensor XII',
       parentId: 1,
       status: Status.running,
-      protocol: 1,
       deviceType: 1,
       serialNumber: '1asda',
-      createAt: DateTime.parse('1999-01-07T21:05:06.000Z'),
+      createAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
       createBy: 1,
-      startDate: DateTime.parse('1999-01-07T21:05:06.000Z'),
-      // endDate: DateTime.parse('1999-01-07T21:05:06.000Z'),
-      deleteAt: DateTime.parse('1999-01-07T21:05:06.000Z'),
+      startDate:DateTime.parse('2022-06-10T21:05:06.000Z'),
+      endDate: DateTime.parse('2022-06-21T21:05:06.000Z'),
+      deleteAt: DateTime.parse('2022-06-22T21:05:06.000Z'),
       deleteBy: 1,
-      updateAt: DateTime.parse('1999-01-07T21:05:06.000Z'),
+      updateAt: DateTime.parse('2022-06-13T21:05:06.000Z'),
       updateBy: 1,
-      description: 'adsasd',
+      description: 'Air sensor XII description',
     );
 
     setUpAll(() {
@@ -48,7 +47,7 @@ void main() {
     });
 
     RemoteStorageIotApi createSubject() =>
-        RemoteStorageIotApi(httpClient: client);
+        RemoteStorageIotApi(httpClient: client, schema: 'test_6');
 
     group('constructor', () {
       test('works properly', () {
@@ -59,13 +58,13 @@ void main() {
     group('fetch devices', () {
       test('fetch devices', () async {
         final subject = createSubject();
-        expect(await subject.fetchDevices(count: 1), [device]);
+        expect(await subject.fetchDevices(startIndex: 3, count: 1), [device]);
       });
     });
     group('count number of devices', () {
       test('count number of devices', () async {
         final subject = createSubject();
-        expect(await subject.getNumberOfDevices(), 11);
+        expect(await subject.getNumberOfDevices(), 4);
       });
     });
   });

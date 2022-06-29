@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
@@ -42,9 +43,24 @@ class DeviceOverviewView extends StatelessWidget {
           Space.contentPaddingBottom.value,
         ),
         child: Column(
-          children: const [
-            UpperPart(),
-            Expanded(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                Space.contentPaddingLeft.value,
+                0,
+                Space.contentPaddingRight.value,
+                0,
+              ),
+              child: Column(
+                children: const [
+                  SearchRow(),
+                  SizedBox(height: 16),
+                  FilterRow(),
+                  SizedBox(height: 16),
+                ],
+              ),
+            ),
+            const Expanded(
               child: ColoredBox(
                 color: Color(0xfff5f5f5),
                 child: CustomScrollView(
@@ -83,48 +99,8 @@ class DeviceList extends StatelessWidget {
                 children: const [Text('Something wrong')],
               );
             case DeviceOverviewStatus.success:
-              return Container(
-                height: 120,
-                decoration: const BoxDecoration(
-                  color: Color(0xffffffff),
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Text(
-                      '${devices[index].id}',
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'Title',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'subtile',
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text(
-                        'subtile',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              final device = devices[index];
+              return DeviceCard(device: device);
           }
         },
         childCount: devices.length,
@@ -133,57 +109,78 @@ class DeviceList extends StatelessWidget {
   }
 }
 
-class UpperPart extends StatelessWidget {
-  const UpperPart({
+class FilterRow extends StatelessWidget {
+  const FilterRow({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Space.contentPaddingLeft.value,
-        0,
-        Space.contentPaddingRight.value,
-        0,
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const FaIcon(
-                  FontAwesomeIcons.angleLeft,
-                  color: Color(0xff878999),
-                ),
-              ),
-              const SizedBox(width: 16),
-              const Searchbar(),
-              const SizedBox(width: 16),
-              const FaIcon(
-                FontAwesomeIcons.list,
-                color: Color(0xff878999),
-              ),
-            ],
+    return Row(
+      children: [
+        const Text(
+          'Name',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff183153),
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: const [
-              Text(
-                'Name',
-                style: TextStyle(fontSize: 12),
-              ),
-              Spacer(),
-              FaIcon(
-                FontAwesomeIcons.filter,
-                color: Color(0xff878999),
-              ),
-            ],
+        ),
+        const SizedBox(width: 4),
+        const FaIcon(
+          FontAwesomeIcons.arrowDownAZ,
+          size: 18,
+          color: Color(0xff183153),
+        ),
+        const Spacer(),
+        Badge(
+          badgeColor: const Color(0xffee345f),
+          child: const FaIcon(
+            FontAwesomeIcons.filter,
+            color: Color(0xff183153),
           ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        ),
+      ],
+    );
+  }
+}
+
+class SearchRow extends StatelessWidget {
+  const SearchRow({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            alignment: Alignment.center,
+            height: 32,
+            width: 32,
+            child: const FaIcon(
+              FontAwesomeIcons.angleLeft,
+              color: Color(0xff183153),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        const Searchbar(),
+        const SizedBox(width: 8),
+        Container(
+          alignment: Alignment.center,
+          height: 32,
+          width: 32,
+          child: const FaIcon(
+            FontAwesomeIcons.plus,
+            color: Color(0xff183153),
+            size: 22,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -27,6 +27,10 @@ abstract class IotApi {
   /// 
   /// If a [Device] with the same id already exists, it will be replaced.
   Future<bool> saveDevice(Device device);
+
+  /// Get stream list of data
+  /// 
+  Stream<List<double>> fetchLiveData();
 }
 
 /// Error throw when a [Device] with given id is not found.

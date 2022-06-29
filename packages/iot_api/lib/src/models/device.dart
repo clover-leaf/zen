@@ -19,7 +19,7 @@ class Device extends Equatable {
     this.deviceName,
     this.parentId = 0,
     this.status = Status.stop,
-    this.protocol = 0,
+    this.protocol = Protocol.mqtt,
     this.deviceType = 0,
     this.serialNumber = '',
     required this.createAt,
@@ -31,8 +31,8 @@ class Device extends Equatable {
     this.updateAt,
     this.updateBy,
     this.description = '',
-    // this.station = '',
-    // this.project = '',
+    this.stationId,
+    this.projectId,
     // this.trackingData = const {'key 1': 'value', 'key 2': 'value'},
   });
 
@@ -49,7 +49,7 @@ class Device extends Equatable {
   final Status status;
 
   /// The unique identifier of the device's parent
-  final int protocol;
+  final Protocol protocol;
 
   /// The unique identifier of the device's parent
   final int deviceType;
@@ -85,11 +85,11 @@ class Device extends Equatable {
   final String description;
 
 
-  // /// The description of device
-  // final String station;
+  /// The station id of device
+  final int? stationId;
 
-  // /// The description of device
-  // final String project;
+  /// The project id of device
+  final int? projectId;
 
   // /// The description of device
   // final Map<String, String> trackingData;
@@ -109,7 +109,7 @@ class Device extends Equatable {
     String? deviceName,
     int? parentId,
     Status? status,
-    int? protocol,
+    Protocol? protocol,
     int? deviceType,
     String? serialNumber,
     DateTime? createAt,
@@ -121,8 +121,8 @@ class Device extends Equatable {
     DateTime? updateAt,
     int? updateBy,
     String? description,
-    // String? station,
-    // String? project,
+    int? stationId,
+    int? projectId,
     // Map<String, String>? trackingData,
   }) {
     return Device(
@@ -142,9 +142,8 @@ class Device extends Equatable {
       updateAt: updateAt ?? this.updateAt,
       updateBy: updateBy ?? this.updateBy,
       description: description ?? this.description,
-      // name: name ?? this.name,
-      // station: station ?? this.station,
-      // project: project ?? this.project,
+      stationId: stationId ?? this.stationId,
+      projectId: projectId ?? this.projectId,
       // trackingData: trackingData ?? this.trackingData,
     );
   }
@@ -168,9 +167,8 @@ class Device extends Equatable {
       updateAt,
       updateBy,
       description,
-      // name,
-      // station,
-      // project,
+      stationId,
+      projectId,
       // trackingData,
     ];
   }

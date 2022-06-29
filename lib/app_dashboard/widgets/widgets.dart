@@ -1,5 +1,6 @@
 export 'line_chart_1.dart';
 export 'line_chart_10.dart';
+export 'line_chart_11.dart';
 export 'line_chart_2.dart';
 export 'line_chart_3.dart';
 export 'line_chart_4.dart';

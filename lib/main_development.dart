@@ -11,7 +11,10 @@ import 'package:iot_repository/iot_repository.dart';
 import 'package:remote_storage_iot_api/remote_storage_iot_api.dart';
 
 void main() {
-  final iotApi = RemoteStorageIotApi(httpClient: http.Client());
+  final iotApi = RemoteStorageIotApi(
+    httpClient: http.Client(),
+    schema: 'test_6',
+  );
   final iotRepository = IotRepository(iotApi: iotApi);
   bootstrap(
     () => App(iotRepository: iotRepository),

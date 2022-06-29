@@ -11,10 +11,10 @@ class Searchbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        height: 40,
+        height: 36,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(
-            Radius.circular(20),
+            Radius.circular(18),
           ),
           border: Border.all(
             color: const Color(0xffee345f),
@@ -29,15 +29,18 @@ class Searchbar extends StatelessWidget {
               const FaIcon(
                 FontAwesomeIcons.magnifyingGlass,
                 size: 16,
-                color: Color(0xff7a7a7a),
+                color: Color(0xff183153),
               ),
               const SizedBox(width: 8),
               SizedBox(
                 width: Space.searchbarTextWidth.value,
-                height: Space.searchbarHeight.value,
+                height: 32,
                 child: TextField(
+                  textAlignVertical: TextAlignVertical.bottom,
                   autocorrect: false,
                   decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.only(top: 7),
                     hintText: 'Search',
                     hintStyle: TextStyle(
                       fontSize: 15,

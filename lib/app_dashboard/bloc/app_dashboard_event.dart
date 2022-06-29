@@ -6,3 +6,7 @@ class AppDashboardEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class AppDashboardSubcriptionRequested extends AppDashboardEvent {
+  const AppDashboardSubcriptionRequested();
+}

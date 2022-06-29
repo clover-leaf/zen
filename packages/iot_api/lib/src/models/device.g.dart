@@ -9,51 +9,62 @@ part of 'device.dart';
 Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       id: json['id'] as int? ?? 0,
       deviceName: json['deviceName'] as String?,
-      parentId: json['parentid'] as int? ?? 0,
+      parentId: json['parentId'] as int? ?? 0,
       status: $enumDecodeNullable(_$StatusEnumMap, json['status'] as int) ??
           Status.stop,
-      protocol: json['protocol'] as int? ?? 0,
-      deviceType: json['devicetype'] as int? ?? 0,
-      serialNumber: json['serialnumber'] as String? ?? '',
-      createAt: DateTime.parse(json['createat'] as String),
-      createBy: json['createby'] as int? ?? 0,
-      startDate: json['startdate'] == null
+      protocol:
+          $enumDecodeNullable(_$ProtocolEnumMap, json['protocol'] as int) ??
+              Protocol.mqtt,
+      deviceType: json['deviceType'] as int? ?? 0,
+      serialNumber: json['serialNumber'] as String? ?? '',
+      createAt: DateTime.parse(json['createAt'] as String),
+      createBy: json['createBy'] as int? ?? 0,
+      startDate: json['startDate'] == null
           ? null
-          : DateTime.parse(json['startdate'] as String),
-      endDate: json['enddate'] == null
+          : DateTime.parse(json['startDate'] as String),
+      endDate: json['endDate'] == null
           ? null
-          : DateTime.parse(json['enddate'] as String),
-      deleteAt: json['deleteat'] == null
+          : DateTime.parse(json['endDate'] as String),
+      deleteAt: json['deleteAt'] == null
           ? null
-          : DateTime.parse(json['deleteat'] as String),
-      deleteBy: json['deleteby'] as int?,
-      updateAt: json['updateat'] == null
+          : DateTime.parse(json['deleteAt'] as String),
+      deleteBy: json['deleteBy'] as int?,
+      updateAt: json['updateAt'] == null
           ? null
-          : DateTime.parse(json['updateat'] as String),
-      updateBy: json['updateby'] as int?,
+          : DateTime.parse(json['updateAt'] as String),
+      updateBy: json['updateBy'] as int?,
       description: json['description'] as String? ?? '',
+      stationId: json['stationId'] as int?,
+      projectId: json['projectId'] as int?,
     );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'id': instance.id,
       'deviceName': instance.deviceName,
-      'parentid': instance.parentId,
+      'parentId': instance.parentId,
       'status': _$StatusEnumMap[instance.status],
-      'protocol': instance.protocol,
-      'devicetype': instance.deviceType,
-      'serialnumber': instance.serialNumber,
-      'createat': instance.createAt.toIso8601String(),
-      'createby': instance.createBy,
-      'startdate': instance.startDate?.toIso8601String(),
-      'enddate': instance.endDate?.toIso8601String(),
-      'deleteat': instance.deleteAt?.toIso8601String(),
-      'deleteby': instance.deleteBy,
-      'updateat': instance.updateAt?.toIso8601String(),
-      'updateby': instance.updateBy,
+      'protocol': _$ProtocolEnumMap[instance.protocol],
+      'deviceType': instance.deviceType,
+      'serialNumber': instance.serialNumber,
+      'createAt': instance.createAt.toIso8601String(),
+      'createBy': instance.createBy,
+      'startDate': instance.startDate?.toIso8601String(),
+      'endDate': instance.endDate?.toIso8601String(),
+      'deleteAt': instance.deleteAt?.toIso8601String(),
+      'deleteBy': instance.deleteBy,
+      'updateAt': instance.updateAt?.toIso8601String(),
+      'updateBy': instance.updateBy,
       'description': instance.description,
+      'stationId': instance.stationId,
+      'projectId': instance.projectId,
     };
 
 const _$StatusEnumMap = {
   Status.stop: 0,
   Status.running: 1,
+};
+
+const _$ProtocolEnumMap = {
+  Protocol.http: 0,
+  Protocol.mqtt: 1,
 };

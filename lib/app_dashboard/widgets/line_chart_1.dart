@@ -11,6 +11,7 @@ class _LineChart extends StatelessWidget {
     return LineChart(
       isShowingMainData ? sampleData1 : sampleData2,
       swapAnimationDuration: const Duration(milliseconds: 250),
+      swapAnimationCurve: Curves.easeInOut,
     );
   }
 
@@ -62,8 +63,8 @@ class _LineChart extends StatelessWidget {
 
   List<LineChartBarData> get lineBarsData1 => [
         lineChartBarData1_1,
-        lineChartBarData1_2,
-        lineChartBarData1_3,
+        // lineChartBarData1_2,
+        // lineChartBarData1_3,
       ];
 
   LineTouchData get lineTouchData2 => LineTouchData(

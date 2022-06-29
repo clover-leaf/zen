@@ -1,14 +1,16 @@
 part of 'device_detail_bloc.dart';
 
-enum DeviceDetailStatus {loading, success}
+enum DeviceDetailStatus {initial, success, failure}
 
 class DeviceDetailState extends Equatable {
   const DeviceDetailState({
-    this.status = DeviceDetailStatus.loading,
+    this.status = DeviceDetailStatus.success,
+    required this.device,
   });
   
   final DeviceDetailStatus status;
+  final Device device;
   
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status, device];
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:iot_api/iot_api.dart';
@@ -9,8 +10,11 @@ import 'package:meta/meta.dart';
 /// {@endtemplate}
 class RemoteStorageIotApi extends IotApi {
   /// {@macro remote_storage_iot_api}
-  const RemoteStorageIotApi({required http.Client httpClient})
-      : _httpClient = httpClient;
+  RemoteStorageIotApi({
+    required http.Client httpClient,
+    required String schema,
+  })  : _httpClient = httpClient,
+        _schema = schema;
 
   @visibleForTesting
 
@@ -20,7 +24,9 @@ class RemoteStorageIotApi extends IotApi {
   static const String kBaseURL = '192.168.1.4:9876';
 
   /// schema name
-  static const String schema = 'thang';
+  final String _schema;
+
+  /// http client object
   final http.Client _httpClient;
 
   @override
@@ -28,10 +34,10 @@ class RemoteStorageIotApi extends IotApi {
     int startIndex = 0,
     int count = 5,
   }) async {
-    final queryParameters = {'offset': '$startIndex', 'count': '$count'};
+    final queryParameters = {'startOffset': '$startIndex', 'count': '$count'};
 
     final response = await _httpClient.get(
-      Uri.http(kBaseURL, '/api/device/getndevice/$schema', queryParameters),
+      Uri.http(kBaseURL, '/api/device/getndevice/$_schema', queryParameters),
     );
 
     if (response.statusCode == 200) {
@@ -49,7 +55,7 @@ class RemoteStorageIotApi extends IotApi {
   @override
   Future<bool> deleteDevice(String id) async {
     final response = await _httpClient.put(
-      Uri.http(kBaseURL, '/api/device/delete/$schema'),
+      Uri.http(kBaseURL, '/api/device/delete/$_schema'),
       body: jsonEncode({
         'id': id,
       }),
@@ -64,7 +70,7 @@ class RemoteStorageIotApi extends IotApi {
   @override
   Future<bool> saveDevice(Device device) async {
     final response = await _httpClient.post(
-      Uri.http(kBaseURL, '/api/device/create/$schema'),
+      Uri.http(kBaseURL, '/api/device/create/$_schema'),
       body: device.toJson(),
     );
 
@@ -78,13 +84,30 @@ class RemoteStorageIotApi extends IotApi {
   @override
   Future<int> getNumberOfDevices() async {
     final response = await _httpClient.get(
-      Uri.http(kBaseURL, '/api/device/countall/$schema'),
+      Uri.http(kBaseURL, '/api/device/countall/$_schema'),
     );
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body) as Map<String, dynamic>;
-      return body['count'] as  int;
+      return body['count'] as int;
     }
     throw RequestFailureException();
+  }
+
+  @override
+  Stream<List<double>> fetchLiveData() {
+    return Stream.periodic(
+      const Duration(seconds: 1),
+      (_) {
+        final randomValues = List.generate(2, (index) {
+          var nextRandom = 35 + Random().nextDouble() * 20 - 10;
+          while (nextRandom > 45 || nextRandom < 0) {
+            nextRandom = 35 + Random().nextDouble() * 20 - 10;
+          }
+          return double.parse(nextRandom.toStringAsFixed(1));
+        });
+        return randomValues;
+      },
+    );
   }
 }

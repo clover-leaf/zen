@@ -32,7 +32,7 @@ class DeviceOverviewBloc
         );
       }
       final _devices =
-          await _repository.fetchDevices(start: state.devices.length);
+          await _repository.fetchDevices(startIndex: state.devices.length);
       return emit(
         state.copyWith(
           status: () => DeviceOverviewStatus.success,
