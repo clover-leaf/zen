@@ -84,7 +84,6 @@ class Device extends Equatable {
   /// The description of device
   final String description;
 
-
   /// The station id of device
   final int? stationId;
 
@@ -99,7 +98,6 @@ class Device extends Equatable {
 
   /// Converts this [Device] into a [JsonMap].
   JsonMap toJson() => _$DeviceToJson(this);
-
 
   /// Returns a copy of this device with the given values updated.
   ///

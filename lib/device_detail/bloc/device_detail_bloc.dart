@@ -8,12 +8,13 @@ part 'device_detail_state.dart';
 class DeviceDetailBloc extends Bloc<DeviceDetailEvent, DeviceDetailState> {
   DeviceDetailBloc({required Device device})
       : super(DeviceDetailState(device: device)) {
-    // on<ExamRoomRequested>(_onRequested);
+    on<DeviceDetailTabChanged>(_tabChanged);
   }
 
-  // Future<void> _onRequested(
-  //   ExamRoomRequested event,
-  //   Emitter<ExamRoomState> emit,
-  // ) async {
-  // }
+  void _tabChanged(
+    DeviceDetailTabChanged event,
+    Emitter<DeviceDetailState> emit,
+  ) {
+    emit(state.copyWith(tab: event.tab));
+  }
 }

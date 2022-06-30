@@ -6,3 +6,12 @@ class DeviceDetailEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class DeviceDetailTabChanged extends DeviceDetailEvent {
+  const DeviceDetailTabChanged(this.tab);
+
+  final DeviceDetailTab tab;
+
+  @override
+  List<Object> get props => [tab];
+}

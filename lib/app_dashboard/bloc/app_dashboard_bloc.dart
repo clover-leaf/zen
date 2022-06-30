@@ -57,7 +57,7 @@ class AppDashboardBloc extends Bloc<AppDashboardEvent, AppDashboardState> {
           return state.copyWith(
             spots: newSpots,
             xAxisGridOffset: newXAxisOffset.remainder(10),
-            time: state.time.add(const Duration(minutes: 15)),
+            time: state.time.add(const Duration(minutes: 10)),
           );
         } else {
           return state.copyWith(

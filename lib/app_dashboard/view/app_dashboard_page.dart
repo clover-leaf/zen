@@ -1,3 +1,4 @@
+import 'package:fl_chart/src/chart/base/axis_chart/axis_chart_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/app_dashboard/app_dashboard.dart';
@@ -90,13 +91,14 @@ class AppDashboardView extends StatelessWidget {
                         time: time,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: LineChartSample11(
-                        spots: spots,
-                        xAxisGridOffset: xAxisGridOffset,
-                        time: time,
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: BarChartSample(),
+                    ),
+                    _BarChartCard(spots: spots),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: PieChartSample(),
                     ),
                   ],
                 ),
@@ -104,6 +106,38 @@ class AppDashboardView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _BarChartCard extends StatelessWidget {
+  const _BarChartCard({
+    required this.spots,
+  });
+
+  final List<List<FlSpot>> spots;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ChartCard(
+        title: 'Energy Consumption',
+        liveValues: spots.map((spot) => spot.last.y).toList(),
+        unit: 'kW',
+        labels: const [
+          'Silo A',
+          'Silo B',
+        ],
+        colors: const [
+          Color(0xff4af699),
+          Color(0xff09bffe),
+        ],
+        chartWidget: const BarChartCustom(colors: [
+          Color(0xff4af699),
+          Color(0xff09bffe),
+        ],),
       ),
     );
   }

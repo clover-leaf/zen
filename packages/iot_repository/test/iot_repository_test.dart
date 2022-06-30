@@ -37,7 +37,13 @@ void main() {
       ),
     ).thenAnswer((_) async => initDevices);
     when(() => api.fetchLiveData()).thenAnswer(
-      (invocation) => Stream.fromIterable([1, 2, 3, 4]),
+      (invocation) => Stream.fromIterable([
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5, 6],
+      ]),
     );
   });
 
@@ -60,7 +66,16 @@ void main() {
   });
   group('get live data', () {
     test('return ', () async {
-      expect(createSubject().fetchLiveData(), emitsInOrder([1,2,3,4]));
+      expect(
+        createSubject().fetchLiveData(),
+        emitsInOrder([
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4, 5],
+          [5, 6],
+        ]),
+      );
 
       verify(() => api.fetchLiveData()).called(1);
     });

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firestore/app_dashboard/widgets/legend_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -73,18 +74,18 @@ class _LineChart extends StatelessWidget {
         ),
         leftTitles: AxisTitles(
           axisNameSize: 18,
-          axisNameWidget: const Padding(
-            padding: EdgeInsets.only(left: 24),
-            child: Text(
-              'Temperature °C',
-              style: TextStyle(
-                color: Color(0xff75729e),
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
+          // axisNameWidget: const Padding(
+          //   padding: EdgeInsets.only(left: 24),
+          //   child: Text(
+          //     'Temperature °C',
+          //     style: TextStyle(
+          //       color: Color(0xff75729e),
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 13,
+          //     ),
+          //     textAlign: TextAlign.center,
+          //   ),
+          // ),
           sideTitles: leftTitles(),
         ),
       );
@@ -106,10 +107,10 @@ class _LineChart extends StatelessWidget {
   }
 
   SideTitles leftTitles() => SideTitles(
-        getTitlesWidget: leftTitleWidgets,
-        showTitles: true,
-        interval: 10,
-        reservedSize: 40,
+        showTitles: false,
+        // getTitlesWidget: leftTitleWidgets,
+        // interval: 10,
+        // reservedSize: 40,
       );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
@@ -117,14 +118,13 @@ class _LineChart extends StatelessWidget {
     final offsetTime = plusOffset ~/ 10;
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 10,
       child: plusOffset.remainder(10) == 0
           ? Text(
               DateFormat('Hm')
-                  .format(time.add(Duration(minutes: 15 * offsetTime))),
+                  .format(time.add(Duration(minutes: 10 * offsetTime))),
               style: const TextStyle(
                 color: Color(0xff75729e),
-                fontSize: 13,
+                fontSize: 11,
               ),
               textAlign: TextAlign.center,
             )
@@ -142,14 +142,7 @@ class _LineChart extends StatelessWidget {
   FlGridData get gridData => FlGridData(
         show: true,
         drawVerticalLine: true,
-        horizontalInterval: 10,
         verticalInterval: 1,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: const Color(0xff72719b),
-            strokeWidth: 1,
-          );
-        },
         getDrawingVerticalLine: (value) {
           if ((value + xAxisGridOffset).remainder(10) == 0) {
             return FlLine(
@@ -163,11 +156,21 @@ class _LineChart extends StatelessWidget {
             );
           }
         },
+        drawHorizontalLine: false,
+        // horizontalInterval: 10,
+        // getDrawingHorizontalLine: (value) {
+        //   return FlLine(
+        //     color: const Color(0xff72719b),
+        //     strokeWidth: 1,
+        //   );
+        // },
       );
 
   FlBorderData get borderData => FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff72719b)),
+        border: const Border.symmetric(
+          vertical: BorderSide(color: Color(0xff72719b)),
+        ),
       );
 }
 
@@ -182,6 +185,12 @@ class LineChartSample11 extends StatelessWidget {
   final List<List<FlSpot>> spots;
   final double xAxisGridOffset;
   final DateTime time;
+  static const values = <double>[59.4, 40.6];
+  static const labels = <String>['Silo A', 'Silo B'];
+  static const colors = <Color>[
+    Color(0xff4af699),
+    Color(0xff09bffe),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +220,7 @@ class LineChartSample11 extends StatelessWidget {
                 Text(
                   'Silos Temperature',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffffffff),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2,
@@ -222,7 +231,7 @@ class LineChartSample11 extends StatelessWidget {
                 FaIcon(
                   FontAwesomeIcons.upRightAndDownLeftFromCenter,
                   size: 13,
-                  color: Colors.white,
+                  color: Color(0xffffffff),
                 )
               ],
             ),
@@ -236,9 +245,9 @@ class LineChartSample11 extends StatelessWidget {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  'Realtime - last 10 minutes',
+                  'Realtime - last 30 minutes',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xffffffff),
                     fontSize: 12,
                     letterSpacing: 2,
                   ),
@@ -255,13 +264,26 @@ class LineChartSample11 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            LegendLine(
-              spots: spots[0],
-              color: const Color(0xff4af699),
+            LegendsListWidget(
+              legends: List.generate(
+                labels.length,
+                (index) => Legend(
+                  labels[index],
+                  colors[index],
+                  spots[index].last.y,
+                  '°C',
+                ),
+              ),
             ),
-            const SizedBox(height: 4),
-            LegendLine(spots: spots[1],
-            color: const Color(0xff09bffe),),
+            // LegendLine(
+            //   spots: spots[0],
+            //   color: const Color(0xff4af699),
+            // ),
+            // const SizedBox(height: 4),
+            // LegendLine(
+            //   spots: spots[1],
+            //   color: const Color(0xff09bffe),
+            // ),
           ],
         ),
       ),
@@ -292,7 +314,7 @@ class LegendLine extends StatelessWidget {
         const Text(
           'Silo A temperature',
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xffffffff),
             fontSize: 12,
             letterSpacing: 2,
           ),
@@ -302,7 +324,7 @@ class LegendLine extends StatelessWidget {
         Text(
           '${spots.last.y} °C',
           style: const TextStyle(
-            color: Colors.white,
+            color: Color(0xffffffff),
             fontSize: 12,
             letterSpacing: 2,
           ),
