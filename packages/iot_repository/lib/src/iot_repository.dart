@@ -17,6 +17,23 @@ class IotRepository {
     return _api.countProject();
   }
 
+  /// Get total number of [Device],
+  ///
+  Future<int> countDevice() async {
+    return _api.countDevice();
+  }
+  /// Get all [Device] in schema with given params,
+  ///
+  Future<List<Device>> getNDevice({
+    int startIndex = 0,
+    int count = 10,
+  }) async {
+    return _api.getNDevice(
+      startIndex: startIndex,
+      count: count,
+    );
+  }
+
   /// Get all [Project] in schema with given params,
   ///
   Future<List<Project>> getNProject({
