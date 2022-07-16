@@ -21,7 +21,7 @@ class RemoteStorageIotApi extends IotApi {
   /// iOS emulator: 127.0.0.1 or localhost
   /// Android emulator: 10.0.2.2
   /// real device: 192.168.1.3 (host ip)
-  static const String kBaseURL = '192.168.1.4:9876';
+  static const String kBaseURL = '192.168.1.2:9876';
 
   /// schema name
   final String _schema;
@@ -34,10 +34,43 @@ class RemoteStorageIotApi extends IotApi {
     final response = await _httpClient.get(
       Uri.http(kBaseURL, '/api/project/countall/$_schema'),
     );
-
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body) as Map<String, dynamic>;
       return body['count'] as int;
+    }
+    throw RequestFailureException();
+  }
+
+  @override
+  Future<int> countDevice() async {
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/device/countall/$_schema'),
+    );
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      return body['count'] as int;
+    }
+    throw RequestFailureException();
+  }
+
+  @override
+  Future<List<Device>> getNDevice({
+    int startIndex = 0,
+    int count = 10,
+  }) async {
+    final queryParameters = {'startOffset': '$startIndex', 'count': '$count'};
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/device/getndevice/$_schema', queryParameters),
+    );
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as List<dynamic>;
+      final devices = body
+          .map<Device>(
+            (dynamic device) =>
+                Device.fromJson(device as Map<String, dynamic>),
+          )
+          .toList();
+      return devices;
     }
     throw RequestFailureException();
   }

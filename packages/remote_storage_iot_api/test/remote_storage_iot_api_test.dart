@@ -88,9 +88,13 @@ void main() {
         final uri = input.positionalArguments[0] as Uri;
         if (uri.path.contains('project/countall')) {
           return http.Response(jsonEncode({'count': 1}), 200);
+        } else if (uri.path.contains('device/countall')) {
+          return http.Response(jsonEncode({'count': 1}), 200);
         } else if (uri.path.contains('project/getnproject')) {
           return http.Response(jsonEncode([project]), 200);
-        } else if (uri.path.contains('station/getallstationinproject')) {
+        } else if (uri.path.contains('device/getndevice')) {
+          return http.Response(jsonEncode([device]), 200);
+        }else if (uri.path.contains('station/getallstationinproject')) {
           return http.Response(jsonEncode([station]), 200);
         } else if (uri.path.contains('device/getalldeviceinproject')) {
           return http.Response(jsonEncode([device]), 200);
@@ -116,10 +120,22 @@ void main() {
         expect(await subject.countProject(), 1);
       });
     });
+    group('countDevice', () {
+      test('fetchs successfully', () async {
+        final subject = createSubject();
+        expect(await subject.countDevice(), 1);
+      });
+    });
     group('getNProject', () {
       test('fetchs successfully', () async {
         final subject = createSubject();
         expect(await subject.getNProject(), [project]);
+      });
+    });    
+    group('getNDevice', () {
+      test('fetchs successfully', () async {
+        final subject = createSubject();
+        expect(await subject.getNDevice(), [device]);
       });
     });
     group('getAllStationInProject', () {
