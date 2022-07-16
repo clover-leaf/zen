@@ -63,17 +63,17 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
     };
 
 const _$StatusEnumMap = {
-  Status.stop: 'stop',
-  Status.running: 'running',
+  Status.stop: 0,
+  Status.running: 1,
 };
 
 const _$ProtocolEnumMap = {
-  Protocol.http: 'http',
-  Protocol.mqtt: 'mqtt',
+  Protocol.http: 0,
+  Protocol.mqtt: 1,
 };
 
 const _$DeviceTypeEnumMap = {
-  DeviceType.sensor: 'sensor',
-  DeviceType.gadget: 'gadget',
-  DeviceType.appliance: 'appliance',
+  DeviceType.sensor: 0,
+  DeviceType.gadget: 1,
+  DeviceType.appliance: 2,
 };

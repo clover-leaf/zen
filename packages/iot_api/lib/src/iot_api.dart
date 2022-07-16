@@ -7,6 +7,8 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
+  /////////////////// [Project]
+
   /// Get total number of [Project],
   ///
   Future<int> countProject();
@@ -26,6 +28,16 @@ abstract class IotApi {
   /// Get all [Device] of a [Station] that given id
   ///
   Future<List<Device>> getAllDeviceInStation({required int stationId});
+
+  /////////////////// [Device]
+
+  /// Get total number of [Device],
+  ///
+  Future<int> countDevice();
+
+  /// Get all [Device] in schema with given params,
+  ///
+  Future<List<Device>> getNDevice({int startIndex = 0, int count = 10});
 
   // /// Delete a [Device] with given id
   // ///

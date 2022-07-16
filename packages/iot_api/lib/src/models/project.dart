@@ -102,7 +102,9 @@ class Project extends Equatable {
 
   
   /// Deserializes the given [JsonMap] into a [Project].
-  static Project fromJson(JsonMap json) => _$ProjectFromJson(json);
+  static Project fromJson(JsonMap json) {
+    return  _$ProjectFromJson(json);
+  }
 
   /// Converts this [Project] into a [JsonMap].
   JsonMap toJson() => _$ProjectToJson(this);
