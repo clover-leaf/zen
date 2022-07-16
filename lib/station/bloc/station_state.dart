@@ -1,18 +1,39 @@
 part of 'station_bloc.dart';
 
-enum StationStatus {loading, success}
+enum StationTab {devices, infomation, location}
+
+extension StationTabX on StationTab {
+  String getName() {
+    switch (this) {
+      case StationTab.devices:
+        return 'DEVICES';
+      case StationTab.infomation:
+        return 'INFOMATION';
+      case StationTab.location:
+        return 'LOCATION';
+    }
+  }
+}
 
 class StationState extends Equatable {
   const StationState({
-    required this.title,
-    required this.totalDevice,
-    this.status = StationStatus.loading,
+    required this.station,
+    this.tab = StationTab.devices,
   });
   
-  final StationStatus status;
-  final String title;
-  final int totalDevice;
+  final StationTab tab;
+  final Station station;
+
+  StationState copyWith({
+    StationTab? tab,
+    Station? station,
+  }) {
+    return StationState(
+      tab: tab ?? this.tab,
+      station: station ?? this.station,
+    );
+  }
   
   @override
-  List<Object> get props => [status, title, totalDevice];
+  List<Object> get props => [tab, station];
 }

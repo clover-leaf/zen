@@ -1,25 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:iot_api/iot_api.dart';
 
 part 'station_event.dart';
 part 'station_state.dart';
 
 class StationBloc extends Bloc<StationEvent, StationState> {
   StationBloc({
-    required String title,
-    required int totalDevice,
-  }) : super(
-          StationState(
-            title: title,
-            totalDevice: totalDevice,
-          ),
-        ) {
-    // on<ExamRoomRequested>(_onRequested);
+    required Station station,
+  }) : super(StationState(station: station)) {
+     on<TabChanged>(_onTabChanged);
   }
 
-  // Future<void> _onRequested(
-  //   ExamRoomRequested event,
-  //   Emitter<ExamRoomState> emit,
-  // ) async {
-  // }
+  void _onTabChanged(
+    TabChanged event,
+    Emitter<StationState> emit,
+  ) {
+    emit(state.copyWith(tab: event.tab));
+  }
 }

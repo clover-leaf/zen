@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/icons.dart';
-import 'package:flutter_firestore/device_detail/view/device_detail_page.dart';
+import 'package:flutter_firestore/station/station.dart' show StationPage;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
-class DeviceBox extends StatelessWidget {
-  const DeviceBox({
+class StationBox extends StatelessWidget {
+  const StationBox({
     super.key,
-    required this.device,
+    required this.station,
+    required this.icon,
   });
 
-  final Device device;
+  final Station station;
+  final SvgIcon icon;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +20,8 @@ class DeviceBox extends StatelessWidget {
       onTap: () => Navigator.push<void>(
         context,
         PageRouteBuilder(
-          pageBuilder: (c, a1, a2) => DeviceDetailPage(
-            device: device,
+          pageBuilder: (c, a1, a2) => StationPage(
+            station: station,
           ),
           transitionsBuilder: (c, anim, a2, child) =>
               FadeTransition(opacity: anim, child: child),
@@ -28,7 +30,7 @@ class DeviceBox extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          vertical: 32,
+          vertical: 24,
           horizontal: 8,
         ),
         alignment: Alignment.center,
@@ -41,7 +43,7 @@ class DeviceBox extends StatelessWidget {
                 horizontal: 24,
               ),
               child: SvgPicture.asset(
-                SvgIcon.gasStation.getPath(),
+                icon.getPath(),
                 color: Theme.of(context).primaryColor,
               ),
             ),
@@ -49,22 +51,19 @@ class DeviceBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  device.deviceName,
+                  station.stationName,
                   style: Theme.of(context).textTheme.headline1,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  device.status.getName(),
+                  station.city,
                   style: Theme.of(context).textTheme.headline2,
                 ),
               ],
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 24,
-              ),
+              padding: const EdgeInsets.only(right: 24),
               child: SvgPicture.asset(
                 SvgIcon.rightArrow.getPath(),
                 color: Theme.of(context).primaryColor,
