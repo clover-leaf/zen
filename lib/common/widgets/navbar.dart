@@ -41,7 +41,7 @@ class NavBar extends StatelessWidget {
                     FadeTransition(opacity: anim, child: child),
                 transitionDuration: const Duration(milliseconds: 250),
               ),
-            ).then((value) => Navigator.pop(context)),
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,

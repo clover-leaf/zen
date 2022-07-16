@@ -1,5 +1,9 @@
 export 'custom_drawer.dart';
 export 'floating_button.dart';
 export 'header.dart';
+export 'info_box.dart';
 export 'lazy_indexed_stack.dart';
+export 'loading_circle.dart';
 export 'navbar.dart';
+export 'tab_button.dart';
+export 'tappable_info_box.dart';
