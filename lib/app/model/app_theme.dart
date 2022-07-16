@@ -31,7 +31,7 @@ class AppTheme {
       height: 28 / 24,
       color: const Color(0xff1A191E),
     ),
-    // chart value label
+    // chart value label  &&  tab bar value
     headline5: GoogleFonts.montserrat(
       fontSize: 12,
       letterSpacing: 16/12,
