@@ -6,3 +6,10 @@ class WorkspaceEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetAllProject extends WorkspaceEvent {
+  const GetAllProject();
+
+  @override
+  List<Object> get props => [];
+}

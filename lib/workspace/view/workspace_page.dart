@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/dashboard/models/models.dart';
 import 'package:flutter_firestore/workspace/workspace.dart';
+import 'package:iot_repository/iot_repository.dart';
 
 class WorkspacePage extends StatelessWidget {
   const WorkspacePage({super.key});
@@ -10,7 +11,9 @@ class WorkspacePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => WorkspaceBloc(),
+      create: (_) => WorkspaceBloc(
+        repository: context.read<IotRepository>(),
+      )..add(const GetAllProject()),
       child: const WorkspaceView(),
     );
   }
@@ -22,43 +25,53 @@ class WorkspaceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boxSize = MediaQuery.of(context).size.width / 2;
+    final status = context.select((WorkspaceBloc bloc) => bloc.state.status);
+    final projects =
+        context.select((WorkspaceBloc bloc) => bloc.state.projects);
 
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const FloatingButton(icon: SvgIcon.add,),
+      floatingActionButton: const FloatingButton(
+        icon: SvgIcon.add,
+      ),
       bottomNavigationBar: const NavBar(),
       body: Column(
         children: [
           Header(
             title: 'My workspace',
-            subtitle: '${dashboardList.length} projects',
+            subtitle: '${projects.length} projects',
             hasBackButton: false,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                color: const Color(0xffe5e5e5),
-                padding: const EdgeInsets.only(bottom: 2),
-                height: boxSize * ((dashboardList.length + 1) ~/ 2),
-                child: GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 2,
-                  crossAxisSpacing: 2,
-                  padding: EdgeInsets.zero,
-                  crossAxisCount: 2,
-                  children: List.generate(dashboardList.length, (index) {
-                    final info = dashboardList[index];
-                    return ProjectBox(
-                      boxSize: boxSize,
-                      info: info,
-                    );
-                  }),
+          if (status == WorkspaceStatus.loading)
+            const LoadingCircle()
+          else if (status == WorkspaceStatus.failure)
+            const Text('Failure')
+          else if (status == WorkspaceStatus.success)
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  color: const Color(0xffe5e5e5),
+                  padding: const EdgeInsets.only(bottom: 2),
+                  height: boxSize * ((projects.length + 1) ~/ 2),
+                  child: GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 2,
+                    padding: EdgeInsets.zero,
+                    crossAxisCount: 2,
+                    children: List.generate(projects.length, (index) {
+                      final project = projects[index];
+                      return ProjectBox(
+                        boxSize: boxSize,
+                        project: project,
+                      );
+                    }),
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

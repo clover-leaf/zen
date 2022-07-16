@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/common/constants/constants.dart';
-import 'package:flutter_firestore/dashboard/models/models.dart';
-import 'package:flutter_firestore/project/view/view.dart';
+import 'package:flutter_firestore/common/common.dart';
+import 'package:flutter_firestore/project/view/project_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iot_api/iot_api.dart';
 
 class ProjectBox extends StatelessWidget {
   const ProjectBox({
     super.key,
     required this.boxSize,
-    required this.info,
+    required this.project,
   });
 
   final double boxSize;
-  final DashboardInfo info;
+  final Project project;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ProjectBox extends StatelessWidget {
       onTap: () => Navigator.push<void>(
         context,
         PageRouteBuilder(
-          pageBuilder: (c, a1, a2) => ProjectPage(info: info),
+          pageBuilder: (c, a1, a2) => ProjectPage(project: project),
           transitionsBuilder: (c, anim, a2, child) =>
               FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 250),
@@ -37,19 +37,19 @@ class ProjectBox extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(12),
               child: SvgPicture.asset(
-                info.iconPath.getPath(),
+                SvgIcon.gasStation.getPath(),
                 color: Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              info.name,
+              project.projectName,
               style: Theme.of(context).textTheme.headline1,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
-              info.subtitle,
+              project.city,
               style: Theme.of(context).textTheme.headline2,
             )
           ],
