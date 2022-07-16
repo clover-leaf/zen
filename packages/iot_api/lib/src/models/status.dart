@@ -14,7 +14,7 @@ extension StatusX on Status {
   String getName() {
     switch (this) {
       case Status.stop:
-        return 'Stop';
+        return 'Stopped';
       case Status.running:
         return 'Running';
     }

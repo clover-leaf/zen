@@ -9,19 +9,23 @@ environment:
 dependencies:
   badges: ^2.0.3
   bloc: ^8.0.3
+  bloc_concurrency: ^0.2.0
   equatable: ^2.0.3
   fl_chart: ^0.55.0
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
+  flutter_map: ^1.1.1
   flutter_svg: ^1.1.0
   font_awesome_flutter: ^10.1.0
+  google_fonts: ^3.0.1
   http: ^ 0.13.4
   intl: ^0.17.0
   iot_api:
     path: packages/iot_api
   iot_repository:
     path: packages/iot_repository
+  latlong2: ^0.8.1
   remote_storage_iot_api:
     path: packages/remote_storage_iot_api
 

@@ -9,7 +9,7 @@ void main() {
       int parentId = 0,
       Status status = Status.running,
       Protocol protocol = Protocol.mqtt,
-      int deviceType = 0,
+      DeviceType deviceType = DeviceType.gadget,
       String serialNumber = 'serialNumber',
       DateTime? createAt,
       int createBy = 0,
@@ -22,6 +22,7 @@ void main() {
       String description = 'description',
       int? stationId,
       int? projectId,
+      int? indicatorId,
     }) {
       return Device(
         id: id,
@@ -42,6 +43,7 @@ void main() {
         description: description,
         stationId: stationId,
         projectId: projectId,
+        indicatorId: indicatorId,
       );
     }
 
@@ -59,7 +61,7 @@ void main() {
           0,
           Status.running,
           Protocol.mqtt,
-          0,
+          DeviceType.gadget,
           'serialNumber',
           DateTime(2022, 6, 10),
           0,
@@ -70,6 +72,7 @@ void main() {
           null,
           null,
           'description',
+          null,
           null,
           null,
         ]);
@@ -85,7 +88,7 @@ void main() {
             'parentId': 0,
             'status': 1,
             'protocol': 1,
-            'deviceType': 0,
+            'deviceType': 1,
             'serialNumber': 'serialNumber',
             'createAt': DateTime(2022, 6, 10).toIso8601String(),
             'createBy': 0,
@@ -98,6 +101,7 @@ void main() {
             'description': 'description',
             'stationId': null,
             'projectId': null,
+            'indicatorId': null,
           }),
           equals(
             createSubject(),
@@ -115,7 +119,7 @@ void main() {
             'parentId': 0,
             'status': 1,
             'protocol': 1,
-            'deviceType': 0,
+            'deviceType': 1,
             'serialNumber': 'serialNumber',
             'createAt': DateTime(2022, 6, 10).toIso8601String(),
             'createBy': 0,
@@ -128,6 +132,7 @@ void main() {
             'description': 'description',
             'stationId': null,
             'projectId': null,
+            'indicatorId': null,
           }),
         );
       });

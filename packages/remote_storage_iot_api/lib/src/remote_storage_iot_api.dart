@@ -30,61 +30,9 @@ class RemoteStorageIotApi extends IotApi {
   final http.Client _httpClient;
 
   @override
-  Future<List<Device>> fetchDevices({
-    int startIndex = 0,
-    int count = 5,
-  }) async {
-    final queryParameters = {'startOffset': '$startIndex', 'count': '$count'};
-
+  Future<int> countProject() async {
     final response = await _httpClient.get(
-      Uri.http(kBaseURL, '/api/device/getndevice/$_schema', queryParameters),
-    );
-
-    if (response.statusCode == 200) {
-      final body = jsonDecode(response.body) as List<dynamic>;
-      final devices = body
-          .map<Device>(
-            (dynamic device) => Device.fromJson(device as Map<String, dynamic>),
-          )
-          .toList();
-      return devices;
-    }
-    throw RequestFailureException();
-  }
-
-  @override
-  Future<bool> deleteDevice(String id) async {
-    final response = await _httpClient.put(
-      Uri.http(kBaseURL, '/api/device/delete/$_schema'),
-      body: jsonEncode({
-        'id': id,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // final body = jsonDecode(response.body) as List<dynamic>;
-    }
-    throw RequestFailureException();
-  }
-
-  @override
-  Future<bool> saveDevice(Device device) async {
-    final response = await _httpClient.post(
-      Uri.http(kBaseURL, '/api/device/create/$_schema'),
-      body: device.toJson(),
-    );
-
-    if (response.statusCode == 200) {
-      // final body = jsonDecode(response.body) as List<dynamic>;
-      // final devices = body.map<Device>(Device.fromJson).toList();
-    }
-    throw RequestFailureException();
-  }
-
-  @override
-  Future<int> getNumberOfDevices() async {
-    final response = await _httpClient.get(
-      Uri.http(kBaseURL, '/api/device/countall/$_schema'),
+      Uri.http(kBaseURL, '/api/project/countall/$_schema'),
     );
 
     if (response.statusCode == 200) {
@@ -95,18 +43,122 @@ class RemoteStorageIotApi extends IotApi {
   }
 
   @override
-  Stream<List<double>> fetchLiveData() {
+  Future<List<Project>> getNProject({
+    int startIndex = 0,
+    int count = 10,
+  }) async {
+    final queryParameters = {'startOffset': '$startIndex', 'count': '$count'};
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/project/getnproject/$_schema', queryParameters),
+    );
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as List<dynamic>;
+      final projects = body
+          .map<Project>(
+            (dynamic project) =>
+                Project.fromJson(project as Map<String, dynamic>),
+          )
+          .toList();
+      return projects;
+    }
+    throw RequestFailureException();
+  }
+
+  @override
+  Future<List<Station>> getAllStationInProject({required int projectId}) async {
+    final queryParameters = {'projectId': '$projectId'};
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/station/getallstationinproject/$_schema',
+          queryParameters,),
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as List<dynamic>;
+      final stations = body
+          .map<Station>(
+            (dynamic station) =>
+                Station.fromJson(station as Map<String, dynamic>),
+          )
+          .toList();
+      return stations;
+    }
+    throw RequestFailureException();
+  }
+
+  @override
+  Future<List<Device>> getAllDeviceInProject({required int projectId}) async {
+    final queryParameters = {'projectId': '$projectId'};
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/device/getalldeviceinproject/$_schema',
+          queryParameters,),
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as List<dynamic>;
+      final devices = body
+          .map<Device>(
+            (dynamic station) =>
+                Device.fromJson(station as Map<String, dynamic>),
+          )
+          .toList();
+      return devices;
+    }
+    throw RequestFailureException();
+  }
+
+  @override
+  Future<List<Device>> getAllDeviceInStation({required int stationId}) async {
+    final queryParameters = {'stationId': '$stationId'};
+    final response = await _httpClient.get(
+      Uri.http(kBaseURL, '/api/device/getalldeviceinstation/$_schema',
+          queryParameters,),
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as List<dynamic>;
+      final devices = body
+          .map<Device>(
+            (dynamic station) =>
+                Device.fromJson(station as Map<String, dynamic>),
+          )
+          .toList();
+      return devices;
+    }
+    throw RequestFailureException();
+  }
+
+  ///
+  double sin2(int dt) => sin(dt / 8 * 2 * pi);
+
+  ///
+  double sin3(int dt) => sin(dt / 12 * 2 * pi);
+
+  ///
+  double sin5(int dt) => sin(dt / 20 * 2 * pi);
+
+  @override
+  Stream<List<LiveData>> fetchLiveData() {
     return Stream.periodic(
       const Duration(seconds: 1),
-      (_) {
-        final randomValues = List.generate(2, (index) {
-          var nextRandom = 35 + Random().nextDouble() * 20 - 10;
-          while (nextRandom > 45 || nextRandom < 0) {
-            nextRandom = 35 + Random().nextDouble() * 20 - 10;
-          }
-          return double.parse(nextRandom.toStringAsFixed(1));
-        });
-        return randomValues;
+      (dt) {
+        final first = 20 + sin2(dt) - 2 * sin3(dt) + 4 * sin5(dt);
+        final second = 24 + 2 * sin2(dt) + 3 * sin3(dt) - 3 * sin5(dt);
+        final third = 18 + 3 * sin2(dt) - 2 * sin3(dt) - sin5(dt);
+        final result = [
+          LiveData(
+            double.parse(first.toStringAsFixed(1)),
+            DateTime(2022, 6, 29, 0, 31).add(Duration(minutes: dt)),
+          ),
+          LiveData(
+            double.parse(second.toStringAsFixed(1)),
+            DateTime(2022, 6, 29, 0, 31).add(Duration(minutes: dt)),
+          ),
+          LiveData(
+            double.parse(third.toStringAsFixed(1)),
+            DateTime(2022, 6, 29, 0, 31).add(Duration(minutes: dt)),
+          ),
+        ];
+        return result;
       },
     );
   }

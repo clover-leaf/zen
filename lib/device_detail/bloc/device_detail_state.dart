@@ -2,19 +2,19 @@ part of 'device_detail_bloc.dart';
 
 enum DeviceDetailStatus { initial, success, failure }
 
-enum DeviceDetailTab { overview, data, indicator, history }
+enum DeviceDetailTab { overview, history, data, indicator }
 
 extension DeviceDetailTabX on DeviceDetailTab {
   String getName() {
     switch (this) {
       case DeviceDetailTab.overview:
-        return 'Overview';
+        return 'OVERVIEW';
       case DeviceDetailTab.data:
-        return 'Tracking data';
+        return 'DATA';
       case DeviceDetailTab.indicator:
-        return 'Indicator';
+        return 'INDICATOR';
       case DeviceDetailTab.history:
-        return 'Edit history';
+        return 'HISTORY';
     }
   }
 }

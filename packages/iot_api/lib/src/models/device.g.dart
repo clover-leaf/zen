@@ -8,14 +8,15 @@ part of 'device.dart';
 
 Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       id: json['id'] as int? ?? 0,
-      deviceName: json['deviceName'] as String?,
+      deviceName: json['deviceName'] as String? ?? 'device name',
       parentId: json['parentId'] as int? ?? 0,
-      status: $enumDecodeNullable(_$StatusEnumMap, json['status'] as int) ??
-          Status.stop,
-      protocol:
-          $enumDecodeNullable(_$ProtocolEnumMap, json['protocol'] as int) ??
-              Protocol.mqtt,
-      deviceType: json['deviceType'] as int? ?? 0,
+      status:
+          $enumDecodeNullable(_$StatusEnumMap, json['status']) ?? Status.stop,
+      protocol: $enumDecodeNullable(_$ProtocolEnumMap, json['protocol']) ??
+          Protocol.mqtt,
+      deviceType:
+          $enumDecodeNullable(_$DeviceTypeEnumMap, json['deviceType']) ??
+              DeviceType.sensor,
       serialNumber: json['serialNumber'] as String? ?? '',
       createAt: DateTime.parse(json['createAt'] as String),
       createBy: json['createBy'] as int? ?? 0,
@@ -36,6 +37,7 @@ Device _$DeviceFromJson(Map<String, dynamic> json) => Device(
       description: json['description'] as String? ?? '',
       stationId: json['stationId'] as int?,
       projectId: json['projectId'] as int?,
+      indicatorId: json['indicatorId'] as int?,
     );
 
 Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
@@ -44,7 +46,7 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'parentId': instance.parentId,
       'status': _$StatusEnumMap[instance.status],
       'protocol': _$ProtocolEnumMap[instance.protocol],
-      'deviceType': instance.deviceType,
+      'deviceType': _$DeviceTypeEnumMap[instance.deviceType],
       'serialNumber': instance.serialNumber,
       'createAt': instance.createAt.toIso8601String(),
       'createBy': instance.createBy,
@@ -57,14 +59,21 @@ Map<String, dynamic> _$DeviceToJson(Device instance) => <String, dynamic>{
       'description': instance.description,
       'stationId': instance.stationId,
       'projectId': instance.projectId,
+      'indicatorId': instance.indicatorId,
     };
 
 const _$StatusEnumMap = {
-  Status.stop: 0,
-  Status.running: 1,
+  Status.stop: 'stop',
+  Status.running: 'running',
 };
 
 const _$ProtocolEnumMap = {
-  Protocol.http: 0,
-  Protocol.mqtt: 1,
+  Protocol.http: 'http',
+  Protocol.mqtt: 'mqtt',
+};
+
+const _$DeviceTypeEnumMap = {
+  DeviceType.sensor: 'sensor',
+  DeviceType.gadget: 'gadget',
+  DeviceType.appliance: 'appliance',
 };

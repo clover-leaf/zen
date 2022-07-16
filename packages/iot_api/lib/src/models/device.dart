@@ -16,11 +16,11 @@ class Device extends Equatable {
   /// {@macro note}
   const Device({
     this.id = 0,
-    this.deviceName,
+    this.deviceName = 'device name',
     this.parentId = 0,
     this.status = Status.stop,
     this.protocol = Protocol.mqtt,
-    this.deviceType = 0,
+    this.deviceType = DeviceType.sensor,
     this.serialNumber = '',
     required this.createAt,
     this.createBy = 0,
@@ -33,14 +33,14 @@ class Device extends Equatable {
     this.description = '',
     this.stationId,
     this.projectId,
-    // this.trackingData = const {'key 1': 'value', 'key 2': 'value'},
+    this.indicatorId,
   });
 
   /// The unique identifier of the device
   final int id;
 
   /// The name of device
-  final String? deviceName;
+  final String deviceName;
 
   /// The unique identifier of the device's parent
   final int  parentId;
@@ -52,7 +52,7 @@ class Device extends Equatable {
   final Protocol protocol;
 
   /// The unique identifier of the device's parent
-  final int deviceType;
+  final DeviceType deviceType;
 
   /// The serial number of the device
   final String serialNumber;
@@ -90,8 +90,8 @@ class Device extends Equatable {
   /// The project id of device
   final int? projectId;
 
-  // /// The description of device
-  // final Map<String, String> trackingData;
+  /// The project id of indicator
+  final int? indicatorId;
 
   /// Deserializes the given [JsonMap] into a [Device].
   static Device fromJson(JsonMap json) => _$DeviceFromJson(json);
@@ -108,7 +108,7 @@ class Device extends Equatable {
     int? parentId,
     Status? status,
     Protocol? protocol,
-    int? deviceType,
+    DeviceType? deviceType,
     String? serialNumber,
     DateTime? createAt,
     int? createBy,
@@ -121,7 +121,7 @@ class Device extends Equatable {
     String? description,
     int? stationId,
     int? projectId,
-    // Map<String, String>? trackingData,
+    int? indicatorId,
   }) {
     return Device(
       id: id ?? this.id,
@@ -142,7 +142,7 @@ class Device extends Equatable {
       description: description ?? this.description,
       stationId: stationId ?? this.stationId,
       projectId: projectId ?? this.projectId,
-      // trackingData: trackingData ?? this.trackingData,
+      indicatorId: indicatorId ?? this.indicatorId,
     );
   }
 
@@ -167,7 +167,7 @@ class Device extends Equatable {
       description,
       stationId,
       projectId,
-      // trackingData,
+      indicatorId,
     ];
   }
 }

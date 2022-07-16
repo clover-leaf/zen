@@ -12,16 +12,19 @@ An example firestore app.
 
 ## Todo
 
-- [29] create home page | 1h30 - 70% | thêm favorite destination and so on
-- [29] create device list page | 2h - 80% | test với api sau khi tạo data mẫu chuẩn chỉ
-- [29] create device page | 2h - 0%| tạo ui nhìn đc đc là đủ
-- [29][30] create dashboard page | 2h - 60%|
+- [29] create home page | 1h30 - 70% | thêm pin destination and so on
+- [29] create device list page | 2h - 90% | test với api sau khi tạo data mẫu chuẩn chỉ
+- [29] create device page | 2h - 20%| tạo ui nhìn đc đc là đủ
+- [29][30] create dashboard page | 2h - 90%|
 
 - [30] create add/edit device page | 2h - 0%|
 - [30] create login page | 1h - 0%|
 - [30] create station list page | 1h30
 - [30] create station page | 1h
 - [30] create add/edit station page | 1h
+
+- [ ] tạo data mẫu
+
 
 
 ## Getting Started 🚀

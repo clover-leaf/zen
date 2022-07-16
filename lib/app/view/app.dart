@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/app/app.dart';
-import 'package:flutter_firestore/home/view/home_page.dart';
+import 'package:flutter_firestore/dashboard/view/view.dart';
 import 'package:iot_repository/iot_repository.dart';
 
 class App extends StatelessWidget {
@@ -56,7 +56,8 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: isDark ? AppTheme.dark : AppTheme.light,
-      home: const HomePage(),
+      // home: const HomePage(),
+      home: const DashboardPage(),
     );
   }
 }

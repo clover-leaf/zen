@@ -15,7 +15,7 @@ void main() {
     httpClient: http.Client(),
     schema: 'test_6',
   );
-  final iotRepository = IotRepository(iotApi: iotApi);
+  final iotRepository = IotRepository(api: iotApi);
   bootstrap(
     () => App(iotRepository: iotRepository),
   );
