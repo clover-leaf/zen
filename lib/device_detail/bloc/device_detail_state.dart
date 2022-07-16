@@ -1,47 +1,37 @@
 part of 'device_detail_bloc.dart';
 
-enum DeviceDetailStatus { initial, success, failure }
-
-enum DeviceDetailTab { overview, history, data, indicator }
+enum DeviceDetailTab { infomation , indicators}
 
 extension DeviceDetailTabX on DeviceDetailTab {
   String getName() {
     switch (this) {
-      case DeviceDetailTab.overview:
-        return 'OVERVIEW';
-      case DeviceDetailTab.data:
-        return 'DATA';
-      case DeviceDetailTab.indicator:
-        return 'INDICATOR';
-      case DeviceDetailTab.history:
-        return 'HISTORY';
+      case DeviceDetailTab.infomation:
+        return 'INFOMATION';
+      case DeviceDetailTab.indicators:
+        return 'INDICATORS';
     }
   }
 }
 
 class DeviceDetailState extends Equatable {
   const DeviceDetailState({
-    this.status = DeviceDetailStatus.success,
-    this.tab = DeviceDetailTab.overview,
+    this.tab = DeviceDetailTab.infomation,
     required this.device,
   });
 
-  final DeviceDetailStatus status;
-  final DeviceDetailTab tab;
   final Device device;
+  final DeviceDetailTab tab;
 
   DeviceDetailState copyWith({
-    DeviceDetailStatus? status,
-    DeviceDetailTab? tab,
     Device? device,
+    DeviceDetailTab? tab,
   }) {
     return DeviceDetailState(
-      status: status ?? this.status,
-      tab: tab ?? this.tab,
       device: device ?? this.device,
+      tab: tab ?? this.tab,
     );
   }
 
   @override
-  List<Object> get props => [status, tab, device];
+  List<Object> get props => [device, tab];
 }

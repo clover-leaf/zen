@@ -7,8 +7,8 @@ class DeviceDetailEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DeviceDetailTabChanged extends DeviceDetailEvent {
-  const DeviceDetailTabChanged(this.tab);
+class TabChanged extends DeviceDetailEvent {
+  const TabChanged(this.tab);
 
   final DeviceDetailTab tab;
 
