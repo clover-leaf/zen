@@ -69,7 +69,7 @@ const _$StatusEnumMap = {
 
 const _$ProtocolEnumMap = {
   Protocol.http: 0,
-  Protocol.mqtt: 1,
+  Protocol.mqtt:  1,
 };
 
 const _$DeviceTypeEnumMap = {
