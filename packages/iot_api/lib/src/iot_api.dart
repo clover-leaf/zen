@@ -7,6 +7,10 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
+  /// Get mqtt config of user  
+  ///
+  Future<Map<String, dynamic>> getConfig();
+
   /////////////////// [Project]
 
   /// Get total number of [Project],
@@ -54,6 +58,7 @@ abstract class IotApi {
   ///
   /// each return list of live datas
   Stream<List<LiveData>> fetchLiveData();
+
 }
 
 /// Error throw when a [Device] with given id is not found.
