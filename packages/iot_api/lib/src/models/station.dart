@@ -7,7 +7,7 @@ import 'package:iot_api/iot_api.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'station.g.dart';
+part 'generated/station.g.dart';
 
 @immutable
 @JsonSerializable()

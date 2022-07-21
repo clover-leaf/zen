@@ -3,7 +3,7 @@ import 'package:iot_api/iot_api.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'device.g.dart';
+part 'generated/device.g.dart';
 
 @immutable
 @JsonSerializable()

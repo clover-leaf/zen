@@ -6,7 +6,7 @@ import 'package:iot_api/src/models/json_map.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'project.g.dart';
+part 'generated/project.g.dart';
 
 @immutable
 @JsonSerializable()
