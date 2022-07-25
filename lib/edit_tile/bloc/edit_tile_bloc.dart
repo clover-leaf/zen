@@ -22,6 +22,7 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
             tileData: TileData.placeholder(tileType: tileType),
           ),
         ) {
+    on<EditTileInitialized>(_onInitialized);
     on<EditTileStatusChanged>(_onStatusChanged);
     on<EditTileTitleChanged>(_onTitleChanged);
     on<EditTileDeviceIdChanged>(_onDeviceIdChanged);
@@ -30,6 +31,21 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
   }
 
   final IotRepository repository;
+
+  void _onInitialized(
+    EditTileInitialized event,
+    Emitter<EditTileState> emit,
+  ) {
+    if (state.initTileConfig != null) {
+      emit(
+        state.copyWith(
+          title: state.initTileConfig!.title,
+          deviceID: state.initTileConfig!.deviceID,
+          tileData: state.initTileConfig!.tileData,
+        ),
+      );
+    }
+  }
 
   void _onStatusChanged(
     EditTileStatusChanged event,
@@ -64,12 +80,23 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     Emitter<EditTileState> emit,
   ) async {
     emit(state.copyWith(status: EditTileStatus.saving));
-    final tileConfig = TileConfig(
-      title: state.title,
-      deviceID: state.deviceID,
-      tileType: state.tileType,
-      tileData: state.tileData,
-    );
+    late TileConfig tileConfig;
+    if (state.initTileConfig != null) {
+      tileConfig = TileConfig(
+        id: state.initTileConfig!.id,
+        title: state.title,
+        deviceID: state.deviceID,
+        tileType: state.tileType,
+        tileData: state.tileData,
+      );
+    } else {
+      tileConfig = TileConfig(
+        title: state.title,
+        deviceID: state.deviceID,
+        tileType: state.tileType,
+        tileData: state.tileData,
+      );
+    }
     try {
       await repository.saveTileConfig(tileConfig);
       emit(state.copyWith(status: EditTileStatus.success));

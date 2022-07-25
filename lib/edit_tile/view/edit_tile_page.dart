@@ -30,7 +30,7 @@ class EditTilePage extends StatelessWidget {
           mqttDeviceView: mqttDeviceView,
           initTileConfig: initTileConfig,
           tileType: tileType,
-        ),
+        )..add(const EditTileInitialized()),
         child: const EditTilePage(),
       ),
     );

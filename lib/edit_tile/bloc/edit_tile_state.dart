@@ -11,6 +11,7 @@ extension EditTileStatusX on EditTileStatus {
 }
 
 class EditTileState extends Equatable {
+  /// {macro EditTileState}
   EditTileState({
     this.status = EditTileStatus.initial,
     this.brokerView = const {},

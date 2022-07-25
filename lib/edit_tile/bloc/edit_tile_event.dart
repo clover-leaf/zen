@@ -7,6 +7,11 @@ class EditTileEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class EditTileInitialized extends EditTileEvent {
+  const EditTileInitialized();
+}
+
+
 class EditTileStatusChanged extends EditTileEvent {
   const EditTileStatusChanged(this.status);
 
