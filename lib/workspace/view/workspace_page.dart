@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/dashboard/models/models.dart';
+import 'package:flutter_firestore/project/view/project_page.dart';
 import 'package:flutter_firestore/workspace/workspace.dart';
 import 'package:iot_repository/iot_repository.dart';
 
@@ -63,9 +64,21 @@ class WorkspaceView extends StatelessWidget {
                     crossAxisCount: 2,
                     children: List.generate(projects.length, (index) {
                       final project = projects[index];
-                      return ProjectBox(
+                      return SquareBox(
                         boxSize: boxSize,
-                        project: project,
+                        title: project.projectName,
+                        subtile: project.city,
+                        onTapped: () => Navigator.push<void>(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (c, a1, a2) =>
+                                ProjectPage(project: project),
+                            transitionsBuilder: (c, anim, a2, child) =>
+                                FadeTransition(opacity: anim, child: child),
+                            transitionDuration:
+                                const Duration(milliseconds: 250),
+                          ),
+                        ),
                       );
                     }),
                   ),

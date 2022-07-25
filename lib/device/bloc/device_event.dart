@@ -15,3 +15,10 @@ class DeviceStatusChanged extends DeviceEvent {
   @override
   List<Object> get props => [status];
 }
+
+class GetAllDevice extends DeviceEvent {
+  const GetAllDevice();
+
+  @override
+  List<Object> get props => [];
+}

@@ -9,7 +9,17 @@ enum TileType {
 
 /// helper
 extension TileTypeX on TileType {
-  /// convert [TileType] to [String]
+  /// convert [TileType] to [String] to display
+  String toTitle() {
+    switch (this) {
+      case TileType.toggle:
+        return 'Toggle';
+      case TileType.text:
+        return 'Text';
+    }
+  }
+
+  /// convert [TileType] to [String] to convert into JSON
   String toJsonKey() {
     switch (this) {
       case TileType.toggle:

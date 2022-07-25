@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
-import 'package:flutter_firestore/dashboard/dashboard.dart';
 import 'package:flutter_firestore/dashboard_detail/dashboard_detail.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
@@ -10,24 +9,24 @@ import 'package:iot_repository/iot_repository.dart';
 class DashboardDetailPage extends StatelessWidget {
   const DashboardDetailPage({
     super.key,
-    required this.info,
+    required this.project,
   });
 
-  static PageRoute route({required DashboardInfo info}) {
+  static PageRoute route({required Project project}) {
     return MaterialPageRoute<void>(
       builder: (context) => DashboardDetailPage(
-        info: info,
+        project: project,
       ),
     );
   }
 
-  final DashboardInfo info;
+  final Project project;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => DashboardDetailBloc(
-        info: info,
+        project: project,
         iotRepository: context.read<IotRepository>(),
       )..add(const DashboardDetailSubcriptionRequested()),
       child: const DashboardDetailView(),
@@ -52,19 +51,24 @@ class DashboardDetailView extends StatelessWidget {
     final xAxisGridOffset = context.select(
       (DashboardDetailBloc bloc) => bloc.state.xAxisGridOffset,
     );
-    final info = context.select((DashboardDetailBloc bloc) => bloc.state.info);
+    final project =
+        context.select((DashboardDetailBloc bloc) => bloc.state.project);
+    final status =
+        context.select((DashboardDetailBloc bloc) => bloc.state.status);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       drawer: const CustomDrawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const FloatingButton(icon: SvgIcon.add,),
+      floatingActionButton: const FloatingButton(
+        icon: SvgIcon.add,
+      ),
       bottomNavigationBar: const NavBar(),
       body: Column(
         children: [
           Header(
-            title: info.name,
-            subtitle: 'Seattle station',
+            title: project.projectName,
+            subtitle: project.city,
             trailer: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: SvgPicture.asset(
@@ -72,40 +76,100 @@ class DashboardDetailView extends StatelessWidget {
                 color: const Color(0xffffffff),
               ),
             ),
-            hasDropdown: true,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: ColoredBox(
-                color: const Color(0xffe5e5e5),
+          if (status == DashboardDetailStatus.loading)
+            const LoadingCircle()
+          else if (status == DashboardDetailStatus.failure)
+            const Text('Failure')
+          else if (status == DashboardDetailStatus.success)
+            Expanded(
+              child: SingleChildScrollView(
+                child: ColoredBox(
+                  color: const Color(0xffe5e5e5),
+                  child: Column(
+                    children: [
+                      _LineChartCard(
+                        colors: colors,
+                        labels: labels,
+                        liveDataGroup: liveDataGroup,
+                        xAxisGridOffset: xAxisGridOffset,
+                      ),
+                      const SizedBox(height: 2),
+                      _BarChartCard(
+                        colors: colors,
+                        labels: labels,
+                        liveDataGroup: liveDataGroup,
+                        xAxisGridOffset: xAxisGridOffset,
+                      ),
+                      const SizedBox(height: 2),
+                      _PieChartCard(
+                        colors: colors,
+                        labels: labels,
+                        liveDataGroup: liveDataGroup,
+                        xAxisGridOffset: xAxisGridOffset,
+                      ),
+                      const SizedBox(height: 2),
+                      MapTab(project: project),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class MapTab extends StatelessWidget {
+  const MapTab({
+    super.key,
+    required this.project,
+  });
+
+  final Project project;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.2,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 24,
+        ),
+        color: const Color(0xffffffff),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Map',
+              style: Theme.of(context).textTheme.headline1,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            AspectRatio(
+              aspectRatio: 1.6,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
                 child: Column(
                   children: [
-                    _LineChartCard(
-                      colors: colors,
-                      labels: labels,
-                      liveDataGroup: liveDataGroup,
-                      xAxisGridOffset: xAxisGridOffset,
-                    ),
-                    const SizedBox(height: 2),
-                    _BarChartCard(
-                      colors: colors,
-                      labels: labels,
-                      liveDataGroup: liveDataGroup,
-                      xAxisGridOffset: xAxisGridOffset,
-                    ),
-                    const SizedBox(height: 2),
-                    _PieChartCard(
-                      colors: colors,
-                      labels: labels,
-                      liveDataGroup: liveDataGroup,
-                      xAxisGridOffset: xAxisGridOffset,
+                    MapBox(
+                      latitude: project.latitude,
+                      longitude: project.longitude,
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -48,6 +48,7 @@ class GatewayClient {
   /// mqtt client instance
   late MqttServerClient _client;
 
+
   /// logins into adafruit-IO
   Future<void> login() async {
     await _client.connect(
@@ -59,6 +60,11 @@ class GatewayClient {
   /// subscribes to given topic
   void subscribe(String topic) {
     _client.subscribe(topic, MqttQos.atMostOnce);
+    // because adafruit not have retain msg system
+    // so we must publish topic/get to get retain msg
+    if (broker.url == 'io.adafruit.com') {
+      published('', '$topic/get', retain: false);
+    }
   }
 
   /// publishes message to given top

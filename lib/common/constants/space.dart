@@ -1,17 +1,17 @@
 enum Space {
   /// global constants
   globalBorderRadius(6),
+  globalBorderWidth(1.2),
 
   /// constants of content's padding
   ///
   /// actual padding top will be added status bar height
-  contentPaddingLeft(24),
+  contentPaddingHorizontal(16),
   contentPaddingTop(16),
-  contentPaddingRight(16),
   contentPaddingBottom(16),
 
   /// constants of gap between item in content
-  contentItemGap(16),
+  contentItemGap(24),
 
   /// constants of search bar
   searchbarHeight(40),

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_firestore/dashboard/dashboard.dart';
 import 'package:iot_api/iot_api.dart';
 import 'package:iot_repository/iot_repository.dart';
 
@@ -33,12 +32,12 @@ double generate(int index, int dt) {
 class DashboardDetailBloc
     extends Bloc<DashboardDetailEvent, DashboardDetailState> {
   DashboardDetailBloc({
-    required DashboardInfo info,
+    required Project project,
     required IotRepository iotRepository,
   })  : _iotRepository = iotRepository,
         super(
           DashboardDetailState(
-            info: info,
+            project: project,
             liveDataGroup: List.generate(3, (index) {
               return List.generate(
                 31,
@@ -75,6 +74,7 @@ class DashboardDetailBloc
         return state.copyWith(
           liveDataGroup: newLiveDataGroup,
           xAxisGridOffset: newXAxisOffset,
+          status: DashboardDetailStatus.success,
         );
       },
       onError: (_, __) => state.copyWith(status: DashboardDetailStatus.failure),

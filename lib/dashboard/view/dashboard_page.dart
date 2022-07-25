@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/dashboard/dashboard.dart';
+import 'package:flutter_firestore/dashboard_detail/view/dashboard_detail_page.dart';
+import 'package:iot_repository/iot_repository.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -9,7 +11,9 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DashboardBloc(),
+      create: (_) => DashboardBloc(
+        repository: context.read<IotRepository>(),
+      )..add(const GetAllProject()),
       child: const DashboardView(),
     );
   }
@@ -21,12 +25,17 @@ class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boxSize = MediaQuery.of(context).size.width / 2;
+    final status = context.select((DashboardBloc bloc) => bloc.state.status);
+    final projects =
+        context.select((DashboardBloc bloc) => bloc.state.projects);
 
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const FloatingButton(icon: SvgIcon.add,),
+      floatingActionButton: const FloatingButton(
+        icon: SvgIcon.add,
+      ),
       bottomNavigationBar: const NavBar(),
       body: Column(
         children: [
@@ -35,29 +44,46 @@ class DashboardView extends StatelessWidget {
             subtitle: '${dashboardList.length} projects',
             hasBackButton: false,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                color: const Color(0xffe5e5e5),
-                padding: const EdgeInsets.only(bottom: 2),
-                height: boxSize * ((dashboardList.length + 1) ~/ 2),
-                child: GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 2,
-                  crossAxisSpacing: 2,
-                  padding: EdgeInsets.zero,
-                  crossAxisCount: 2,
-                  children: List.generate(dashboardList.length, (index) {
-                    final info = dashboardList[index];
-                    return DashboardBox(
-                      boxSize: boxSize,
-                      info: info,
-                    );
-                  }),
+          if (status == DashboardStatus.loading)
+            const LoadingCircle()
+          else if (status == DashboardStatus.failure)
+            const Text('Failure')
+          else if (status == DashboardStatus.success)
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  color: const Color(0xffe5e5e5),
+                  padding: const EdgeInsets.only(bottom: 2),
+                  height: boxSize * ((dashboardList.length + 1) ~/ 2),
+                  child: GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 2,
+                    padding: EdgeInsets.zero,
+                    crossAxisCount: 2,
+                    children: List.generate(projects.length, (index) {
+                      final project = projects[index];
+                      return SquareBox(
+                        boxSize: boxSize,
+                        title: project.projectName,
+                        subtile: project.city,
+                        onTapped: () => Navigator.push<void>(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (c, a1, a2) =>
+                                DashboardDetailPage(project: project),
+                            transitionsBuilder: (c, anim, a2, child) =>
+                                FadeTransition(opacity: anim, child: child),
+                            transitionDuration:
+                                const Duration(milliseconds: 250),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

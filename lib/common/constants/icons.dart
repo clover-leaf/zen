@@ -17,7 +17,6 @@ enum SvgIcon {
   project,
   station,
   report,
-  task,
   air,
   gasStation,
   water,
@@ -41,6 +40,8 @@ enum SvgIcon {
   edit,
   key,
   archive,
+  pin,
+  task,
 }
 
 extension SvgIconX on SvgIcon {
@@ -83,8 +84,6 @@ extension SvgIconX on SvgIcon {
         return toPath('building');
       case SvgIcon.report:
         return toPath('note');
-      case SvgIcon.task:
-        return toPath('task-square');
       case SvgIcon.air:
         return toPath('airflow');
       case SvgIcon.gasStation:
@@ -131,6 +130,10 @@ extension SvgIconX on SvgIcon {
         return toPath('key');
       case SvgIcon.archive:
         return toPath('archive');
+      case SvgIcon.pin:
+        return toPath('pin');
+      case SvgIcon.task:
+        return toPath('task');
     }
   }
 }

@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   iot_api:
     path: ../iot_api
+  iot_gateway:
+    path: ../iot_gateway
 
 dev_dependencies:
   mocktail: ^0.3.0

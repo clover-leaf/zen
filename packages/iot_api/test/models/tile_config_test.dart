@@ -4,12 +4,19 @@ import 'package:test/test.dart';
 void main() {
   group('Tile config', () {
     TileConfig createSubject({
-      String title = 'title',
-      String deviceID = 'deviceID',
+      String id = 'id',
+      String title = '',
+      String deviceID = '',
       TileType tileType = TileType.text,
-      TileData tileData = const TextTileData(),
+      TileData tileData = const TextTileData(
+        prefix: '',
+        postfix: '',
+        jsonEnable: false,
+        jsonExtraction: '',
+      ),
     }) {
       return TileConfig(
+        id: id,
         title: title,
         deviceID: deviceID,
         tileType: tileType,
@@ -26,26 +33,48 @@ void main() {
       });
       test('props are correct', () {
         expect(createSubject().props, <dynamic>[
-          'title',
-          'deviceID',
+          'id',
+          '',
+          '',
           TileType.text,
-          const TextTileData(),
+          const TextTileData(
+            prefix: '',
+            postfix: '',
+            jsonEnable: false,
+            jsonExtraction: '',
+          ),
         ]);
       });
     });
-
+    group('Placeholder tile config', () {
+      test('create placeholder correctly', () {
+        final empty = TileConfig.placeholder(tileType: TileType.text);
+        expect(
+          empty,
+          TileConfig(
+            id: empty.id,
+            title: '',
+            deviceID: '',
+            tileType: TileType.text,
+            tileData: TileData.placeholder(tileType: TileType.text),
+          ),
+        );
+      });
+    });
     group('from Json', () {
       test('works correctly', () {
         expect(
           TileConfig.fromJson(<String, dynamic>{
-            'title': 'title',
-            'deviceID': 'deviceID',
+            'id': 'id',
+            'title': '',
+            'deviceID': '',
             'tileType': 'text',
             'tileData': {
               'type': 'text',
-              'prefix': null,
-              'postfix': null,
-              'jsonExtraction': null,
+              'prefix': '',
+              'postfix': '',
+              'jsonEnable': false,
+              'jsonExtraction': '',
             },
           }),
           equals(
@@ -59,14 +88,16 @@ void main() {
         expect(
           createSubject().toJson(),
           equals(<String, dynamic>{
-            'title': 'title',
-            'deviceID': 'deviceID',
+            'id': 'id',
+            'title': '',
+            'deviceID': '',
             'tileType': 'text',
             'tileData': {
               'type': 'text',
-              'prefix': null,
-              'postfix': null,
-              'jsonExtraction': null,
+              'prefix': '',
+              'postfix': '',
+              'jsonEnable': false,
+              'jsonExtraction': '',
             },
           }),
         );

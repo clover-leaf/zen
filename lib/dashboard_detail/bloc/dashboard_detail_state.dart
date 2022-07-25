@@ -4,31 +4,31 @@ enum DashboardDetailStatus {loading, success, failure}
 
 class DashboardDetailState extends Equatable {
   const DashboardDetailState({
-    required this.info,
+    required this.project,
     this.status = DashboardDetailStatus.loading,
     this.liveDataGroup = const [[], [], []],
     this.xAxisGridOffset = 0,
   });
   
   final DashboardDetailStatus status;
-  final DashboardInfo info;
+  final Project project;
   final List<List<LiveData>> liveDataGroup;
   final double xAxisGridOffset;
 
   DashboardDetailState copyWith({
     DashboardDetailStatus? status,
-    DashboardInfo? info,
+    Project? project,
     List<List<LiveData>>? liveDataGroup,
     double? xAxisGridOffset,
   }) {
     return DashboardDetailState(
       status: status ?? this.status,
-      info: info ?? this.info,
+      project: project ?? this.project,
       liveDataGroup: liveDataGroup ?? this.liveDataGroup,
       xAxisGridOffset: xAxisGridOffset ?? this.xAxisGridOffset,
     );
   }
 
   @override
-  List<Object> get props => [info, status, liveDataGroup, xAxisGridOffset];
+  List<Object> get props => [project, status, liveDataGroup, xAxisGridOffset];
 }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/device/device.dart';
+import 'package:flutter_firestore/device_detail/view/device_detail_page.dart';
+import 'package:iot_api/iot_api.dart';
+import 'package:iot_repository/iot_repository.dart';
 
 class DevicePage extends StatelessWidget {
   const DevicePage({super.key});
@@ -15,7 +18,9 @@ class DevicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DeviceBloc(),
+      create: (_) => DeviceBloc(
+        repository: context.read<IotRepository>(),
+      )..add(const GetAllDevice()),
       child: const DeviceView(),
     );
   }
@@ -26,8 +31,8 @@ class DeviceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final seletedStatus =
-        context.select((DeviceBloc bloc) => bloc.state.deviceStatus);
+    final devices = context.select((DeviceBloc bloc) => bloc.state.devices);
+    final status = context.select((DeviceBloc bloc) => bloc.state.status);
     return Scaffold(
       drawer: const CustomDrawer(),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -40,35 +45,55 @@ class DeviceView extends StatelessWidget {
         children: [
           Header(
             title: 'Devices',
-            subtitle: seletedStatus.getName(),
-            hasDropdown: true,
+            subtitle: '${devices.length} devices',
+            // hasDropdown: true,
             hasBackButton: false,
-            onDropdownTapped: () => showDialog<DeviceStatus>(
-              barrierColor: Colors.transparent,
-              context: context,
-              builder: (context) => StatusDialog(
-                seletedStatus: seletedStatus,
-              ),
-            ).then((status) {
-              if (status != null && status != seletedStatus) {
-                context.read<DeviceBloc>().add(DeviceStatusChanged(status));
-              }
-            }),
+            // onDropdownTapped: () => showDialog<DeviceStatus>(
+            //   barrierColor: Colors.transparent,
+            //   context: context,
+            //   builder: (context) => StatusDialog(
+            //     seletedStatus: seletedStatus,
+            //   ),
+            // ).then((status) {
+            //   if (status != null && status != seletedStatus) {
+            //     context.read<DeviceBloc>().add(DeviceStatusChanged(status));
+            //   }
+            // }),
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.zero,
-              itemBuilder: (context, index) {
-                final deviceInfo = deviceInfos[index];
-                return DeviceBox(deviceInfo: deviceInfo);
-              },
-              separatorBuilder: (_, __) => Container(
-                color: const Color(0xffe5e5e5),
-                height: 2,
+          if (status == LoadingStatus.loading)
+            const LoadingCircle()
+          else if (status == LoadingStatus.failure)
+            const Text('Failure')
+          else if (status == LoadingStatus.success)
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) {
+                  final device = devices[index];
+                  return TappableInfoBox(
+                    title: device.deviceName,
+                    subtile: device.status.getName(),
+                    icon: SvgIcon.gasStation,
+                    onTapped: () => Navigator.push<void>(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (c, a1, a2) => DeviceDetailPage(
+                          device: device,
+                        ),
+                        transitionsBuilder: (c, anim, a2, child) =>
+                            FadeTransition(opacity: anim, child: child),
+                        transitionDuration: const Duration(milliseconds: 250),
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (_, __) => Container(
+                  color: const Color(0xffe5e5e5),
+                  height: 2,
+                ),
+                itemCount: deviceInfos.length,
               ),
-              itemCount: deviceInfos.length,
             ),
-          ),
         ],
       ),
     );

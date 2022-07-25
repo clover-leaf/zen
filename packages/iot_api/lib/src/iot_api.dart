@@ -7,9 +7,19 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
-  /// Get mqtt config of user  
-  ///
-  Future<Map<String, dynamic>> getConfig();
+  /// gets stream of brokers 
+  Stream<List<Broker>> getBrokers();
+
+  /// gets stream of Mqtt device 
+  Stream<List<MqttDevice>> getMqttDevices();
+
+  /// gets stream of tile config 
+  Stream<List<TileConfig>> getTileConfigs();
+
+  /// if tile config exist in db, updates it
+  /// else save it
+  Future<void> saveTileConfig(TileConfig tileConfig);
+
 
   /////////////////// [Project]
 

@@ -44,6 +44,7 @@ class StationView extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const NavBar(),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Header(
             title: station.stationName,
@@ -51,42 +52,45 @@ class StationView extends StatelessWidget {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                TabButton(
-                  label: StationTab.devices.getName(),
-                  tab: StationTab.devices,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<StationBloc>()
-                      .add(const TabChanged(StationTab.devices)),
-                ),
-                TabButton(
-                  label: StationTab.infomation.getName(),
-                  tab: StationTab.infomation,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<StationBloc>()
-                      .add(const TabChanged(StationTab.infomation)),
-                ),
-                TabButton(
-                  label: StationTab.location.getName(),
-                  tab: StationTab.location,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<StationBloc>()
-                      .add(const TabChanged(StationTab.location)),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                children: [
+                  TabButton(
+                    label: StationTab.infomation.getName(),
+                    tab: StationTab.infomation,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<StationBloc>()
+                        .add(const TabChanged(StationTab.infomation)),
+                  ),
+                  TabButton(
+                    label: StationTab.location.getName(),
+                    tab: StationTab.location,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<StationBloc>()
+                        .add(const TabChanged(StationTab.location)),
+                  ),
+                  TabButton(
+                    label: StationTab.devices.getName(),
+                    tab: StationTab.devices,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<StationBloc>()
+                        .add(const TabChanged(StationTab.devices)),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
             child: LazyLoadIndexedStack(
               index: tab.index,
               children: [
-                DevicesTabPage(station: station),
                 InfomationTabPage(station: station),
                 MapTabPage(station: station),
+                DevicesTabPage(station: station),
               ],
             ),
           ),

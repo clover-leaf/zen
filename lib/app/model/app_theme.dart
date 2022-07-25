@@ -1,158 +1,263 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static final TextTheme lightTextTheme = TextTheme(
-    // header || chart title
-    headline1: GoogleFonts.montserrat(
-      fontSize: 18,
-      fontWeight: FontWeight.w600,
-      height: 22 / 18,
-      color: const Color(0xff1A191E),
+  static const TextTheme lightTextTheme = TextTheme(
+    //
+    displayLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 57,
+      fontWeight: FontWeight.w400,
+      height: 64 / 57,
+      color: Color(0xff212121),
     ),
-    // header subtitle || chart subtitle
-    headline2: GoogleFonts.montserrat(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      height: 18 / 14,
-      color: const Color(0xff1A191E).withAlpha(193),
+    //
+    displayMedium: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 45,
+      fontWeight: FontWeight.w400,
+      height: 52 / 45,
+      color: Color(0xff212121),
     ),
-    // menu title
-    headline3: GoogleFonts.montserrat(
+    //
+    displaySmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 36,
+      fontWeight: FontWeight.w400,
+      height: 40 / 36,
+      color: Color(0xff212121),
+    ),
+    //
+    headlineLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 32,
+      fontWeight: FontWeight.w400,
+      height: 40 / 32,
+      color: Color(0xff212121),
+    ),
+    //
+    headlineMedium: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 28,
+      fontWeight: FontWeight.w400,
+      height: 36 / 28,
+      color: Color(0xff212121),
+    ),
+    //
+    headlineSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+      letterSpacing: -.8,
+      color: Color(0xff212121),
+    ),
+    //
+    titleLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+      height: 26 / 22,
+      color: Color(0xff212121),
+    ),
+    //
+    titleMedium: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 16,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       height: 20 / 16,
-      color: const Color(0xff1A191E),
+      color: Color(0xff212121),
     ),
-    // chart value
-    headline4: GoogleFonts.montserrat(
-      fontSize: 24,
-      fontWeight: FontWeight.w800,
-      height: 28 / 24,
-      color: const Color(0xff1A191E),
+    //
+    titleSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      height: 18 / 14,
+      color: Color(0xff212121),
     ),
-    // chart value label  &&  tab bar value
-    headline5: GoogleFonts.montserrat(
+    //
+    labelLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      height: 18 / 14,
+      color: Color(0xff212121),
+    ),
+    //
+    labelMedium: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 12,
-      letterSpacing: 16/12,
-      fontWeight: FontWeight.w800,
-      height: 16/12,
-      color: const Color(0xff1A191E).withAlpha(193),
+      fontWeight: FontWeight.w500,
+      height: 16 / 12,
+      color: Color(0xff212121),
     ),
-    // chart value unit
-    headline6: GoogleFonts.montserrat(
-      fontSize: 12,
-      letterSpacing: 16/12,
-      fontWeight: FontWeight.w700,
-      height: 16/12,
-      color: const Color(0xff1A191E),
+    //
+    labelSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: Color(0xff212121),
     ),
-    // capital headline
-    caption: GoogleFonts.montserrat(
+    //
+    bodyLarge: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 16,
-      letterSpacing: 20/16,
-      fontWeight: FontWeight.w900,
-      height: 20/16,
-      color: const Color(0xff1A191E),
+      fontWeight: FontWeight.w500,
+      height: 20 / 16,
+      color: Color(0xff212121),
     ),
-    // capital subtitle
-    subtitle1: GoogleFonts.montserrat(
+    //
+    bodyMedium: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 14,
-      letterSpacing: 22/14,
-      fontWeight: FontWeight.w700,
-      height: 18/14,
-      color: const Color(0xff1A191E),
+      fontWeight: FontWeight.w500,
+      height: 18 / 14,
+      color: Color(0xff212121),
     ),
-    // bold action subtitle
-    subtitle2: GoogleFonts.montserrat(
-      fontSize: 14,
-      letterSpacing: 18/14,
-      fontWeight: FontWeight.w800,
-      height: 18/14,
-      color: const Color(0xff1A191E),
+    //
+    bodySmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      height: 16 / 12,
+      color: Color(0xff212121),
     ),
   );
   static final ThemeData light = ThemeData(
     brightness: Brightness.light,
-    primaryColor: const Color(0xff1A191E),
+    primaryColor: const Color(0xff890e4f),
     backgroundColor: const Color(0xffffffff),
+    dividerColor: const Color(0xffd3d3d3),
     textTheme: lightTextTheme,
+    fontFamily: 'Montserrat',
   );
 
-  static final TextTheme darkTextTheme = TextTheme(
-    // header
-    headline1: GoogleFonts.montserrat(
-      fontSize: 18,
-      fontWeight: FontWeight.w600,
-      height: 22 / 18,
-      color: const Color(0xffffffff),
+  static const TextTheme darkTextTheme = TextTheme(
+    //
+    displayLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 57,
+      fontWeight: FontWeight.w400,
+      height: 64 / 57,
+      color: Color(0xffffffff),
     ),
-    // header subtitle
-    headline2: GoogleFonts.montserrat(
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      height: 18 / 14,
-      color: const Color(0xffffffff).withAlpha(193),
+    //
+    displayMedium: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 45,
+      fontWeight: FontWeight.w400,
+      height: 52 / 45,
+      color: Color(0xffffffff),
     ),
-    // menu title
-    headline3: GoogleFonts.montserrat(
+    //
+    displaySmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 36,
+      fontWeight: FontWeight.w400,
+      height: 40 / 36,
+      color: Color(0xffffffff),
+    ),
+    //
+    headlineLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 32,
+      fontWeight: FontWeight.w400,
+      height: 40 / 32,
+      color: Color(0xffffffff),
+    ),
+    //
+    headlineMedium: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 28,
+      fontWeight: FontWeight.w400,
+      height: 36 / 28,
+      color: Color(0xffffffff),
+    ),
+    // USE FOR HEADLINE
+    headlineSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      letterSpacing: -.8,
+      color: Color(0xffffffff),
+    ),
+    //
+    titleLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+      height: 28 / 22,
+      color: Color(0xffffffff),
+    ),
+    //
+    titleMedium: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 16,
-      fontWeight: FontWeight.w600,
-      height: 20 / 16,
-      color: const Color(0xffffffff),
+      fontWeight: FontWeight.w500,
+      height: 24 / 16,
+      color: Color(0xffffffff),
     ),
-    // chart value
-    headline4: GoogleFonts.montserrat(
-      fontSize: 18,
-      fontWeight: FontWeight.w800,
-      height: 22 / 18,
-      color: const Color(0xffffffff),
+    //
+    titleSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      height: 20 / 14,
+      color: Color(0xffffffff),
     ),
-    // chart value label
-    headline5: GoogleFonts.montserrat(
-      fontSize: 10,
-      letterSpacing: 14/10,
-      fontWeight: FontWeight.w600,
-      height: 14/10,
-      color: const Color(0xffffffff).withAlpha(193),
+    //
+    labelLarge: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      height: 20 / 14,
+      color: Color(0xffffffff),
     ),
-    // chart value unit
-    headline6: GoogleFonts.montserrat(
-      fontSize: 10,
-      letterSpacing: 14/10,
-      fontWeight: FontWeight.w700,
-      height: 14/10,
-      color: const Color(0xffffffff),
+    //
+    labelMedium: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      height: 16 / 12,
+      color: Color(0xffffffff),
     ),
-    // capital headline
-    caption: GoogleFonts.montserrat(
+    //
+    labelSmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      height: 16 / 11,
+      color: Color(0xffffffff),
+    ),
+    //
+    bodyLarge: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 16,
-      letterSpacing: 24/16,
-      fontWeight: FontWeight.w900,
-      height: 20/16,
-      color: const Color(0xffffffff),
+      letterSpacing: 0.15,
+      fontWeight: FontWeight.w500,
+      height: 24 / 16,
+      color: Color(0xffffffff),
     ),
-    // capital subtitle
-    subtitle1: GoogleFonts.montserrat(
+    //
+    bodyMedium: TextStyle(
+      fontFamily: 'Montserrat',
       fontSize: 14,
-      letterSpacing: 22/14,
-      fontWeight: FontWeight.w700,
-      height: 18/14,
-      color: const Color(0xffffffff),
+      fontWeight: FontWeight.w500,
+      height: 20 / 14,
+      color: Color(0xffffffff),
     ),
-    // bold action subtitle
-    subtitle2: GoogleFonts.montserrat(
-      fontSize: 14,
-      letterSpacing: 18/14,
-      fontWeight: FontWeight.w800,
-      height: 18/14,
-      color: const Color(0xffffffff),
+    //
+    bodySmall: TextStyle(
+      fontFamily: 'Montserrat',
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      height: 16 / 12,
+      color: Color(0xffffffff),
     ),
   );
   static final ThemeData dark = ThemeData(
     brightness: Brightness.dark,
     primaryColor: const Color(0xffffffff),
-    backgroundColor: const Color(0xff1A191E),
+    backgroundColor: const Color(0xff212121),
     textTheme: darkTextTheme,
   );
 }

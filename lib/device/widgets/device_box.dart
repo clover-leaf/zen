@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/icons.dart';
-import 'package:flutter_firestore/device/device.dart';
-import 'package:flutter_firestore/device_detail_new/device_detail_new.dart';
+import 'package:flutter_firestore/device_detail/device_detail.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iot_api/iot_api.dart';
 
 class DeviceBox extends StatelessWidget {
   const DeviceBox({
     super.key,
-    required this.deviceInfo,
+    required this.device,
   });
 
-  final DeviceInfo deviceInfo;
+  final Device device;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class DeviceBox extends StatelessWidget {
       onTap: () => Navigator.push<void>(
         context,
         PageRouteBuilder(
-          pageBuilder: (c, a1, a2) => DeviceDetailNewPage(
-            deviceInfo: deviceInfo,
+          pageBuilder: (c, a1, a2) => DeviceDetailPage(
+            device: device,
           ),
           transitionsBuilder: (c, anim, a2, child) =>
               FadeTransition(opacity: anim, child: child),
@@ -49,7 +49,7 @@ class DeviceBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  deviceInfo.name,
+                  device.deviceName,
                   style: Theme.of(context).textTheme.headline1,
                 ),
                 const SizedBox(height: 8),
@@ -59,7 +59,7 @@ class DeviceBox extends StatelessWidget {
                 ),
                 // const SizedBox(height: 4),
                 Text(
-                  deviceInfo.project,
+                  'Project',
                   style: Theme.of(context).textTheme.headline2,
                 ),
               ],

@@ -6,3 +6,10 @@ class MessageEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetAllMessages extends MessageEvent {
+  const GetAllMessages();
+
+  @override
+  List<Object> get props => [];
+}

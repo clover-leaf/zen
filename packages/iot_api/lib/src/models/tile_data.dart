@@ -1,83 +1,41 @@
-import 'package:equatable/equatable.dart';
-import 'package:iot_api/src/models/enum/tile_type.dart';
-import 'package:iot_api/src/models/json_map.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first, prefer_constructors_over_static_methods, lines_longer_than_80_chars
 
-part 'generated/tile_data.g.dart';
+import 'package:iot_api/src/models/models.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 
-/// Tile data
+/// {@template iot_api}
+/// TileData model for an API providing to access data of tile.
+/// {@endtemplate}
 class TileData {
-  /// from Json
+  
+  /// Deserializes the given [JsonMap] into a [TileData]
   factory TileData.fromJson(JsonMap json) {
     final type = TileTypeX.fromString(json['type'] as String);
     switch (type) {
       case TileType.toggle:
-        return TextTileData.fromJson(json);
+        return ToggleTileData.fromJson(json);
       case TileType.text:
         return TextTileData.fromJson(json);
     }
   }
 
-  /// to Json
+  /// Converts this [TileConfig] into a [JsonMap]
   JsonMap toJson() => <String, dynamic>{};
-}
 
-@immutable
-@JsonSerializable()
-
-///
-class TextTileData extends Equatable implements TileData {
-  /// macro
-  const TextTileData({
-    this.prefix,
-    this.postfix,
-    this.jsonExtraction,
-  });
-
-  /// prefix of value
-  final String? prefix;
-
-  /// postfix of value
-  final String? postfix;
-
-  /// jsonExtraction value
-  /// more info at https://github.com/f3ath/jessie
-  final String? jsonExtraction;
-
-  /// Deserializes the given [JsonMap] into a [TextTileData].
-  static TextTileData fromJson(JsonMap json) {
-    final _json = Map<String, dynamic>.from(json)..remove('type');
-    return _$TextTileDataFromJson(_json);
+  /// The constructor that creates empty instance
+  static TileData placeholder({required TileType tileType}) {
+    switch (tileType) {
+      case TileType.toggle:
+        return ToggleTileData.placeholder();
+      case TileType.text:
+        return TextTileData.placeholder();
+    }
   }
 
-  @override
-
-  /// Converts this [TextTileData] into a [JsonMap].
-  JsonMap toJson() {
-    /// convert instance to json
-    final json = _$TextTileDataToJson(this);
-
-    /// add type info into json
-    json['type'] = TileType.text.toJsonKey();
-    return json;
+  // The method that checks whether every needed fields are filled
+  bool isFill() {
+    return false;
   }
-
-  /// return a copy of [TextTileData] with given parameters
-  TextTileData copyWith({
-    String? prefix,
-    String? postfix,
-    String? jsonExtraction,
-  }) {
-    return TextTileData(
-      prefix: prefix ?? this.prefix,
-      postfix: postfix ?? this.postfix,
-      jsonExtraction: jsonExtraction ?? this.jsonExtraction,
-    );
-  }
-
-  @override
-  List<Object?> get props => [prefix, postfix, jsonExtraction];
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_firestore/common/widgets/widgets.dart';
 import 'package:flutter_firestore/station/tabs/map_tab/map_tab.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:latlong2/latlong.dart';
 
 class MapTabPage extends StatelessWidget {
   const MapTabPage({super.key, required this.station});
@@ -27,27 +26,9 @@ class MapTabView extends StatelessWidget {
     final station = context.select((MapTabBloc bloc) => bloc.state.station);
     return Column(
       children: [
-        Flexible(
-          child: FlutterMap(
-            options: MapOptions(
-              center: LatLng(station.latitude, station.longitude),
-              zoom: 8,
-            ),
-            layers: [
-              TileLayerOptions(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: ['a', 'b', 'c'],
-              ),
-              MarkerLayerOptions(
-                markers: [
-                  Marker(
-                    point: LatLng(station.latitude, station.longitude),
-                    builder: (context) => const Icon(Icons.pin_drop),
-                  )
-                ],
-              )
-            ],
-          ),
+         MapBox(
+          latitude: station.latitude,
+          longitude: station.longitude,
         ),
       ],
     );

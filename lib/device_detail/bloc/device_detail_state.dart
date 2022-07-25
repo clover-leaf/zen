@@ -6,7 +6,7 @@ extension DeviceDetailTabX on DeviceDetailTab {
   String getName() {
     switch (this) {
       case DeviceDetailTab.infomation:
-        return 'INFOMATION';
+        return 'INFO';
       case DeviceDetailTab.indicators:
         return 'INDICATORS';
     }

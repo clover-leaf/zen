@@ -21,7 +21,6 @@ class TabButton extends StatelessWidget {
       onTap: onTapped,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 8,
           vertical: 16,
         ),
         child: Container(

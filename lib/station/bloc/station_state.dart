@@ -1,16 +1,16 @@
 part of 'station_bloc.dart';
 
-enum StationTab {devices, infomation, location}
+enum StationTab { infomation, location, devices }
 
 extension StationTabX on StationTab {
   String getName() {
     switch (this) {
+      case StationTab.infomation:
+        return 'INFO';
+      case StationTab.location:
+        return 'MAP';
       case StationTab.devices:
         return 'DEVICES';
-      case StationTab.infomation:
-        return 'INFOMATION';
-      case StationTab.location:
-        return 'LOCATION';
     }
   }
 }
@@ -18,9 +18,9 @@ extension StationTabX on StationTab {
 class StationState extends Equatable {
   const StationState({
     required this.station,
-    this.tab = StationTab.devices,
+    this.tab = StationTab.infomation,
   });
-  
+
   final StationTab tab;
   final Station station;
 
@@ -33,7 +33,7 @@ class StationState extends Equatable {
       station: station ?? this.station,
     );
   }
-  
+
   @override
   List<Object> get props => [tab, station];
 }

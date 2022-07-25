@@ -20,9 +20,6 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
   ) async {
     try {
       final totalProject = await repository.countProject();
-      if (kDebugMode) {
-        print(totalProject);
-      }
       final projects = await repository.getNProject(count: totalProject);
       emit(state.copyWith(projects: projects, status: WorkspaceStatus.success));
     } catch (e) {

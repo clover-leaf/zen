@@ -2,7 +2,7 @@
 
 
 import 'package:equatable/equatable.dart';
-import 'package:iot_api/src/models/json_map.dart';
+import 'package:iot_api/src/models/typedef/json_map.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 

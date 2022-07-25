@@ -6,3 +6,10 @@ class DashboardEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetAllProject extends DashboardEvent {
+  const GetAllProject();
+
+  @override
+  List<Object> get props => [];
+}

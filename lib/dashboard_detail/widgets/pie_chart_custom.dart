@@ -60,7 +60,7 @@ class PieChartCustom extends StatelessWidget {
         borderData: FlBorderData(
           show: false,
         ),
-        sectionsSpace: 8,
+        sectionsSpace: 2,
         centerSpaceRadius: 40,
         sections: showingSections(
           colors,

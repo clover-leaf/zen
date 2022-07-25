@@ -49,42 +49,54 @@ class ProjectView extends StatelessWidget {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                TabButton(
-                  label: ProjectTab.stations.getName(),
-                  tab: ProjectTab.stations,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<ProjectBloc>()
-                      .add(const TabChanged(ProjectTab.stations)),
-                ),
-                TabButton(
-                  label: ProjectTab.infomation.getName(),
-                  tab: ProjectTab.infomation,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<ProjectBloc>()
-                      .add(const TabChanged(ProjectTab.infomation)),
-                ),
-                TabButton(
-                  label: ProjectTab.location.getName(),
-                  tab: ProjectTab.location,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<ProjectBloc>()
-                      .add(const TabChanged(ProjectTab.location)),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                children: [
+                  TabButton(
+                    label: ProjectTab.infomation.getName(),
+                    tab: ProjectTab.infomation,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<ProjectBloc>()
+                        .add(const TabChanged(ProjectTab.infomation)),
+                  ),
+                  TabButton(
+                    label: ProjectTab.location.getName(),
+                    tab: ProjectTab.location,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<ProjectBloc>()
+                        .add(const TabChanged(ProjectTab.location)),
+                  ),
+                  TabButton(
+                    label: ProjectTab.stations.getName(),
+                    tab: ProjectTab.stations,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<ProjectBloc>()
+                        .add(const TabChanged(ProjectTab.stations)),
+                  ),
+                  TabButton(
+                    label: ProjectTab.devices.getName(),
+                    tab: ProjectTab.devices,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<ProjectBloc>()
+                        .add(const TabChanged(ProjectTab.devices)),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(
             child: LazyLoadIndexedStack(
               index: tab.index,
               children: [
-                StationsTabPage(project: project),
                 InfomationTabPage(project: project),
                 MapTabPage(project: project),
+                StationsTabPage(project: project),
+                DevicesTabPage(project: project),
               ],
             ),
           ),

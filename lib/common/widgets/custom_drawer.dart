@@ -138,6 +138,11 @@ class CustomDrawer extends StatelessWidget {
             ),
             _MenuItem(
               onTapped: () {},
+              label: 'Tasks',
+              icon: SvgIcon.task,
+            ),
+            _MenuItem(
+              onTapped: () {},
               label: 'Member access',
               icon: SvgIcon.people,
             ),

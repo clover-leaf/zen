@@ -1,16 +1,18 @@
 part of 'project_bloc.dart';
 
-enum ProjectTab {stations, infomation, location}
+enum ProjectTab {infomation, location, stations, devices, }
 
 extension ProjectTabX on ProjectTab {
   String getName() {
     switch (this) {
       case ProjectTab.stations:
         return 'STATIONS';
+      case ProjectTab.devices:
+        return 'DEVICES';
       case ProjectTab.infomation:
-        return 'INFOMATION';
+        return 'INFO';
       case ProjectTab.location:
-        return 'LOCATION';
+        return 'MAP';
     }
   }
 }
@@ -18,7 +20,7 @@ extension ProjectTabX on ProjectTab {
 class ProjectState extends Equatable {
   const ProjectState({
     required this.project,
-    this.tab = ProjectTab.stations,
+    this.tab = ProjectTab.infomation,
   });
   
   final ProjectTab tab;

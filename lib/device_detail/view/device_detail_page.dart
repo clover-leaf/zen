@@ -50,25 +50,28 @@ class DeviceDetailView extends StatelessWidget {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                TabButton(
-                  label: DeviceDetailTab.infomation.getName(),
-                  tab: DeviceDetailTab.infomation,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<DeviceDetailBloc>()
-                      .add(const TabChanged(DeviceDetailTab.infomation)),
-                ),
-                TabButton(
-                  label: DeviceDetailTab.indicators.getName(),
-                  tab: DeviceDetailTab.indicators,
-                  selectedTab: tab,
-                  onTapped: () => context
-                      .read<DeviceDetailBloc>()
-                      .add(const TabChanged(DeviceDetailTab.indicators)),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                children: [
+                  TabButton(
+                    label: DeviceDetailTab.infomation.getName(),
+                    tab: DeviceDetailTab.infomation,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<DeviceDetailBloc>()
+                        .add(const TabChanged(DeviceDetailTab.infomation)),
+                  ),
+                  TabButton(
+                    label: DeviceDetailTab.indicators.getName(),
+                    tab: DeviceDetailTab.indicators,
+                    selectedTab: tab,
+                    onTapped: () => context
+                        .read<DeviceDetailBloc>()
+                        .add(const TabChanged(DeviceDetailTab.indicators)),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(

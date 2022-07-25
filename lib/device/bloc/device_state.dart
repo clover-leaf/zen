@@ -1,6 +1,6 @@
 part of 'device_bloc.dart';
 
-enum LoadingStatus { loading, success }
+enum LoadingStatus { loading, success, failure}
 
 enum DeviceStatus { all, active, inactive }
 
@@ -81,23 +81,27 @@ class DeviceState extends Equatable {
   const DeviceState({
     this.status = LoadingStatus.loading,
     this.deviceStatus = DeviceStatus.all,
+    this.devices = const [],
   });
 
   final LoadingStatus status;
   final DeviceStatus deviceStatus;
+  final List<Device> devices;
 
   DeviceState copyWith({
     LoadingStatus? status,
     DeviceStatus? deviceStatus,
+    List<Device>? devices,
   }) {
     return DeviceState(
       status: status ?? this.status,
       deviceStatus: deviceStatus ?? this.deviceStatus,
+      devices: devices ?? this.devices,
     );
   }
 
   
 
   @override
-  List<Object> get props => [status, deviceStatus];
+  List<Object> get props => [status, deviceStatus, devices];
 }
