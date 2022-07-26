@@ -7,16 +7,24 @@ class TilesOverviewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class BrokerSubscriptionRequested extends TilesOverviewEvent {
-  const BrokerSubscriptionRequested();
+class Initialized extends TilesOverviewEvent {
+  const Initialized();
 }
 
-class MqttDeviceSubscriptionRequested extends TilesOverviewEvent {
-  const MqttDeviceSubscriptionRequested();
+class ProjectSubscriptionRequested extends TilesOverviewEvent {
+  const ProjectSubscriptionRequested();
+}
+
+class DeviceSubscriptionRequested extends TilesOverviewEvent {
+  const DeviceSubscriptionRequested();
 }
 
 class TileConfigSubscriptionRequested extends TilesOverviewEvent {
   const TileConfigSubscriptionRequested();
+}
+
+class ConnectionStatusSubscriptionRequested extends TilesOverviewEvent {
+  const ConnectionStatusSubscriptionRequested();
 }
 
 class GatewayClientInitialized extends TilesOverviewEvent {
@@ -27,18 +35,15 @@ class GatewayClientInitialized extends TilesOverviewEvent {
   });
 
   final Map<FieldId, Broker> brokerView;
-  final Map<FieldId, MqttDevice> mqttDeviceView;
+  final Map<FieldId, Device> mqttDeviceView;
   final Map<FieldId, TileConfig> tileConfigView;
 
   @override
   List<Object> get props => [brokerView, mqttDeviceView, tileConfigView];
 }
 
-class MqttSubscribed extends TilesOverviewEvent {
-  const MqttSubscribed();
-
-  @override
-  List<Object> get props => [];
+class BrokerListened extends TilesOverviewEvent {
+  const BrokerListened();
 }
 
 class ActionPublished extends TilesOverviewEvent {

@@ -9,14 +9,12 @@ part 'edit_tile_state.dart';
 class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
   EditTileBloc({
     required this.repository,
-    required Map<FieldId, Broker> brokerView,
-    required Map<FieldId, MqttDevice> mqttDeviceView,
+    required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
     required TileType tileType,
   }) : super(
           EditTileState(
-            brokerView: brokerView,
-            mqttDeviceView: mqttDeviceView,
+            deviceView: deviceView,
             initTileConfig: initTileConfig,
             tileType: tileType,
             tileData: TileData.placeholder(tileType: tileType),

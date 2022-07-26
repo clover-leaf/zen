@@ -1,0 +1,14 @@
+[
+    {
+        "id": "3b49cf6b-fd4e-4cb0-84e3-c800fa42a6e2",
+        "title": "Kitchen temperature",
+        "deviceID": "6d034377-1bac-4c75-828f-b1999f87a05f",
+        "tileType": 1,
+        "tileData": {
+            "type": 1,
+            "prefix": "",
+            "postfix": "℃",
+            "jsonVariableID": "681b7a7a-2a28-462d-ab77-564f44b35896"
+        }
+    }
+]

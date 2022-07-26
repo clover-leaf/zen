@@ -17,8 +17,7 @@ class EditTilePage extends StatelessWidget {
 
   static PageRoute route({
     required TileType tileType,
-    required Map<FieldId, Broker> brokerView,
-    required Map<FieldId, MqttDevice> mqttDeviceView,
+    required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
   }) {
     return MaterialPageRoute<void>(
@@ -26,8 +25,7 @@ class EditTilePage extends StatelessWidget {
       builder: (context) => BlocProvider(
         create: (_) => EditTileBloc(
           repository: context.read<IotRepository>(),
-          brokerView: brokerView,
-          mqttDeviceView: mqttDeviceView,
+          deviceView: deviceView,
           initTileConfig: initTileConfig,
           tileType: tileType,
         )..add(const EditTileInitialized()),
@@ -97,7 +95,7 @@ class EditTileView extends StatelessWidget {
         onPressed: state.status.isSaving
             ? null
             : () {
-                if (state.isFilled) {
+                if (state.isFilled()) {
                   context.read<EditTileBloc>().add(const EditTileSubmitted());
                 } else {
                   ScaffoldMessenger.of(context)

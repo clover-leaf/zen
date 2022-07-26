@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_constructors_over_static_methods
-
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -12,10 +10,9 @@ part 'generated/tile_config.g.dart';
 @JsonSerializable()
 
 /// {@template iot_api}
-/// TileConfig model for an API providing to access config of tiles.
+/// TileConfig model for an API providing to access tile config.
 /// {@endtemplate}
 class TileConfig extends Equatable {
-
   /// {@macro TileConfig}
   TileConfig({
     String? id,
@@ -29,23 +26,8 @@ class TileConfig extends Equatable {
         ),
         id = id ?? const Uuid().v4();
 
-  /// The id of tile
-  final String id;
-
-  /// The title of tile
-  final String title;
-
-  /// The id of [MqttDevice] that tile monitored
-  final String deviceID;
-
-  /// The type of tile
-  final TileType tileType;
-
-  /// The data of tile
-  final TileData tileData;
-
-  /// The constructor that creates empty instance
-  static TileConfig placeholder({required TileType tileType}) {
+  /// The factory that creates empty instance
+  factory TileConfig.placeholder({required TileType tileType}) {
     return TileConfig(
       title: '',
       deviceID: '',
@@ -54,6 +36,21 @@ class TileConfig extends Equatable {
     );
   }
 
+  /// The id of tile
+  final String id;
+
+  /// The title of tile
+  final String title;
+
+  /// The id of [Device] that tile monitored
+  final String deviceID;
+
+  /// The type of tile
+  final TileType tileType;
+
+  /// The data of tile
+  final TileData tileData;
+
   /// Deserializes the given [JsonMap] into a [TileConfig]
   static TileConfig fromJson(JsonMap json) => _$TileConfigFromJson(json);
 
@@ -61,15 +58,15 @@ class TileConfig extends Equatable {
   JsonMap toJson() => _$TileConfigToJson(this);
 
   /// Returns a copy of [TileConfig] with given parameters
-  /// 
-  /// {@macro TileConfig}
   TileConfig copyWith({
+    String? id,
     String? title,
     String? deviceID,
     TileType? tileType,
     TileData? tileData,
   }) {
     return TileConfig(
+      id: id ?? this.id,
       title: title ?? this.title,
       deviceID: deviceID ?? this.deviceID,
       tileType: tileType ?? this.tileType,

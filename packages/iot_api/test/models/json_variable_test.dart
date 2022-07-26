@@ -2,16 +2,18 @@ import 'package:iot_api/iot_api.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Project', () {
-    Project createSubject({
+  group('JsonVariable', () {
+    JsonVariable createSubject({
       String id = 'id',
+      String deviceID = 'deviceID',
       String title = 'title',
-      String brokerID = 'brokerID',
+      String jsonExtraction = 'jsonExtraction',
     }) {
-      return Project(
+      return JsonVariable(
         id: id,
+        deviceID: deviceID,
         title: title,
-        brokerID: brokerID,
+        jsonExtraction: jsonExtraction,
       );
     }
     group('Constructor', () {
@@ -24,27 +26,30 @@ void main() {
       test('props are correct', () {
         expect(createSubject().props, <dynamic>[
           'id',
+          'deviceID',
           'title',
-          'brokerID',
+          'jsonExtraction',
         ]);
       });
     });
     group('copyWith', () {
-      test('returns the same object if none arguments are provided', () {
+      test('returns same object if none arguments are provided', () {
         expect(createSubject().copyWith(), equals(createSubject()));
       });
-      test('returns a new object with params provided', () {
+      test('returns new object with params provided', () {
         expect(
           createSubject().copyWith(
             id: 'newID',
+            deviceID: 'newdeviceID',
             title: 'newTitle',
-            brokerID: 'newBrokerID',
+            jsonExtraction: 'newjsonExtraction',
           ),
           equals(
             createSubject(
               id: 'newID',
+              deviceID: 'newdeviceID',
               title: 'newTitle',
-            brokerID: 'newBrokerID',
+              jsonExtraction: 'newjsonExtraction',
             ),
           ),
         );
@@ -53,10 +58,11 @@ void main() {
     group('fromJson', () {
       test('works correctly', () {
         expect(
-          Project.fromJson(<String, dynamic>{
+          JsonVariable.fromJson(<String, dynamic>{
             'id': 'id',
+            'deviceID': 'deviceID',
             'title': 'title',
-            'brokerID': 'brokerID',
+            'jsonExtraction': 'jsonExtraction',
           }),
           equals(
             createSubject(),
@@ -70,8 +76,9 @@ void main() {
           createSubject().toJson(),
           equals(<String, dynamic>{
             'id': 'id',
+            'deviceID': 'deviceID',
             'title': 'title',
-            'brokerID': 'brokerID',
+            'jsonExtraction': 'jsonExtraction',
           }),
         );
       });

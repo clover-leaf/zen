@@ -20,21 +20,21 @@ extension TileTypeX on TileType {
   }
 
   /// convert [TileType] to [String] to convert into JSON
-  String toJsonKey() {
+  int toJsonKey() {
     switch (this) {
       case TileType.toggle:
-        return 'toggle';
+        return 0;
       case TileType.text:
-        return 'text';
+        return 1;
     }
   }
 
   /// convert [String] to [TileType]
-  static TileType fromString(String title) {
-    switch (title) {
-      case 'toggle':
+  static TileType fromJsonKey(int key) {
+    switch (key) {
+      case 0:
         return TileType.toggle;
-      case 'text':
+      case 1:
         return TileType.text;
       default:
         throw Exception('cant find matched block type');

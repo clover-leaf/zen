@@ -10,14 +10,12 @@ class ToggleTileWidget extends StatefulWidget {
     super.key,
     required this.tileConfig,
     required this.value,
-    required this.brokerView,
-    required this.mqttDeviceView,
+    required this.deviceView,
   });
-
+  
   final TileConfig tileConfig;
   final String? value;
-  final Map<FieldId, Broker> brokerView;
-  final Map<FieldId, MqttDevice> mqttDeviceView;
+  final Map<FieldId, Device> deviceView;
 
   @override
   State<ToggleTileWidget> createState() => _ToggleTileWidgetState();
@@ -51,8 +49,7 @@ class _ToggleTileWidgetState extends State<ToggleTileWidget> {
                   Navigator.of(context).push<void>(
                     EditTilePage.route(
                       tileType: TileType.toggle,
-                      brokerView: widget.brokerView,
-                      mqttDeviceView: widget.mqttDeviceView,
+                      deviceView: widget.deviceView,
                       initTileConfig: widget.tileConfig,
                     ),
                   );

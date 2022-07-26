@@ -2,17 +2,16 @@ import 'package:iot_api/iot_api.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Tile config', () {
+  group('TileConfig', () {
     TileConfig createSubject({
       String id = 'id',
-      String title = '',
-      String deviceID = '',
+      String title = 'title',
+      String deviceID = 'deviceID',
       TileType tileType = TileType.text,
       TileData tileData = const TextTileData(
         prefix: '',
         postfix: '',
-        jsonEnable: false,
-        jsonExtraction: '',
+        jsonVariableID: 'jsonVariableID',
       ),
     }) {
       return TileConfig(
@@ -24,8 +23,8 @@ void main() {
       );
     }
 
-    group('constructor', () {
-      test('work correctly', () {
+    group('Constructor', () {
+      test('works correctly', () {
         expect(createSubject, returnsNormally);
       });
       test('supports value equality', () {
@@ -34,47 +33,63 @@ void main() {
       test('props are correct', () {
         expect(createSubject().props, <dynamic>[
           'id',
-          '',
-          '',
+          'title',
+          'deviceID',
           TileType.text,
           const TextTileData(
             prefix: '',
             postfix: '',
-            jsonEnable: false,
-            jsonExtraction: '',
+            jsonVariableID: 'jsonVariableID',
           ),
         ]);
       });
     });
-    group('Placeholder tile config', () {
-      test('create placeholder correctly', () {
-        final empty = TileConfig.placeholder(tileType: TileType.text);
+    group('copyWith', () {
+      test('returns same object if none arguments are provided', () {
+        expect(createSubject().copyWith(), equals(createSubject()));
+      });
+      test('returns new object with params provided', () {
         expect(
-          empty,
-          TileConfig(
-            id: empty.id,
-            title: '',
-            deviceID: '',
-            tileType: TileType.text,
-            tileData: TileData.placeholder(tileType: TileType.text),
+          createSubject().copyWith(
+            id: 'newID',
+            title: 'newtitle',
+            deviceID: 'newdeviceID',
+            tileType: TileType.toggle,
+            tileData: const TextTileData(
+              prefix: 'prefix',
+              postfix: 'postfix',
+              jsonVariableID: 'jsonVariableID',
+            ),
+          ),
+          equals(
+            createSubject(
+              id: 'newID',
+              title: 'newtitle',
+              deviceID: 'newdeviceID',
+              tileType: TileType.toggle,
+              tileData: const TextTileData(
+                prefix: 'prefix',
+                postfix: 'postfix',
+                jsonVariableID: 'jsonVariableID',
+              ),
+            ),
           ),
         );
       });
     });
-    group('from Json', () {
+    group('fromJson', () {
       test('works correctly', () {
         expect(
           TileConfig.fromJson(<String, dynamic>{
             'id': 'id',
-            'title': '',
-            'deviceID': '',
-            'tileType': 'text',
+            'title': 'title',
+            'deviceID': 'deviceID',
+            'tileType': 1,
             'tileData': {
-              'type': 'text',
               'prefix': '',
               'postfix': '',
-              'jsonEnable': false,
-              'jsonExtraction': '',
+              'jsonVariableID': 'jsonVariableID',
+              'type': 1,
             },
           }),
           equals(
@@ -83,21 +98,20 @@ void main() {
         );
       });
     });
-    group('to Json', () {
+    group('toJson', () {
       test('works correctly', () {
         expect(
           createSubject().toJson(),
           equals(<String, dynamic>{
             'id': 'id',
-            'title': '',
-            'deviceID': '',
-            'tileType': 'text',
+            'title': 'title',
+            'deviceID': 'deviceID',
+            'tileType': 1,
             'tileData': {
-              'type': 'text',
               'prefix': '',
               'postfix': '',
-              'jsonEnable': false,
-              'jsonExtraction': '',
+              'jsonVariableID': 'jsonVariableID',
+              'type': 1,
             },
           }),
         );

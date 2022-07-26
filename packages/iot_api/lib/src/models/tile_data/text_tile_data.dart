@@ -1,6 +1,4 @@
 
-// ignore_for_file: prefer_constructors_over_static_methods
-
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -12,16 +10,24 @@ part '../generated/tile_data/text_tile_data.g.dart';
 @JsonSerializable()
 
 /// {@template iot_api}
-/// TextTileData model for an API providing to access data of text tile.
+/// TextTileData model for an API providing to access text tile data.
 /// {@endtemplate}
 class TextTileData extends Equatable implements TileData {
   /// {@macro TextTileData}
   const TextTileData({
     required this.prefix,
     required this.postfix,
-    required this.jsonEnable,
-    required this.jsonExtraction,
+    required this.jsonVariableID,
   });
+
+  /// The constructor that creates empty instance
+  factory TextTileData.placeholder() {
+    return const TextTileData(
+      prefix: '',
+      postfix: '',
+      jsonVariableID: '',
+    );
+  }
 
   /// The prefix of value
   final String prefix;
@@ -29,28 +35,16 @@ class TextTileData extends Equatable implements TileData {
   /// The postfix of value
   final String postfix;
 
-  /// The boolean that determines whether using JSON extraction
-  final bool jsonEnable;
-
-  /// The JSON extraction value
-  /// 
-  /// more info at https://github.com/f3ath/jessie
-  final String jsonExtraction;
-
-  /// The constructor that creates empty instance
-  static TextTileData placeholder() {
-    return const TextTileData(
-      prefix: '',
-      postfix: '',
-      jsonEnable: false,
-      jsonExtraction: '',
-    );
-  }
+  /// The ID [JsonVariable] that tile monitoring
+  final FieldId jsonVariableID;
 
   @override
-  // alway returns true because every field are optional
-  bool isFill() {
-    return true;
+  FieldId getFieldId() => jsonVariableID;
+
+  @override
+  bool isFill(Device device) {
+    return !device.jsonEnable ||
+        (device.jsonEnable && jsonVariableID != '');
   }
 
   /// Deserializes the given [JsonMap] into a [TextTileData].
@@ -60,6 +54,7 @@ class TextTileData extends Equatable implements TileData {
   }
 
   @override
+
   /// Converts this [TextTileData] into a [JsonMap].
   JsonMap toJson() {
     /// convert instance to json
@@ -71,22 +66,18 @@ class TextTileData extends Equatable implements TileData {
   }
 
   /// Returns a copy of [TextTileData] with given parameters
-  /// 
-  /// {@macro TextTileData}
   TextTileData copyWith({
     String? prefix,
     String? postfix,
-    bool? jsonEnable,
-    String? jsonExtraction,
+    String? jsonVariableID,
   }) {
     return TextTileData(
       prefix: prefix ?? this.prefix,
       postfix: postfix ?? this.postfix,
-      jsonEnable: jsonEnable ?? this.jsonEnable,
-      jsonExtraction: jsonExtraction ?? this.jsonExtraction,
+      jsonVariableID: jsonVariableID ?? this.jsonVariableID,
     );
   }
 
   @override
-  List<Object?> get props => [prefix, postfix, jsonEnable, jsonExtraction];
+  List<Object?> get props => [prefix, postfix, jsonVariableID];
 }

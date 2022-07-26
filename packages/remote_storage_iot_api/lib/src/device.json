@@ -1,0 +1,23 @@
+[
+    {
+        "id": "6d034377-1bac-4c75-828f-b1999f87a05f",
+        "projectID": "99b2be2f-b082-483f-92b2-56585e6935b0",
+        "title": "DHT-22 sensor",
+        "topic": "esp",
+        "jsonEnable": true,
+        "jsonVariables": [
+            {
+                "id": "681b7a7a-2a28-462d-ab77-564f44b35896",
+                "deviceID": "6d034377-1bac-4c75-828f-b1999f87a05f",
+                "title": "temperature",
+                "jsonExtraction": "$['temp']"
+            },
+            {
+                "id": "30364bf7-0be3-4d0d-add5-43c323b1fcdf",
+                "deviceID": "6d034377-1bac-4c75-828f-b1999f87a05f",
+                "title": "himidity",
+                "jsonExtraction": "$['humid']"
+            }
+        ]
+    }
+]

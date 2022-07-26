@@ -7,72 +7,31 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
-  /// gets stream of brokers 
-  Stream<List<Broker>> getBrokers();
+  /// Gets the [Broker]
+  Broker getBroker();
 
-  /// gets stream of Mqtt device 
-  Stream<List<MqttDevice>> getMqttDevices();
+  /// Get latest [List] of [Project]
+  List<Project> refreshProject();
 
-  /// gets stream of tile config 
+  /// Get latest [List] of [Device]
+  List<Device> refreshDevice();
+  
+  /// Get latest [List] of [TileConfig]
+  List<TileConfig> refreshTileConfig();
+
+  /// Gets the [Stream] of [List] of [Project]
+  Stream<List<Project>> getProjects();
+
+  /// Gets the [Stream] of [List] of [Device]
+  Stream<List<Device>> getDevices();
+
+  /// Gets the [Stream] of [List] of [TileConfig]
   Stream<List<TileConfig>> getTileConfigs();
 
-  /// if tile config exist in db, updates it
-  /// else save it
+  /// If this [TileConfig] existed in db, updates it,
+  /// else saves it
   Future<void> saveTileConfig(TileConfig tileConfig);
-
-
-  /////////////////// [Project]
-
-  /// Get total number of [Project],
-  ///
-  Future<int> countProject();
-
-  /// Get all [Project] in schema with given params,
-  ///
-  Future<List<Project>> getNProject({int startIndex = 0, int count = 10});
-
-  /// Get all [Station] of a [Project] that given id
-  ///
-  Future<List<Station>> getAllStationInProject({required int projectId});
-
-  /// Get all [Device] of a [Project] that given id
-  ///
-  Future<List<Device>> getAllDeviceInProject({required int projectId});
-
-  /// Get all [Device] of a [Station] that given id
-  ///
-  Future<List<Device>> getAllDeviceInStation({required int stationId});
-
-  /////////////////// [Device]
-
-  /// Get total number of [Device],
-  ///
-  Future<int> countDevice();
-
-  /// Get all [Device] in schema with given params,
-  ///
-  Future<List<Device>> getNDevice({int startIndex = 0, int count = 10});
-
-  // /// Delete a [Device] with given id
-  // ///
-  // /// If no [Device] with given id exists, a [DeviceNotFoundException]
-  // /// is throw.
-  // Future<bool> deleteDevice(String id);
-
-  // /// Save a [Device]
-  // ///
-  // /// If a [Device] with the same id already exists, it will be replaced.
-  // Future<bool> saveDevice(Device device);
-
-  /// Get stream list of data
-  ///
-  /// each return list of live datas
-  Stream<List<LiveData>> fetchLiveData();
-
 }
 
-/// Error throw when a [Device] with given id is not found.
-class DeviceNotFoundException implements Exception {}
-
-/// Error throw when request fail
+/// Error throw when request failure
 class RequestFailureException implements Exception {}

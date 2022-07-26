@@ -2,13 +2,18 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:iot_api/iot_api.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:iot_gateway/src/models/models.dart';
+import 'package:mqtt5_client/mqtt5_client.dart';
+import 'package:mqtt5_client/mqtt5_server_client.dart';
+import 'package:rxdart/subjects.dart';
+import 'package:typed_data/typed_buffers.dart';
 import 'package:uuid/uuid.dart';
 
-///
+/// {@template gateway_client}
+/// The gateway client model that handles MQTT related requests.
+/// {@endtemplate}
 class GatewayClient {
-  ///
+  /// {@macro gateway_client}
   GatewayClient({
     required this.broker,
     String? clientID,
@@ -18,7 +23,7 @@ class GatewayClient {
         ),
         _clientID = clientID ?? const Uuid().v4() {
     _client = MqttServerClient.withPort(broker.url, _clientID, broker.port)
-      ..setProtocolV311()
+      ..clientIdentifier = clientID ?? ''
       ..logging(on: false)
       ..keepAlivePeriod = 30
       ..onConnected = onConnected
@@ -26,38 +31,51 @@ class GatewayClient {
       ..onSubscribed = onSubscribe;
 
     final connMess = MqttConnectMessage()
-        .withClientIdentifier(_clientID)
+        .withWillPayload(Uint8Buffer()..addAll(utf8.encode('0')))
 
         /// no need to set will message
         /// because we dont need save status of app
         /// only need in device
         /// btw, in adafruit, all msg saved in db
         .withWillTopic('topic/active')
-        .withWillMessage('Oops!')
         .withWillRetain()
-        .withWillQos(MqttQos.atMostOnce);
+        .withWillQos(MqttQos.atLeastOnce);
     _client.connectionMessage = connMess;
   }
 
   /// The broker
   final Broker broker;
 
-  /// client ID
+  /// The id of client
   final String _clientID;
 
-  /// mqtt client instance
+  /// The Mqtt client instance
   late MqttServerClient _client;
 
+  /// The controller of [Stream] of [ConnectionStatus]
+  final _connectionStatusStreamController =
+      BehaviorSubject<ConnectionStatus>.seeded(ConnectionStatus.disconnected);
 
-  /// logins into adafruit-IO
-  Future<void> login() async {
+  /// Connects to the broker
+  Future<void> connect() async {
+    _connectionStatusStreamController.add(ConnectionStatus.connecting);
     await _client.connect(
       broker.username,
       broker.password,
     );
   }
 
-  /// subscribes to given topic
+  /// Disconnects to broker
+  void disconnect() {
+    _connectionStatusStreamController.add(ConnectionStatus.disconnecting);
+    _client.disconnect();
+  }
+
+  /// Gets the [Stream] of [ConnectionStatus]
+  Stream<ConnectionStatus> getConnectionStatus() =>
+      _connectionStatusStreamController.asBroadcastStream();
+
+  /// Subscribes to given topic
   void subscribe(String topic) {
     _client.subscribe(topic, MqttQos.atMostOnce);
     // because adafruit not have retain msg system
@@ -67,38 +85,43 @@ class GatewayClient {
     }
   }
 
-  /// publishes message to given top
+  /// Publishes message to given topic
   void published(String payload, String topic, {bool retain = true}) {
-    final builder = MqttClientPayloadBuilder()..addString(payload);
+    final encoded = Uint8Buffer()..addAll(utf8.encode(payload));
     _client.publishMessage(
       topic,
       MqttQos.atMostOnce,
-      builder.payload!,
+      encoded,
       retain: retain,
     );
   }
 
-  /// get a stream of published messages of given topics
+  /// Get a stream of published messages of given topics
   Stream<List<String>> getPublishMessages() {
     return _client.published!.map((MqttPublishMessage message) {
       final topic = message.variableHeader!.topicName;
-      final payload = utf8.decode(message.payload.message);
-      return [broker.id, topic, payload];
+      final payload = utf8.decode(message.payload.message!.toList());
+      return [topic, payload];
     });
   }
 
-  ///
+  /// Connection callback
   void onConnected() {
     log('::MQTT_CLIENT ${broker.title}:: Ket noi thanh cong...');
+    _connectionStatusStreamController.add(ConnectionStatus.connected);
   }
 
-  ///
-  void onSubscribe(String whatever) {
-    log('::MQTT_CLIENT ${broker.title}:: Subscribe thanh cong... $whatever');
+  /// Subscribe callback
+  void onSubscribe(MqttSubscription whatever) {
+    log(
+      '::MQTT_CLIENT ${broker.title}::'
+      ' Subscribe thanh cong... ${whatever.topic}',
+    );
   }
 
-  ///
+  /// Disconnect callback
   void onDisconnect() {
     log('::MQTT_CLIENT ${broker.title}:: Ngat ket noi...');
+    _connectionStatusStreamController.add(ConnectionStatus.disconnected);
   }
 }

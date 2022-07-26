@@ -1,7 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
-
-import 'package:iot_api/src/models/typedef/json_map.dart';
+import 'package:equatable/equatable.dart';
+import 'package:iot_api/src/models/typedef/typedef.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
@@ -11,14 +9,16 @@ part 'generated/broker.g.dart';
 @immutable
 @JsonSerializable()
 
-///
-class Broker {
-  ///
+/// {@template iot_api}
+/// Project broker for an API providing to access broker.
+/// {@endtemplate}
+class Broker extends Equatable {
+  /// {macro Broker}
   Broker({
+    FieldId? id,
     required this.title,
     required this.url,
     required this.port,
-    String? id,
     this.username,
     this.password,
   })  : assert(
@@ -28,7 +28,7 @@ class Broker {
         id = id ?? const Uuid().v4();
 
   /// The broker ID
-  final String id;
+  final FieldId id;
 
   /// The title of broker
   final String title;
@@ -51,8 +51,9 @@ class Broker {
   /// Converts this [Broker] into a [JsonMap].
   JsonMap toJson() => _$BrokerToJson(this);
 
+  /// Returns a copy of [Broker] with given parameters
   Broker copyWith({
-    String? id,
+    FieldId? id,
     String? title,
     String? url,
     int? port,
@@ -70,30 +71,5 @@ class Broker {
   }
 
   @override
-  String toString() {
-    return 'Broker(id: $id, title: $title, url: $url,'
-        ' port: $port, username: $username, password: $password)';
-  }
-
-  @override
-  bool operator ==(covariant Broker other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.title == title &&
-        other.url == url &&
-        other.port == port &&
-        other.username == username &&
-        other.password == password;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        title.hashCode ^
-        url.hashCode ^
-        port.hashCode ^
-        username.hashCode ^
-        password.hashCode;
-  }
+  List<Object?> get props => [id, title, url, port, username, password];
 }

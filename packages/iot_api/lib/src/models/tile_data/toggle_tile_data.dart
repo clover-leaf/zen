@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_constructors_over_static_methods
-
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,7 +9,7 @@ part '../generated/tile_data/toggle_tile_data.g.dart';
 @JsonSerializable()
 
 /// {@template iot_api}
-/// ToggleTileField model for an API providing to access data of toggle tile.
+/// ToggleTileField model for an API providing to access toggle tile data.
 /// {@endtemplate}
 class ToggleTileData extends Equatable implements TileData {
   /// {@macro TextTileData}
@@ -20,9 +18,19 @@ class ToggleTileData extends Equatable implements TileData {
     required this.onValue,
     required this.offLabel,
     required this.offValue,
-    required this.jsonEnable,
-    required this.jsonExtraction,
+    required this.jsonVariableID,
   });
+
+  /// The constructor that creates empty instance
+  factory ToggleTileData.placeholder() {
+    return const ToggleTileData(
+      onLabel: 'ON',
+      onValue: '1',
+      offLabel: 'OFF',
+      offValue: '0',
+      jsonVariableID: '',
+    );
+  }
 
   /// The label of tile when button on
   final String onLabel;
@@ -36,30 +44,19 @@ class ToggleTileData extends Equatable implements TileData {
   /// The value of tile when button off
   final String offValue;
 
-  /// The boolean that determines whether using JSON extraction
-  final bool jsonEnable;
+  /// The ID [JsonVariable] that tile monitoring
+  final FieldId jsonVariableID;
+  
+  @override
+  FieldId getFieldId() => jsonVariableID;
 
-  /// The JSON extraction value
-  /// 
-  /// more info at https://github.com/f3ath/jessie
-  final String jsonExtraction;
-
-  /// The constructor that creates empty instance
-  static ToggleTileData placeholder() {
-    return const ToggleTileData(
-      onLabel: 'ON',
-      onValue: '1',
-      offLabel: 'OFF',
-      offValue: '0',
-      jsonEnable: false,
-      jsonExtraction: '',
-    );
-  }
 
   @override
-  bool isFill() {
-  // return whether onValue and offValue is described
-    return onValue != '' && offValue != '';
+  bool isFill(Device device) {
+    final valueCondition = onValue != '' && offValue != '';
+    final jsonCondition = !device.jsonEnable ||
+        (device.jsonEnable && jsonVariableID != '');
+    return valueCondition && jsonCondition;
   }
 
   /// Deserializes the given [JsonMap] into a [ToggleTileData].
@@ -69,6 +66,7 @@ class ToggleTileData extends Equatable implements TileData {
   }
 
   @override
+
   /// Converts this [ToggleTileData] into a [JsonMap].
   JsonMap toJson() {
     /// convert instance to json
@@ -80,27 +78,24 @@ class ToggleTileData extends Equatable implements TileData {
   }
 
   /// Return a copy of [ToggleTileData] with given parameters
-  /// 
-  /// {@macro ToggleTileData}
   ToggleTileData copyWith({
     String? onLabel,
     String? onValue,
     String? offLabel,
     String? offValue,
     bool? jsonEnable,
-    String? jsonExtraction,
+    String? jsonVariableID,
   }) {
     return ToggleTileData(
       onLabel: onLabel ?? this.onLabel,
       onValue: onValue ?? this.onValue,
       offLabel: offLabel ?? this.offLabel,
       offValue: offValue ?? this.offValue,
-      jsonEnable: jsonEnable ?? this.jsonEnable,
-      jsonExtraction: jsonExtraction ?? this.jsonExtraction,
+      jsonVariableID: jsonVariableID ?? this.jsonVariableID,
     );
   }
 
   @override
   List<Object?> get props =>
-      [onLabel, onValue, offLabel, offValue, jsonEnable, jsonExtraction];
+      [onLabel, onValue, offLabel, offValue, jsonVariableID];
 }

@@ -2,76 +2,71 @@ import 'package:iot_api/iot_api.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Tile data', () {
-    TileData createSubject({
-      required JsonMap json,
-    }) {
-      return TileData.fromJson(json);
-    }
-
-    group('Placeholder tile data', () {
-      test('create placeholder with given TileType', () {
+  group('TileData', () {
+    group('placeholder', () {
+      test('Creates TextTileData.placeholder with TileType.text', () {
         expect(
           TileData.placeholder(tileType: TileType.text),
-          const TextTileData(
-            prefix: '',
-            postfix: '',
-            jsonEnable: false,
-            jsonExtraction: '',
+          equals(
+            TextTileData.placeholder(),
+          ),
+        );
+      });
+      test('creates placeholder with TileType.toggle', () {
+        expect(
+          TileData.placeholder(tileType: TileType.toggle),
+          equals(
+            ToggleTileData.placeholder(),
           ),
         );
       });
     });
-    group('from Json', () {
-      test('works correctly with TextTileData', () {
-        final json = <String, dynamic>{
-          'type': 'text',
-          'prefix': 'prefix',
-          'postfix': 'postfix',
-          'jsonEnable': false,
-          'jsonExtraction': 'jsonExtraction',
-        };
-        expect(createSubject(json: json), TextTileData.fromJson(json));
-      });
+    group('fromJson', () {
       test('works correctly with ToggleTileData', () {
         final json = <String, dynamic>{
-          'type': 'toggle',
+          'type': 0,
           'onLabel': 'onLabel',
           'onValue': 'onValue',
           'offLabel': 'offLabel',
           'offValue': 'offValue',
-          'jsonEnable': false,
-          'jsonExtraction': 'jsonExtraction',
+          'jsonVariableID': 'jsonVariableID',
         };
-        expect(createSubject(json: json), ToggleTileData.fromJson(json));
+        expect(TileData.fromJson(json), ToggleTileData.fromJson(json));
       });
-    });
-    group('to Json', () {
       test('works correctly with TextTileData', () {
         final json = <String, dynamic>{
-          'type': 'text',
+          'type': 1,
           'prefix': 'prefix',
           'postfix': 'postfix',
-          'jsonEnable': false,
-          'jsonExtraction': 'jsonExtraction',
+          'jsonVariableID': 'jsonVariableID',
+        };
+        expect(TileData.fromJson(json), TextTileData.fromJson(json));
+      });
+    });
+    group('toJson', () {
+      test('works correctly with ToggleTileData', () {
+        final json = <String, dynamic>{
+          'type': 0,
+          'onLabel': 'onLabel',
+          'onValue': 'onValue',
+          'offLabel': 'offLabel',
+          'offValue': 'offValue',
+          'jsonVariableID': 'jsonVariableID',
         };
         expect(
-          createSubject(json: json).toJson(),
+          TileData.fromJson(json).toJson(),
           equals(json),
         );
       });
-      test('works correctly with ToggleTileData', () {
+      test('works correctly with TextTileData', () {
         final json = <String, dynamic>{
-          'type': 'toggle',
-          'onLabel': 'onLabel',
-          'onValue': 'onValue',
-          'offLabel': 'offLabel',
-          'offValue': 'offValue',
-          'jsonEnable': false,
-          'jsonExtraction': 'jsonExtraction',
+          'type': 1,
+          'prefix': 'prefix',
+          'postfix': 'postfix',
+          'jsonVariableID': 'jsonVariableID',
         };
         expect(
-          createSubject(json: json).toJson(),
+          TileData.fromJson(json).toJson(),
           equals(json),
         );
       });

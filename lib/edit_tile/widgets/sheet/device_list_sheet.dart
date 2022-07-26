@@ -8,7 +8,7 @@ class DeviceListSheet extends StatelessWidget {
     super.key,
     required this.paddingTop,
     required this.brokerView,
-    required this.mqttDeviceView,
+    required this.deviceView,
     required this.onTapped,
   });
 
@@ -18,9 +18,9 @@ class DeviceListSheet extends StatelessWidget {
   final Map<FieldId, Broker> brokerView;
   late final List<Broker> brokers = brokerView.values.toList();
 
-  /// <mqttDeviceId, MqttDevice>
-  final Map<FieldId, MqttDevice> mqttDeviceView;
-  late final List<MqttDevice> mqttDevices = mqttDeviceView.values.toList();
+  /// <deviceId, Device>
+  final Map<FieldId, Device> deviceView;
+  late final List<Device> devices = deviceView.values.toList();
 
   /// update deviceId function
   final Function(String) onTapped;
@@ -41,7 +41,7 @@ class DeviceListSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _Headline(),
-          if (mqttDevices.isEmpty)
+          if (devices.isEmpty)
             const Center(
               child: Text(
                 'There are no devices in this project',
@@ -49,7 +49,7 @@ class DeviceListSheet extends StatelessWidget {
             )
           else
             _DeviceList(
-              mqttDevices: mqttDevices,
+              devices: devices,
               brokerView: brokerView,
               onTapped: onTapped,
             )
@@ -94,12 +94,12 @@ class _Headline extends StatelessWidget {
 
 class _DeviceList extends StatelessWidget {
   const _DeviceList({
-    required this.mqttDevices,
+    required this.devices,
     required this.brokerView,
     required this.onTapped,
   });
 
-  final List<MqttDevice> mqttDevices;
+  final List<Device> devices;
   final Map<FieldId, Broker> brokerView;
   final Function(String) onTapped;
 
@@ -122,26 +122,22 @@ class _DeviceList extends StatelessWidget {
           height: 48,
         ),
         itemBuilder: (context, index) {
-          final mqttDevice = mqttDevices[index];
-          final broker = brokerView[mqttDevice.brokerID];
-          if (broker == null) {
-            return const SizedBox();
-          }
+          final device = devices[index];
           return GestureDetector(
             onTap: () {
-              onTapped(mqttDevice.id);
+              onTapped(device.id);
               Navigator.pop(context);
             },
             behavior: HitTestBehavior.opaque,
             child: DeviceLine(
-              title: mqttDevice.title,
+              title: device.title,
               titleStyle: titleStyle,
-              subtitle: '${broker.url}:${broker.port}/${mqttDevice.topic}',
+              subtitle: device.topic,
               subtitleStyle: subtitleStyle,
             ),
           );
         },
-        itemCount: mqttDevices.length,
+        itemCount: devices.length,
       ),
     );
   }

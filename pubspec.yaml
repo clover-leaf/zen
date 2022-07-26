@@ -23,13 +23,13 @@ dependencies:
   intl: ^0.17.0
   iot_api:
     path: packages/iot_api
+  iot_gateway:
+    path: packages/iot_gateway
   iot_repository:
     path: packages/iot_repository
   latlong2: ^0.8.1
   remote_storage_iot_api:
     path: packages/remote_storage_iot_api
-  iot_gateway:
-    path: packages/iot_gateway
   json_annotation: ^4.6.0
   json_path: ^0.4.1
   url_launcher: ^6.1.5

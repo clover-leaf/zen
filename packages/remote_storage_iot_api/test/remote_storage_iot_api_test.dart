@@ -1,160 +1,146 @@
-// ignore_for_file: prefer_const_constructors
-import 'dart:convert';
+// import 'dart:io';
 
-import 'package:http/http.dart' as http;
-import 'package:iot_api/iot_api.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:remote_storage_iot_api/remote_storage_iot_api.dart';
-import 'package:test/test.dart';
+// import 'package:iot_api/iot_api.dart';
+// import 'package:remote_storage_iot_api/remote_storage_iot_api.dart';
+// import 'package:test/test.dart';
 
-class MockClient extends Mock implements http.Client {}
+// void main() {
+//   group('RemoteStorageIotApi', () {
+//     final broker = Broker(
+//       id: '63c59d69-0388-45f6-b0a3-a525e0afce38',
+//       title: 'mosquitto',
+//       url: '192.168.1.7',
+//       port: 8883,
+//       username: 'vv',
+//       password: '1006',
+//     );
 
-void main() {
-  group('RemoteStorageIotApi', () {
-    // late MockClient client;
-    late http.Client client;
+//     final projects = [
+//       Project(
+//         id: '99b2be2f-b082-483f-92b2-56585e6935b0',
+//         title: 'My home',
+//         brokerID: '63c59d69-0388-45f6-b0a3-a525e0afce38',
+//       ),
+//     ];
 
-    final device = Device(
-      id: 4,
-      deviceName: 'Air sensor XII',
-      parentId: 1,
-      status: Status.running,
-      deviceType: DeviceType.gadget,
-      serialNumber: '1asda',
-      createAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      createBy: 1,
-      startDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      endDate: DateTime.parse('2022-06-21T21:05:06.000Z'),
-      deleteAt: DateTime.parse('2022-06-22T21:05:06.000Z'),
-      deleteBy: 1,
-      updateAt: DateTime.parse('2022-06-13T21:05:06.000Z'),
-      updateBy: 1,
-      description: 'Air sensor XII description',
-    );
-    final station = Station(
-      id: 4,
-      stationName: 'Silo A',
-      phoneNumber: 'phoneNumber',
-      balance: 'balance',
-      expiredDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      qualityScore: 100,
-      city: 'city',
-      district: 'district',
-      ward: 'ward',
-      longitude: 100,
-      latitude: 100,
-      addressDetail: 'addressDetail',
-      createAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      createBy: 0,
-      startDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      endDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      deleteAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      deleteBy: 1,
-      updateAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      updateBy: 1,
-      description: 'Silo A description',
-    );
-    final project = Project(
-      id: 4,
-      projectName: 'name',
-      salePersonId: 1,
-      customerId: 1,
-      city: 'city',
-      district: 'district',
-      ward: 'ward',
-      longitude: 100,
-      latitude: 100,
-      addressDetail: 'addressDetail',
-      createAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      createBy: 0,
-      fileAttached: 'fileAttached',
-      startDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      endDate: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      deleteAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      deleteBy: 1,
-      updateAt: DateTime.parse('2022-06-10T21:05:06.000Z'),
-      updateBy: 1,
-      description: 'project description',
-    );
+//     final devices = [
+//       Device(
+//         id: '6d034377-1bac-4c75-828f-b1999f87a05f',
+//         projectID: '99b2be2f-b082-483f-92b2-56585e6935b0',
+//         title: 'DHT-22 sensor',
+//         topic: 'esp',
+//         jsonEnable: true,
+//         jsonVariables: [
+//           JsonVariable(
+//             id: '681b7a7a-2a28-462d-ab77-564f44b35896',
+//             deviceID: '6d034377-1bac-4c75-828f-b1999f87a05f',
+//             title: 'temperature',
+//             jsonExtraction: r"$['temp']",
+//           ),
+//           JsonVariable(
+//             id: '30364bf7-0be3-4d0d-add5-43c323b1fcdf',
+//             deviceID: '6d034377-1bac-4c75-828f-b1999f87a05f',
+//             title: 'himidity',
+//             jsonExtraction: r"$['humid']",
+//           ),
+//         ],
+//       ),
+//     ];
 
-    setUpAll(() {
-      registerFallbackValue(Uri());
-    });
+//     final tileConfigs = [
+//       TileConfig(
+//         id: '3b49cf6b-fd4e-4cb0-84e3-c800fa42a6e2',
+//         title: 'Kitchen temperature',
+//         deviceID: '6d034377-1bac-4c75-828f-b1999f87a05f',
+//         tileType: TileType.text,
+//         tileData: const TextTileData(
+//           prefix: '',
+//           postfix: '℃',
+//           jsonVariableID: '681b7a7a-2a28-462d-ab77-564f44b35896',
+//         ),
+//       ),
+//     ];
 
-    setUp(() {
-      // client = http.Client();
-      client = MockClient();
-      when(() => client.get(any())).thenAnswer((input) async {
-        final uri = input.positionalArguments[0] as Uri;
-        if (uri.path.contains('project/countall')) {
-          return http.Response(jsonEncode({'count': 1}), 200);
-        } else if (uri.path.contains('device/countall')) {
-          return http.Response(jsonEncode({'count': 1}), 200);
-        } else if (uri.path.contains('project/getnproject')) {
-          return http.Response(jsonEncode([project]), 200);
-        } else if (uri.path.contains('device/getndevice')) {
-          return http.Response(jsonEncode([device]), 200);
-        }else if (uri.path.contains('station/getallstationinproject')) {
-          return http.Response(jsonEncode([station]), 200);
-        } else if (uri.path.contains('device/getalldeviceinproject')) {
-          return http.Response(jsonEncode([device]), 200);
-        } else if (uri.path.contains('device/getalldeviceinstation')) {
-          return http.Response(jsonEncode([device]), 200);
-        }
-        return http.Response(jsonEncode(20), 400);
-      });
-    });
+//     RemoteStorageIotApi createSubject() => RemoteStorageIotApi();
 
-    RemoteStorageIotApi createSubject() =>
-        RemoteStorageIotApi(httpClient: client, schema: 'demo');
-
-    group('constructor', () {
-      test('works properly', () {
-        expect(createSubject, returnsNormally);
-      });
-    });
-
-    group('countProject', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.countProject(), 1);
-      });
-    });
-    group('countDevice', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.countDevice(), 1);
-      });
-    });
-    group('getNProject', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.getNProject(), [project]);
-      });
-    });    
-    group('getNDevice', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.getNDevice(), [device]);
-      });
-    });
-    group('getAllStationInProject', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.getAllStationInProject(projectId: 1), [station]);
-      });
-    });    
-    group('getAllDeviceInProject', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.getAllDeviceInProject(projectId: 1), [device]);
-      });
-    });
-    group('getAllDeviceInStation', () {
-      test('fetchs successfully', () async {
-        final subject = createSubject();
-        expect(await subject.getAllDeviceInStation(stationId: 1), [device]);
-      });
-    });
-  });
-}
+//     group('constructor', () {
+//       test('works properly', () {
+//         expect(createSubject, returnsNormally);
+//       });
+//     });
+//     group('readJsonFile', () {
+//       test('works properly when file existed', () {
+//         final subject = createSubject();
+//         expect(
+//           () => subject.readJsonFile('broker.json'),
+//           returnsNormally,
+//         );
+//       });
+//       test('throws Exception when file not existed', () {
+//         final subject = createSubject();
+//         expect(
+//           () => subject.readJsonFile('not_existed.json'),
+//           throwsA(const TypeMatcher<FileSystemException>()),
+//         );
+//       });
+//     });
+//     group('initializes stream', () {
+//       group('getBrokers', () {
+//         test('props properly', () {
+//           final subject = createSubject();
+//           expect(subject.getBrokers(), emits([broker]));
+//         });
+//       });
+//       group('getProjects', () {
+//         test('props properly', () {
+//           final subject = createSubject();
+//           expect(subject.getProjects(), emits(projects));
+//         });
+//       });
+//       group('getDevices', () {
+//         test('props properly', () {
+//           final subject = createSubject();
+//           expect(subject.getDevices(), emits(devices));
+//         });
+//       });
+//       group('getTileConfigs', () {
+//         test('props properly', () {
+//           final subject = createSubject();
+//           expect(subject.getTileConfigs(), emits(tileConfigs));
+//         });
+//       });
+//     });
+//     group('saveTileConfig', () {
+//       test('saves new tile config', () {
+//         final subject = createSubject();
+//         final newTileConfig = TileConfig(
+//           title: 'new tile',
+//           deviceID: 'deviceID',
+//           tileType: TileType.text,
+//           tileData: TextTileData.placeholder(),
+//         );
+//         subject.saveTileConfig(newTileConfig);
+//         expect(
+//           subject.getTileConfigs(),
+//           emits([
+//             ...tileConfigs,
+//             newTileConfig,
+//           ]),
+//         );
+//       });
+//       test('update tile config', () {
+//         final subject = createSubject();
+//         final newTileConfig = tileConfigs[0].copyWith(
+//           title: 'update title',
+//         );
+//         subject.saveTileConfig(newTileConfig);
+//         expect(
+//           subject.getTileConfigs(),
+//           emits([
+//             newTileConfig,
+//           ]),
+//         );
+//       });
+//     });
+//   });
+// }

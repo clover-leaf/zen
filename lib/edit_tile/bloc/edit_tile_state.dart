@@ -15,7 +15,7 @@ class EditTileState extends Equatable {
   EditTileState({
     this.status = EditTileStatus.initial,
     this.brokerView = const {},
-    this.mqttDeviceView = const {},
+    this.deviceView = const {},
     this.initTileConfig,
     this.title = '',
     this.deviceID = '',
@@ -30,9 +30,9 @@ class EditTileState extends Equatable {
   final Map<FieldId, Broker> brokerView;
   late final List<Broker> brokers = brokerView.values.toList();
 
-  /// <mqttDeviceId, MqttDevice>
-  final Map<FieldId, MqttDevice> mqttDeviceView;
-  late final List<MqttDevice> mqttDevices = mqttDeviceView.values.toList();
+  /// <mqttDeviceId, Device>
+  final Map<FieldId, Device> deviceView;
+  late final List<Device> mqttDevices = deviceView.values.toList();
 
   /// initial tile config
   final TileConfig? initTileConfig;
@@ -50,7 +50,10 @@ class EditTileState extends Equatable {
   final TileData tileData;
 
   /// return true if every needed fields had filled
-  bool get isFilled => title != '' && deviceID != '' && tileData.isFill();
+  bool isFilled() {
+    final device = deviceView[deviceID];
+    return title != '' && deviceID != '' && tileData.isFill(device!);
+  } 
 
   /// return true if any field had edited
   bool get isEditted {
@@ -69,7 +72,7 @@ class EditTileState extends Equatable {
   EditTileState copyWith({
     EditTileStatus? status,
     Map<FieldId, Broker>? brokerView,
-    Map<FieldId, MqttDevice>? mqttDeviceView,
+    Map<FieldId, Device>? deviceView,
     TileConfig? initTileConfig,
     String? title,
     String? deviceID,
@@ -79,7 +82,7 @@ class EditTileState extends Equatable {
     return EditTileState(
       status: status ?? this.status,
       brokerView: brokerView ?? this.brokerView,
-      mqttDeviceView: mqttDeviceView ?? this.mqttDeviceView,
+      deviceView: deviceView ?? this.deviceView,
       initTileConfig: initTileConfig ?? this.initTileConfig,
       title: title ?? this.title,
       deviceID: deviceID ?? this.deviceID,
@@ -93,7 +96,7 @@ class EditTileState extends Equatable {
     return [
       status,
       brokerView,
-      mqttDeviceView,
+      deviceView,
       title,
       deviceID,
       tileType,

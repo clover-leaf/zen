@@ -16,9 +16,7 @@ class TilesOverviewPage extends StatelessWidget {
       create: (_) => TilesOverviewBloc(
         repository: context.read<IotRepository>(),
       )
-        ..add(const BrokerSubscriptionRequested())
-        ..add(const MqttDeviceSubscriptionRequested())
-        ..add(const TileConfigSubscriptionRequested()),
+        ..add(const Initialized()),
       child: const TilesOverviewView(),
     );
   }
@@ -32,8 +30,7 @@ class TilesOverviewView extends StatelessWidget {
     final state = context.watch<TilesOverviewBloc>().state;
     final tileConfigs = state.tileConfigs;
     final tileConfigView = state.tileConfigView;
-    final brokerView = state.brokerView;
-    final mqttDeviceView = state.mqttDeviceView;
+    final deviceView = state.deviceView;
     final tileValueView = state.tileValueView;
 
     return Scaffold(
@@ -50,8 +47,7 @@ class TilesOverviewView extends StatelessWidget {
             Navigator.of(context).push<void>(
               EditTilePage.route(
                 tileType: value,
-                brokerView: brokerView,
-                mqttDeviceView: mqttDeviceView,
+                deviceView: deviceView,
                 initTileConfig: null,
               ),
             );
@@ -72,7 +68,7 @@ class TilesOverviewView extends StatelessWidget {
       body: BlocBuilder<TilesOverviewBloc, TilesOverviewState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
-          if (state.status.isLoading) {
+          if (state.status.isConnecting) {
             return const CircularProgressIndicator();
           } else if (state.status.isFailure) {
             return const Center(child: Text('failure'));
@@ -108,8 +104,7 @@ class TilesOverviewView extends StatelessWidget {
                           return ToggleTileWidget(
                             tileConfig: tileConfig,
                             value: value,
-                            brokerView: brokerView,
-                            mqttDeviceView: mqttDeviceView,
+                            deviceView: deviceView,
                           );
                       }
                     },

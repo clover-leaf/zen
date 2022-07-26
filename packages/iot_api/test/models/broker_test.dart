@@ -2,16 +2,22 @@ import 'package:iot_api/iot_api.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Project', () {
-    Project createSubject({
+  group('Broker', () {
+    Broker createSubject({
       String id = 'id',
       String title = 'title',
-      String brokerID = 'brokerID',
+      String url = 'url',
+      int port = 1883,
+      String? username,
+      String? password,
     }) {
-      return Project(
+      return Broker(
         id: id,
         title: title,
-        brokerID: brokerID,
+        url: url,
+        port: port,
+        username: username,
+        password: password,
       );
     }
     group('Constructor', () {
@@ -25,26 +31,33 @@ void main() {
         expect(createSubject().props, <dynamic>[
           'id',
           'title',
-          'brokerID',
+          'url',
+          1883,
+          null,
+          null,
         ]);
       });
     });
     group('copyWith', () {
-      test('returns the same object if none arguments are provided', () {
+      test('returns same object if none arguments are provided', () {
         expect(createSubject().copyWith(), equals(createSubject()));
       });
-      test('returns a new object with params provided', () {
+      test('returns new object with params provided', () {
         expect(
           createSubject().copyWith(
             id: 'newID',
             title: 'newTitle',
-            brokerID: 'newBrokerID',
+            url: 'newUrl',
+            username: 'username',
+            password: 'password',
           ),
           equals(
             createSubject(
               id: 'newID',
               title: 'newTitle',
-            brokerID: 'newBrokerID',
+              url: 'newUrl',
+              username: 'username',
+              password: 'password',
             ),
           ),
         );
@@ -53,10 +66,13 @@ void main() {
     group('fromJson', () {
       test('works correctly', () {
         expect(
-          Project.fromJson(<String, dynamic>{
+          Broker.fromJson(<String, dynamic>{
             'id': 'id',
             'title': 'title',
-            'brokerID': 'brokerID',
+            'url': 'url',
+            'port': 1883,
+            'username': null,
+            'password': null,
           }),
           equals(
             createSubject(),
@@ -71,7 +87,10 @@ void main() {
           equals(<String, dynamic>{
             'id': 'id',
             'title': 'title',
-            'brokerID': 'brokerID',
+            'url': 'url',
+            'port': 1883,
+            'username': null,
+            'password': null,
           }),
         );
       });
