@@ -45,6 +45,12 @@ class IotRepository {
     return _api.saveTileConfig(tileConfig);
   }
 
+  /// If this [Device] existed in db, updates it,
+  /// else saves it
+  Future<void> saveDevice(Device device) {
+    return _api.saveDevice(device);
+  }
+
   /// gets a stream of data from [Broker]
   Stream<List<String>> getPublishMsg(GatewayClient client) {
     return _gateway.getPublishMsg(client);
