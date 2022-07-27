@@ -7,5 +7,7 @@
 //     test('can be instantiated', () {
 //       expect(IotGateway(), isNotNull);
 //     });
+
+//     group('createClient', body)
 //   });
 // }

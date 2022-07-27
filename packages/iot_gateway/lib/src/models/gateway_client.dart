@@ -30,16 +30,7 @@ class GatewayClient {
       ..onDisconnected = onDisconnect
       ..onSubscribed = onSubscribe;
 
-    final connMess = MqttConnectMessage()
-        .withWillPayload(Uint8Buffer()..addAll(utf8.encode('0')))
-
-        /// no need to set will message
-        /// because we dont need save status of app
-        /// only need in device
-        /// btw, in adafruit, all msg saved in db
-        .withWillTopic('topic/active')
-        .withWillRetain()
-        .withWillQos(MqttQos.atLeastOnce);
+    final connMess = MqttConnectMessage().startClean();
     _client.connectionMessage = connMess;
   }
 
@@ -59,10 +50,14 @@ class GatewayClient {
   /// Connects to the broker
   Future<void> connect() async {
     _connectionStatusStreamController.add(ConnectionStatus.connecting);
-    await _client.connect(
-      broker.username,
-      broker.password,
-    );
+    if (broker.username != '' && broker.password != '') {
+      await _client.connect(
+        broker.username,
+        broker.password,
+      );
+    } else {
+      await _client.connect();
+    }
   }
 
   /// Disconnects to broker
@@ -90,7 +85,7 @@ class GatewayClient {
     final encoded = Uint8Buffer()..addAll(utf8.encode(payload));
     _client.publishMessage(
       topic,
-      MqttQos.atMostOnce,
+      MqttQos.atLeastOnce,
       encoded,
       retain: retain,
     );

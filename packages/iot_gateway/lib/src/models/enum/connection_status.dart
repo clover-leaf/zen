@@ -16,3 +16,18 @@ enum ConnectionStatus {
   /// with the broker.
   faulted
 }
+
+/// helper
+extension ConnectionStatusX on ConnectionStatus {
+  ///
+  bool get isDisconnecting => this == ConnectionStatus.disconnecting;
+
+  ///
+  bool get isDisconnected => this == ConnectionStatus.disconnected;
+
+  ///
+  bool get isConnecting => this == ConnectionStatus.connecting;
+
+  ///
+  bool get isConnected => this == ConnectionStatus.connected;
+}
