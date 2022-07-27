@@ -6,7 +6,7 @@ enum Space {
   /// constants of content's padding
   ///
   /// actual padding top will be added status bar height
-  contentPaddingHorizontal(16),
+  contentPaddingHorizontal(32),
   contentPaddingTop(16),
   contentPaddingBottom(16),
 

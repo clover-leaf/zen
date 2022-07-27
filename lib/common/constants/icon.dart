@@ -21,6 +21,8 @@ enum MyIcon {
   chat,
   lightbulb,
   cast,
+  trash,
+  rightButton,
 }
 
 extension MyIconX on MyIcon {
@@ -71,6 +73,10 @@ extension MyIconX on MyIcon {
         return toPath('lightbulb');
       case MyIcon.cast:
         return toPath('cast');
+      case MyIcon.trash:
+        return toPath('trash');
+      case MyIcon.rightButton:
+        return toPath('right-md');
     }
   }
 }
