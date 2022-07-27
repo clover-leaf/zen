@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/common/widgets/widgets.dart';
 import 'package:flutter_firestore/edit_tile/bloc/edit_tile_bloc.dart';
-import 'package:flutter_firestore/edit_tile/widgets/widgets.dart';
 
 class TitleField extends StatelessWidget {
   const TitleField({super.key});
@@ -10,7 +10,7 @@ class TitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditTileBloc>().state;
-    final hintTitle = state.initTileConfig?.title;
+    final hintTitle = state.title;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -22,7 +22,7 @@ class TitleField extends StatelessWidget {
             height: 56,
             width: 56,
             decoration: const BoxDecoration(
-              color: Color(0xff890e4f),
+              color: Color(0xffe0e0e0),
               borderRadius: BorderRadius.all(Radius.circular(28)),
             ),
           ),

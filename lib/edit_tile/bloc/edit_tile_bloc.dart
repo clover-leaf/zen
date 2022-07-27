@@ -37,11 +37,14 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     if (state.initTileConfig != null) {
       emit(
         state.copyWith(
+          status: EditTileStatus.initialized,
           title: state.initTileConfig!.title,
           deviceID: state.initTileConfig!.deviceID,
           tileData: state.initTileConfig!.tileData,
         ),
       );
+    } else {
+      emit(state.copyWith(status: EditTileStatus.initialized));
     }
   }
 
@@ -63,7 +66,22 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     EditTileDeviceIdChanged event,
     Emitter<EditTileState> emit,
   ) {
-    emit(state.copyWith(deviceID: event.deviceID));
+    if (state.deviceID == event.deviceID) {
+      return;
+    }
+    final device = state.deviceView[event.deviceID];
+    late TileData tileData;
+    if (device!.jsonEnable && state.tileData.getFieldId() == '') {
+      tileData = state.tileData.setFieldId(device.jsonVariables.first.id);
+    } else {
+      tileData = state.tileData.setFieldId('');
+    }
+    emit(
+      state.copyWith(
+        deviceID: event.deviceID,
+        tileData: tileData,
+      ),
+    );
   }
 
   void _onEditTileDataChanged(
@@ -82,15 +100,15 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     if (state.initTileConfig != null) {
       tileConfig = TileConfig(
         id: state.initTileConfig!.id,
-        title: state.title,
-        deviceID: state.deviceID,
+        title: state.title ?? state.initTileConfig!.title,
+        deviceID: state.deviceID ?? state.initTileConfig!.deviceID,
         tileType: state.tileType,
         tileData: state.tileData,
       );
     } else {
       tileConfig = TileConfig(
-        title: state.title,
-        deviceID: state.deviceID,
+        title: state.title!,
+        deviceID: state.deviceID!,
         tileType: state.tileType,
         tileData: state.tileData,
       );

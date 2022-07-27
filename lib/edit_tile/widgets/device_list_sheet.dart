@@ -7,16 +7,11 @@ class DeviceListSheet extends StatelessWidget {
   DeviceListSheet({
     super.key,
     required this.paddingTop,
-    required this.brokerView,
     required this.deviceView,
     required this.onTapped,
   });
 
   final double paddingTop;
-
-  /// <BrokerID, Broker>
-  final Map<FieldId, Broker> brokerView;
-  late final List<Broker> brokers = brokerView.values.toList();
 
   /// <deviceId, Device>
   final Map<FieldId, Device> deviceView;
@@ -50,7 +45,6 @@ class DeviceListSheet extends StatelessWidget {
           else
             _DeviceList(
               devices: devices,
-              brokerView: brokerView,
               onTapped: onTapped,
             )
         ],
@@ -73,11 +67,11 @@ class _Headline extends StatelessWidget {
             onTap: () => Navigator.pop(context),
             behavior: HitTestBehavior.opaque,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+              padding: const EdgeInsets.only(
+                right: 12,
               ),
               child: SvgPicture.asset(
-                SvgIcon.downArrow.getPath(),
+                MyIcon.leftButton.getPath(),
                 color: const Color(0xff757575),
               ),
             ),
@@ -95,12 +89,10 @@ class _Headline extends StatelessWidget {
 class _DeviceList extends StatelessWidget {
   const _DeviceList({
     required this.devices,
-    required this.brokerView,
     required this.onTapped,
   });
 
   final List<Device> devices;
-  final Map<FieldId, Broker> brokerView;
   final Function(String) onTapped;
 
   @override

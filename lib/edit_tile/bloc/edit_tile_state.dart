@@ -1,8 +1,12 @@
 part of 'edit_tile_bloc.dart';
 
-enum EditTileStatus { initial, saving, success, failure }
+enum EditTileStatus { initializing, initialized, saving, success, failure }
 
 extension EditTileStatusX on EditTileStatus {
+  bool get isInitializing => this == EditTileStatus.initializing;
+
+  bool get isInitialized => this == EditTileStatus.initialized;
+
   bool get isSaving => this == EditTileStatus.saving;
 
   bool get isSuccess => this == EditTileStatus.success;
@@ -13,49 +17,62 @@ extension EditTileStatusX on EditTileStatus {
 class EditTileState extends Equatable {
   /// {macro EditTileState}
   EditTileState({
-    this.status = EditTileStatus.initial,
-    this.brokerView = const {},
     this.deviceView = const {},
     this.initTileConfig,
-    this.title = '',
-    this.deviceID = '',
     required this.tileType,
+    this.status = EditTileStatus.initializing,
+    this.title,
+    this.deviceID,
     required this.tileData,
   });
 
-  /// processes status
-  final EditTileStatus status;
-
-  /// <BrokerID, Broker>
-  final Map<FieldId, Broker> brokerView;
-  late final List<Broker> brokers = brokerView.values.toList();
-
-  /// <mqttDeviceId, Device>
+  // <<< IMMUTABLE >>>
+  /// The map of [FieldId] of [Device] and it
+  ///
+  /// <Device.id, Device>
   final Map<FieldId, Device> deviceView;
+
+  /// The [List] of [Device]
   late final List<Device> mqttDevices = deviceView.values.toList();
 
-  /// initial tile config
+  /// The initial tile config
   final TileConfig? initTileConfig;
 
-  /// tile config's title
-  final String title;
-
-  /// tile config's device ID
-  final String deviceID;
-
-  /// tile config's type
+  /// The tile config's type
   final TileType tileType;
+  // <<< IMMUTABLE >>>
 
-  /// tile config's data
+  // <<< MUTABLE >>>
+  /// The status of state
+  final EditTileStatus status;
+
+  /// The tile config's title
+  final String? title;
+
+  /// The tile config's device ID
+  final String? deviceID;
+
+  /// The tile config's data
   final TileData tileData;
+  // <<< MUTABLE >>>
 
-  /// return true if every needed fields had filled
+  /// Whether every needed fields had filled or not
   bool isFilled() {
-    final device = deviceView[deviceID];
-    return title != '' && deviceID != '' && tileData.isFill(device!);
-  } 
+    if (initTileConfig != null) {
+      final device = deviceView[deviceID ?? initTileConfig!.deviceID];
+      return tileData.isFilled(device!);
+    } else {
+      final titleFilled = title != null && title != '';
+      final deviceIdFilled = deviceID != null && deviceID != '';
+      final device = deviceView[deviceID];
+      if (device == null) {
+        return false;
+      }
+      return titleFilled && deviceIdFilled && tileData.isFilled(device); 
+    }
+  }
 
-  /// return true if any field had edited
+  /// Whether any field had edited or not
   bool get isEditted {
     if (initTileConfig != null) {
       return title != initTileConfig!.title ||
@@ -71,7 +88,6 @@ class EditTileState extends Equatable {
 
   EditTileState copyWith({
     EditTileStatus? status,
-    Map<FieldId, Broker>? brokerView,
     Map<FieldId, Device>? deviceView,
     TileConfig? initTileConfig,
     String? title,
@@ -81,7 +97,6 @@ class EditTileState extends Equatable {
   }) {
     return EditTileState(
       status: status ?? this.status,
-      brokerView: brokerView ?? this.brokerView,
       deviceView: deviceView ?? this.deviceView,
       initTileConfig: initTileConfig ?? this.initTileConfig,
       title: title ?? this.title,
@@ -92,10 +107,9 @@ class EditTileState extends Equatable {
   }
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       status,
-      brokerView,
       deviceView,
       title,
       deviceID,

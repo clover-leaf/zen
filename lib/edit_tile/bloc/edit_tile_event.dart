@@ -11,7 +11,6 @@ class EditTileInitialized extends EditTileEvent {
   const EditTileInitialized();
 }
 
-
 class EditTileStatusChanged extends EditTileEvent {
   const EditTileStatusChanged(this.status);
 

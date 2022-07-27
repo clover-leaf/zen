@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/edit_tile/edit_tile.dart';
-import 'package:flutter_firestore/edit_tile/widgets/field/toggle_tile_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 import 'package:iot_repository/iot_repository.dart';
@@ -15,14 +14,13 @@ class EditTilePage extends StatelessWidget {
     super.key,
   });
 
-  static PageRoute route({
+  static Route route({
     required TileType tileType,
     required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
   }) {
-    return MaterialPageRoute<void>(
-      fullscreenDialog: true,
-      builder: (context) => BlocProvider(
+    return PageRouteBuilder<void>(
+      pageBuilder: (context, animation, secondaryAnimation) => BlocProvider(
         create: (_) => EditTileBloc(
           repository: context.read<IotRepository>(),
           deviceView: deviceView,
@@ -31,6 +29,18 @@ class EditTilePage extends StatelessWidget {
         )..add(const EditTileInitialized()),
         child: const EditTilePage(),
       ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0, 1);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        final tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 
@@ -53,7 +63,7 @@ class EditTilePage extends StatelessWidget {
             );
           context
               .read<EditTileBloc>()
-              .add(const EditTileStatusChanged(EditTileStatus.initial));
+              .add(const EditTileStatusChanged(EditTileStatus.initialized));
         }
       },
       child: const EditTileView(),
@@ -68,6 +78,7 @@ class EditTileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<EditTileBloc>().state;
     final theme = Theme.of(context);
+    final status = state.status;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -78,10 +89,12 @@ class EditTileView extends StatelessWidget {
           if (state.isEditted) {
             final value = await showDialog<bool>(
                   context: context,
-                  builder: (context) => const ConfirmDialog(),
+                  builder: (context) => const MyConfirmDialog(),
                 ) ??
                 false;
             if (value) Navigator.pop(context);
+          } else {
+            Navigator.pop(context);
           }
         },
         postfixIcon: MyIcon.faq.getPath(),
@@ -89,10 +102,10 @@ class EditTileView extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: state.status.isSaving
+        backgroundColor: status.isSaving
             ? theme.primaryColor.withOpacity(0.5)
             : theme.primaryColor,
-        onPressed: state.status.isSaving
+        onPressed: status.isSaving
             ? null
             : () {
                 if (state.isFilled()) {
@@ -111,83 +124,66 @@ class EditTileView extends StatelessWidget {
                     );
                 }
               },
-        child: state.status.isSaving
+        child: status.isSaving
             ? const CupertinoActivityIndicator()
             : SvgPicture.asset(
                 MyIcon.save.getPath(),
                 color: const Color(0xffffffff),
               ),
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          if (state.isEditted) {
-            final value = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => const ConfirmDialog(),
-                ) ??
-                false;
-            return value;
-          }
-          return true;
-        },
-        child: CupertinoScrollbar(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: Space.contentPaddingTop.value +
-                    MediaQuery.of(context).viewPadding.top,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _Headline(),
-                  SizedBox(height: Space.contentItemGap.value),
-                  const TitleField(),
-                  Divider(
-                    height: Space.contentItemGap.value * 2,
-                    thickness: Space.globalBorderWidth.value,
+      body: !status.isInitialized
+          ? const Center(child: MyCircularProgress(size: 32))
+          : WillPopScope(
+              onWillPop: () async {
+                if (state.isEditted) {
+                  final value = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => const MyConfirmDialog(),
+                      ) ??
+                      false;
+                  return value;
+                }
+                return true;
+              },
+              child: CupertinoScrollbar(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: Space.contentPaddingTop.value +
+                          MediaQuery.of(context).viewPadding.top,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _Headline(),
+                        SizedBox(height: Space.contentItemGap.value),
+                        const TitleField(),
+                        Divider(
+                          height: Space.contentItemGap.value * 2,
+                          thickness: Space.globalBorderWidth.value,
+                        ),
+                        const DeviceField(),
+                        Divider(
+                          indent: Space.contentPaddingHorizontal.value,
+                          endIndent: Space.contentPaddingHorizontal.value,
+                          height: Space.contentItemGap.value * 2,
+                          thickness: Space.globalBorderWidth.value,
+                        ),
+                        const VariableField(),
+                        Divider(
+                          indent: Space.contentPaddingHorizontal.value,
+                          endIndent: Space.contentPaddingHorizontal.value,
+                          height: Space.contentItemGap.value * 2,
+                          thickness: Space.globalBorderWidth.value,
+                        ),
+                        const TileDataField(),
+                      ],
+                    ),
                   ),
-                  const DeviceField(),
-                  Divider(
-                    indent: Space.contentPaddingHorizontal.value,
-                    endIndent: Space.contentPaddingHorizontal.value,
-                    height: Space.contentItemGap.value * 2,
-                    thickness: Space.globalBorderWidth.value,
-                  ),
-                  const _SpecificField(),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
-  }
-}
-
-class _SpecificField extends StatelessWidget {
-  const _SpecificField();
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<EditTileBloc>().state;
-
-    switch (state.tileType) {
-      case TileType.text:
-        return TextTileField(
-          initTileData: state.initTileConfig?.tileData as TextTileData?,
-          tileData: state.tileData as TextTileData,
-          status: state.status,
-          isEditted: state.isEditted,
-        );
-      case TileType.toggle:
-        return ToggleTileField(
-          initTileData: state.initTileConfig?.tileData as ToggleTileData?,
-          tileData: state.tileData as ToggleTileData,
-          status: state.status,
-          isEditted: state.isEditted,
-        );
-    }
   }
 }
 
