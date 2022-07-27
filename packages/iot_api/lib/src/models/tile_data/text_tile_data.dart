@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -42,9 +41,8 @@ class TextTileData extends Equatable implements TileData {
   FieldId getFieldId() => jsonVariableID;
 
   @override
-  bool isFill(Device device) {
-    return !device.jsonEnable ||
-        (device.jsonEnable && jsonVariableID != '');
+  bool isFilled(Device device) {
+    return !device.jsonEnable || (device.jsonEnable && jsonVariableID != '');
   }
 
   /// Deserializes the given [JsonMap] into a [TextTileData].
@@ -54,8 +52,12 @@ class TextTileData extends Equatable implements TileData {
   }
 
   @override
+  TextTileData setFieldId(FieldId id) => copyWith(
+        jsonVariableID: id,
+      );
 
   /// Converts this [TextTileData] into a [JsonMap].
+  @override
   JsonMap toJson() {
     /// convert instance to json
     final json = _$TextTileDataToJson(this);

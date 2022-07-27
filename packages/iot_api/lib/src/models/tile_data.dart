@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_returning_this
+
 import 'package:iot_api/src/models/models.dart';
 import 'package:meta/meta.dart';
 
@@ -17,9 +19,6 @@ class TileData {
     }
   }
 
-  /// Gets the id [JsonVariable] of tile
-  FieldId getFieldId() => '';
-
   /// Deserializes the given [JsonMap] into a [TileData]
   factory TileData.fromJson(JsonMap json) {
     final type = TileTypeX.fromJsonKey(json['type'] as int);
@@ -31,14 +30,20 @@ class TileData {
     }
   }
 
+  /// Gets the id [JsonVariable] of tile
+  FieldId getFieldId() => '';
+
+  /// Sets the id [JsonVariable] of tile
+  TileData setFieldId(FieldId id) => this;
+
   /// Converts this [TileConfig] into a [JsonMap]
   JsonMap toJson() => <String, dynamic>{};
 
-  /// Checks whether every needed fields are filled
-  /// 
+  /// Whether every needed fields are filled or not
+  ///
   /// It takes a [Device] param to detect whether
   /// JSON extraction is used
-  bool isFill(Device device) {
+  bool isFilled(Device device) {
     return false;
   }
 }

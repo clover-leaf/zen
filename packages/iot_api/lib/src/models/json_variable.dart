@@ -39,6 +39,9 @@ class JsonVariable extends Equatable {
   /// more info at https://github.com/f3ath/jessie
   final String jsonExtraction;
 
+  /// Whether every needed fields had filled or not
+  bool get isFilled => title != '' && jsonExtraction != '';
+
   /// Deserializes the given [JsonMap] into a [JsonVariable].
   static JsonVariable fromJson(JsonMap json) => _$JsonVariableFromJson(json);
 

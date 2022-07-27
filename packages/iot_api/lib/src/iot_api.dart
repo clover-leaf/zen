@@ -31,6 +31,10 @@ abstract class IotApi {
   /// If this [TileConfig] existed in db, updates it,
   /// else saves it
   Future<void> saveTileConfig(TileConfig tileConfig);
+
+  /// If this [Device] existed in db, updates it,
+  /// else saves it
+  Future<void> saveDevice(Device device);
 }
 
 /// Error throw when request failure

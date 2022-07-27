@@ -46,16 +46,15 @@ class ToggleTileData extends Equatable implements TileData {
 
   /// The ID [JsonVariable] that tile monitoring
   final FieldId jsonVariableID;
-  
+
   @override
   FieldId getFieldId() => jsonVariableID;
 
-
   @override
-  bool isFill(Device device) {
+  bool isFilled(Device device) {
     final valueCondition = onValue != '' && offValue != '';
-    final jsonCondition = !device.jsonEnable ||
-        (device.jsonEnable && jsonVariableID != '');
+    final jsonCondition =
+        !device.jsonEnable || (device.jsonEnable && jsonVariableID != '');
     return valueCondition && jsonCondition;
   }
 
@@ -66,8 +65,12 @@ class ToggleTileData extends Equatable implements TileData {
   }
 
   @override
+  ToggleTileData setFieldId(FieldId id) => copyWith(
+        jsonVariableID: id,
+      );
 
   /// Converts this [ToggleTileData] into a [JsonMap].
+  @override
   JsonMap toJson() {
     /// convert instance to json
     final json = _$ToggleTileDataToJson(this);

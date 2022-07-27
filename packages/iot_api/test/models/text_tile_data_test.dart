@@ -71,14 +71,14 @@ void main() {
         );
       });
     });
-    group('isFill', () {
+    group('isFilled', () {
       group('json extraction is enabled', () {
         test('returns true when every needed field are filled', () {
           final subject = createSubject(
             jsonVariableID: 'newjsonVariableID',
           );
           expect(
-            subject.isFill(mockDevice),
+            subject.isFilled(mockDevice),
             true,
           );
         });
@@ -87,7 +87,7 @@ void main() {
             jsonVariableID: '',
           );
           expect(
-            subject.isFill(mockDevice),
+            subject.isFilled(mockDevice),
             false,
           );
         });
@@ -101,7 +101,7 @@ void main() {
             jsonVariableID: '',
           );
           expect(
-            subject.isFill(mockDevice),
+            subject.isFilled(mockDevice),
             true,
           );
         });
