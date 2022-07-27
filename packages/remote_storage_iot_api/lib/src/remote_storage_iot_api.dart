@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:iot_api/iot_api.dart';
-import 'package:path/path.dart' as path;
 import 'package:rxdart/subjects.dart';
 
 /// {@template remote_storage_iot_api}
@@ -23,19 +20,141 @@ class RemoteStorageIotApi extends IotApi {
   /// The controller of [Stream] of [List] of [TileConfig]
   late BehaviorSubject<List<TileConfig>> _tileConfigStreamController;
 
-  /// Reads file as [String]
-  String readJsonFile(String relativePath) {
-    final filePath = path.join(Directory.current.path, 'lib/src', relativePath);
-    return File(filePath).readAsStringSync();
-  }
+  ///
+  final brokerJson = [
+    {
+      'id': '63c59d69-0388-45f6-b0a3-a525e0afce38',
+      'title': 'mosquitto',
+      'url': '192.168.1.7',
+      'port': 1883,
+      'username': '',
+      'password': ''
+    },
+    {
+      'id': '047d3036-7523-4696-8131-0b2705e48116',
+      'title': 'adafruit',
+      'url': 'io.adafruit.com',
+      'port': 1883,
+      'username': 'relax1903',
+      'password': 'aio_RGvj24BIcAAuBXEASkFU2F5NtzRt'
+    }
+  ];
+
+  ///
+  final projectsJson = [
+    {
+      'id': '99b2be2f-b082-483f-92b2-56585e6935b0',
+      'title': 'My home',
+      'brokerID': '63c59d69-0388-45f6-b0a3-a525e0afce38'
+    },
+    {
+      'id': 'f81a8e53-a766-498d-9793-2b4b50109b25',
+      'title': 'My farm',
+      'brokerID': '63c59d69-0388-45f6-b0a3-a525e0afce38'
+    }
+  ];
+
+  ///
+  final devicesJson = [
+    {
+      'id': '6d034377-1bac-4c75-828f-b1999f87a05f',
+      'projectID': '99b2be2f-b082-483f-92b2-56585e6935b0',
+      'title': 'Home DHT-22 sensor',
+      'topic': 'esp',
+      'jsonEnable': true,
+      'jsonVariables': [
+        {
+          'id': '681b7a7a-2a28-462d-ab77-564f44b35896',
+          'deviceID': '6d034377-1bac-4c75-828f-b1999f87a05f',
+          'title': 'temperature',
+          'jsonExtraction': r"$['temp']"
+        },
+        {
+          'id': '30364bf7-0be3-4d0d-add5-43c323b1fcdf',
+          'deviceID': '6d034377-1bac-4c75-828f-b1999f87a05f',
+          'title': 'himidity',
+          'jsonExtraction': r"$['humid']"
+        }
+      ]
+    },
+    {
+      'id': '354b7604-168b-492e-9f26-b12f6b3efbc4',
+      'projectID': 'f81a8e53-a766-498d-9793-2b4b50109b25',
+      'title': 'Farm DHT-22 sensor',
+      'topic': 'esp',
+      'jsonEnable': true,
+      'jsonVariables': [
+        {
+          'id': '681b7a7a-2a28-462d-ab77-564f44b35896',
+          'deviceID': '354b7604-168b-492e-9f26-b12f6b3efbc4',
+          'title': 'temperature',
+          'jsonExtraction': r"$['temp']"
+        },
+        {
+          'id': '30364bf7-0be3-4d0d-add5-43c323b1fcdf',
+          'deviceID': '354b7604-168b-492e-9f26-b12f6b3efbc4',
+          'title': 'himidity',
+          'jsonExtraction': r"$['humid']"
+        }
+      ]
+    },
+    // {
+    //   'id': '6d034377-1bac-4c75-828f-b1999f87a05f',
+    //   'projectID': '99b2be2f-b082-483f-92b2-56585e6935b0',
+    //   'title': 'DHT-22 sensor',
+    //   'topic': 'esp',
+    //   'jsonEnable': false,
+    //   'jsonVariables': <JsonVariable>[],
+    // }
+  ];
+
+  ///
+  final tileConfigsJson = [
+    {
+      'id': '3b49cf6b-fd4e-4cb0-84e3-c800fa42a6e2',
+      'title': 'Kitchen temperature',
+      'deviceID': '6d034377-1bac-4c75-828f-b1999f87a05f',
+      'tileType': 1,
+      'tileData': {
+        'type': 1,
+        'prefix': '',
+        'postfix': '℃',
+        'jsonVariableID': '681b7a7a-2a28-462d-ab77-564f44b35896'
+      }
+    },
+    {
+      'id': '6d034377-1bac-7777-828f-b1999f87a05f',
+      'title': 'Kitchen humidity',
+      'deviceID': '354b7604-168b-492e-9f26-b12f6b3efbc4',
+      'tileType': 1,
+      'tileData': {
+        'type': 1,
+        'prefix': '',
+        'postfix': '%',
+        'jsonVariableID': '30364bf7-0be3-4d0d-add5-43c323b1fcdf'
+      }
+    },
+    // {
+    //   'id': '3b49cf6b-fd4e-4cb0-84e3-c800fa42a6e2',
+    //   'title': 'Kitchen temperature',
+    //   'deviceID': '6d034377-1bac-4c75-828f-b1999f87a05f',
+    //   'tileType': 0,
+    //   'tileData': {
+    //     'type': 0,
+    //     'onLabel': 'ON',
+    //     'onValue': '1',
+    //     'offLabel': 'OFF',
+    //     'offValue': '0',
+    //     'jsonVariableID': '',
+    //   }
+    // }
+  ];
 
   @override
   Broker getBroker() {
-    final brokerJson = readJsonFile('broker.json');
     late List<Broker> brokers;
     try {
-      // Parses brokers JSON file
-      brokers = (jsonDecode(brokerJson) as List<dynamic>)
+      brokers = brokerJson
           .map<Broker>(
             (dynamic e) => Broker.fromJson(e as Map<String, dynamic>),
           )
@@ -48,11 +167,9 @@ class RemoteStorageIotApi extends IotApi {
 
   @override
   List<Project> refreshProject() {
-    final projectJson = readJsonFile('project.json');
     late List<Project> projects;
     try {
-      // Parses projects JSON file
-      projects = (jsonDecode(projectJson) as List<dynamic>)
+      projects = projectsJson
           .map<Project>(
             (dynamic e) => Project.fromJson(e as Map<String, dynamic>),
           )
@@ -65,11 +182,9 @@ class RemoteStorageIotApi extends IotApi {
 
   @override
   List<Device> refreshDevice() {
-    final deviceJson = readJsonFile('device.json');
     late List<Device> devices;
     try {
-      // Parses devices JSON file
-      devices = (jsonDecode(deviceJson) as List<dynamic>)
+      devices = devicesJson
           .map<Device>(
             (dynamic e) => Device.fromJson(e as Map<String, dynamic>),
           )
@@ -82,11 +197,9 @@ class RemoteStorageIotApi extends IotApi {
 
   @override
   List<TileConfig> refreshTileConfig() {
-    final tileConfigJson = readJsonFile('tile_config.json');
     late List<TileConfig> tileConfigs;
     try {
-      // Parses projects JSON file
-      tileConfigs = (jsonDecode(tileConfigJson) as List<dynamic>)
+      tileConfigs = tileConfigsJson
           .map<TileConfig>(
             (dynamic e) => TileConfig.fromJson(e as Map<String, dynamic>),
           )
@@ -136,5 +249,17 @@ class RemoteStorageIotApi extends IotApi {
       tileConfigs.add(tileConfig);
     }
     _tileConfigStreamController.add(tileConfigs);
+  }
+
+  @override
+  Future<void> saveDevice(Device device) async {
+    final devices = [..._deviceStreamController.value];
+    final idx = devices.indexWhere((t) => t.id == device.id);
+    if (idx >= 0) {
+      devices[idx] = device;
+    } else {
+      devices.add(device);
+    }
+    _deviceStreamController.add(devices);
   }
 }
