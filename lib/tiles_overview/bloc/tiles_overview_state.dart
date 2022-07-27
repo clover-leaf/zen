@@ -1,22 +1,24 @@
 part of 'tiles_overview_bloc.dart';
 
-enum TilesOverviewStatus { initial, connecting, success, failure }
+enum TilesOverviewStatus {
+  initializing,
+  initialized,
+  connected,
+}
 
 extension TilesOverviewStatusX on TilesOverviewStatus {
-  bool get isInitial => this == TilesOverviewStatus.initial;
+  bool get isInitializing => this == TilesOverviewStatus.initializing;
 
-  bool get isConnecting => this == TilesOverviewStatus.connecting;
+  bool get isInitialized => this == TilesOverviewStatus.initialized;
 
-  bool get isSuccess => this == TilesOverviewStatus.success;
-
-  bool get isFailure => this == TilesOverviewStatus.failure;
+  bool get isConnected => this == TilesOverviewStatus.connected;
 }
 
 class TilesOverviewState extends Equatable {
   TilesOverviewState({
-    this.status = TilesOverviewStatus.initial,
+    this.status = TilesOverviewStatus.initializing,
     this.gatewayClient,
-    this.projectID = '',
+    this.projectID,
     this.projectView = const {},
     this.deviceView = const {},
     this.tileConfigView = const {},
@@ -24,7 +26,7 @@ class TilesOverviewState extends Equatable {
     this.subscribedTopics = const {},
   });
 
-  /// The loading status of bloc
+  /// The status of state
   final TilesOverviewStatus status;
 
   /// The only [GatewayClient] of page
@@ -38,10 +40,13 @@ class TilesOverviewState extends Equatable {
   /// <Project.id, Project>
   final Map<FieldId, Project> projectView;
 
+  /// The list of [Project]
+  late final List<Project> projects = projectView.values.toList();
+
   /// The [FieldId] of [Project]
   ///
   /// Indicates which [Project] is showing
-  final FieldId projectID;
+  final FieldId? projectID;
 
   /// The map of [FieldId] of [Device] and it
   ///
@@ -73,25 +78,28 @@ class TilesOverviewState extends Equatable {
   /// When deviceView changes, it also changes
   /// Note: message mean raw payload that not
   /// extracted JSON yet (if JSON is enabled)
-  final Map<String, String> subscribedTopics;
+  final Map<String, String?> subscribedTopics;
 
-  /// Gets the Map of [TileConfig] that belongs to projectID
-  /// This updated when 
-  ///     + projectID changes (major)
-  ///     + tileConfigs changes (major)
-  ///     + deviceView changes (minor)
-  Map<FieldId, TileConfig> get showedTileConfigView {
+  /// Gets the [List] of [FieldId] of [TileConfig] 
+  /// that belongs to projectID.
+  /// 
+  /// This updated when:
+  /// 1. ProjectID changes (major)
+  /// 2. TileConfigs changes (major)
+  /// 3. DeviceView changes (minor)
+  List<FieldId> get showedTileConfigIDs {
     // The map of each device.id with its project.id
     final deviceToProjectView = {
       for (final device in devices) device.id: device.projectID
     };
-    final showedTileConfigView = <FieldId, TileConfig>{};
+    final showedTileConfigIDs = <FieldId>[];
+    // print(projectID);
     for (final tileConfig in tileConfigs) {
       if (deviceToProjectView[tileConfig.deviceID] == projectID) {
-        showedTileConfigView[tileConfig.id] = tileConfig;
+        showedTileConfigIDs.add(tileConfig.id);
       }
     }
-    return showedTileConfigView;
+    return showedTileConfigIDs;
   }
 
   /// Returns a copy of [TilesOverviewState] with given parameters
@@ -103,7 +111,7 @@ class TilesOverviewState extends Equatable {
     Map<FieldId, Device>? deviceView,
     Map<FieldId, TileConfig>? tileConfigView,
     Map<FieldId, String?>? tileValueView,
-    Map<String, String>? subscribedTopics,
+    Map<String, String?>? subscribedTopics,
   }) =>
       TilesOverviewState(
         status: status ?? this.status,

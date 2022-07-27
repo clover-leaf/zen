@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firestore/tiles_overview/tiles_overview.dart';
+import 'package:flutter_firestore/tiles_overview/bloc/bloc.dart';
 import 'package:iot_api/iot_api.dart';
 
 class ToggleButton extends StatefulWidget {
@@ -55,8 +55,8 @@ class _ToggleButtonState extends State<ToggleButton> {
       onTap: () {
         final payload = isOn ? offValue : onValue;
         context.read<TilesOverviewBloc>().add(
-              ActionPublished(
-                tileConfig: widget.tileConfig,
+              MessagePublishRequested(
+                deviceID: widget.tileConfig.deviceID,
                 payload: payload,
               ),
             );

@@ -7,8 +7,12 @@ class TilesOverviewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Initialized extends TilesOverviewEvent {
-  const Initialized();
+class InitializeRequested extends TilesOverviewEvent {
+  const InitializeRequested();
+}
+
+class ClientConnectionStatusSubscriptionRequested extends TilesOverviewEvent {
+  const ClientConnectionStatusSubscriptionRequested();
 }
 
 class ProjectSubscriptionRequested extends TilesOverviewEvent {
@@ -27,34 +31,32 @@ class ConnectionStatusSubscriptionRequested extends TilesOverviewEvent {
   const ConnectionStatusSubscriptionRequested();
 }
 
-class GatewayClientInitialized extends TilesOverviewEvent {
-  const GatewayClientInitialized({
-    required this.brokerView,
-    required this.mqttDeviceView,
-    required this.tileConfigView,
-  });
+class BrokerConnectRequested extends TilesOverviewEvent {
+  const BrokerConnectRequested();
+}
 
-  final Map<FieldId, Broker> brokerView;
-  final Map<FieldId, Device> mqttDeviceView;
-  final Map<FieldId, TileConfig> tileConfigView;
+class ProjectChangeRequested extends TilesOverviewEvent {
+  const ProjectChangeRequested(this.projectID);
+
+  final FieldId projectID;
 
   @override
-  List<Object> get props => [brokerView, mqttDeviceView, tileConfigView];
+  List<Object> get props => [projectID];
 }
 
 class BrokerListened extends TilesOverviewEvent {
   const BrokerListened();
 }
 
-class ActionPublished extends TilesOverviewEvent {
-  const ActionPublished({
-    required this.tileConfig,
+class MessagePublishRequested extends TilesOverviewEvent {
+  const MessagePublishRequested({
     required this.payload,
+    required this.deviceID,
   });
 
-  final TileConfig tileConfig;
   final String payload;
+  final FieldId deviceID;
 
   @override
-  List<Object> get props => [tileConfig, payload];
+  List<Object> get props => [payload, deviceID];
 }
