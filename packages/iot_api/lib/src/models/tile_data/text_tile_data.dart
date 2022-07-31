@@ -22,37 +22,37 @@ class TextTileData extends Equatable implements TileData {
   /// The constructor that creates empty instance
   factory TextTileData.placeholder() {
     return const TextTileData(
-      prefix: '',
-      postfix: '',
-      jsonVariableID: '',
+      prefix: null,
+      postfix: null,
+      jsonVariableID: null,
     );
   }
 
   /// The prefix of value
-  final String prefix;
+  final String? prefix;
 
   /// The postfix of value
-  final String postfix;
+  final String? postfix;
 
   /// The ID [JsonVariable] that tile monitoring
-  final FieldId jsonVariableID;
+  final FieldId? jsonVariableID;
 
   @override
-  FieldId getFieldId() => jsonVariableID;
+  FieldId? getFieldId() => jsonVariableID;
 
   @override
   bool isFilled(Device device) {
-    return !device.jsonEnable || (device.jsonEnable && jsonVariableID != '');
+    return !device.jsonEnable || (device.jsonEnable && jsonVariableID != null);
   }
 
   /// Deserializes the given [JsonMap] into a [TextTileData].
   static TextTileData fromJson(JsonMap json) {
-    final _json = Map<String, dynamic>.from(json)..remove('type');
+    final _json = Map<String, dynamic>.from(json)..remove('tileType');
     return _$TextTileDataFromJson(_json);
   }
 
   @override
-  TextTileData setFieldId(FieldId id) => copyWith(
+  TextTileData setFieldId(FieldId? id) => copyWith(
         jsonVariableID: id,
       );
 
@@ -63,7 +63,7 @@ class TextTileData extends Equatable implements TileData {
     final json = _$TextTileDataToJson(this);
 
     /// add type info into json
-    json['type'] = TileType.text.toJsonKey();
+    json['tileType'] = TileType.text.toJsonKey();
     return json;
   }
 
@@ -71,7 +71,7 @@ class TextTileData extends Equatable implements TileData {
   TextTileData copyWith({
     String? prefix,
     String? postfix,
-    String? jsonVariableID,
+    FieldId? jsonVariableID,
   }) {
     return TextTileData(
       prefix: prefix ?? this.prefix,

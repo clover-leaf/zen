@@ -14,7 +14,6 @@ class TileDataField extends StatelessWidget {
     final initTileConfig = state.initTileConfig;
     final tileData = state.tileData;
     final status = state.status;
-    final isEditted = state.isEditted;
 
     switch (state.tileType) {
       case TileType.text:
@@ -22,14 +21,12 @@ class TileDataField extends StatelessWidget {
           initTileData: initTileConfig?.tileData as TextTileData?,
           tileData: tileData as TextTileData,
           status: status,
-          isEditted: isEditted,
         );
       case TileType.toggle:
         return ToggleTileDataField(
           initTileData: initTileConfig?.tileData as ToggleTileData?,
           tileData: tileData as ToggleTileData,
           status: status,
-          isEditted: isEditted,
         );
     }
   }

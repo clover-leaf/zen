@@ -16,8 +16,13 @@ class Project extends Equatable {
   /// {macro Project}
   Project({
     String? id,
-    required this.title,
-    required this.brokerID,
+    required this.key,
+    required this.name,
+    this.description,
+    this.createdAt,
+    this.createdBy,
+    this.updatedAt,
+    this.updatedBy,
   })  : assert(
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
@@ -25,13 +30,32 @@ class Project extends Equatable {
         id = id ?? const Uuid().v4();
 
   /// The project ID
-  final String id;
+  final FieldId id;
 
-  /// The title of project
-  final String title;
+  /// The key of project
+  final String key;
 
-  /// The ID [Broker] of project
-  final FieldId brokerID;
+  /// The name of project
+  final String name;
+
+  /// The description of project
+  final String? description;
+
+  /// The created date of project
+  @JsonKey(name: 'create_at')
+  final DateTime? createdAt;
+
+  /// The [FieldId] of user created
+  @JsonKey(name: 'create_by')
+  final FieldId? createdBy;
+
+  /// The updatedd date of project
+  @JsonKey(name: 'updated_at')
+  final DateTime? updatedAt;
+
+  /// The [FieldId] of user created
+  @JsonKey(name: 'updated_by')
+  final FieldId? updatedBy;
 
   /// Deserializes the given [JsonMap] into a [Project].
   static Project fromJson(JsonMap json) {
@@ -43,17 +67,36 @@ class Project extends Equatable {
 
   /// Returns a copy of [Project] with given parameters
   Project copyWith({
-    String? id,
-    String? title,
-    FieldId? brokerID,
+    FieldId? id,
+    String? key,
+    String? name,
+    String? description,
+    DateTime? createdAt,
+    FieldId? createdBy,
+    DateTime? updatedAt,
+    FieldId? updatedBy,
   }) {
     return Project(
       id: id ?? this.id,
-      title: title ?? this.title,
-      brokerID: brokerID ?? this.brokerID,
+      key: key ?? this.key,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
     );
   }
 
   @override
-  List<Object> get props => [id, title, brokerID];
+  List<Object?> get props => [
+        id,
+        key,
+        name,
+        description,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+      ];
 }

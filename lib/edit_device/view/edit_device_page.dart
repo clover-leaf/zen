@@ -1,27 +1,25 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/common/widgets/widgets.dart';
 import 'package:flutter_firestore/edit_device/edit_device.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 class EditDevicePage extends StatelessWidget {
   const EditDevicePage({super.key});
 
   static Route route({
-    required FieldId projectID,
+    required Project project,
     required Device? initDevice,
   }) {
     return PageRouteBuilder<void>(
       pageBuilder: (context, animation, secondaryAnimation) => BlocProvider(
         create: (_) => EditDeviceBloc(
-          repository: context.read<IotRepository>(),
-          projectID: projectID,
+          repository: context.read<UserRepository>(),
+          project: project,
           initDevice: initDevice,
         )..add(const EditDeviceInitialized()),
         child: const EditDevicePage(),
@@ -74,99 +72,107 @@ class EditDeviceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditDeviceBloc>().state;
-    final theme = Theme.of(context);
     final status = state.status;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: MyBottomAppbar(
-        prefixIcon: MyIcon.leftButton.getPath(),
+        prefixIcon: Assets.icons.leftButton,
         prefixOnTapped: () async {
           if (state.isEdited()) {
+            final navigator = Navigator.of(context);
             final value = await showDialog<bool>(
                   context: context,
                   builder: (context) => const MyConfirmDialog(),
                 ) ??
                 false;
-            if (value) Navigator.pop(context);
+            if (value) navigator.pop();
           } else {
             Navigator.pop(context);
           }
         },
-        postfixIcon: MyIcon.faq.getPath(),
+        postfixIcon: Assets.icons.faq,
         postfixOnTapped: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: status.isSaving
-            ? theme.primaryColor.withOpacity(0.5)
-            : theme.primaryColor,
-        onPressed: status.isSaving
-            ? null
-            : () {
-                if (state.isFilled()) {
-                  context
-                      .read<EditDeviceBloc>()
-                      .add(const EditDeviceSubmitted());
-                } else {
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(
-                      MySnackBar.showSnackBar(
-                        context: context,
-                        content: state.initDevice == null
-                            ? 'Some fields are empty'
-                            : 'No field has edited',
-                        snackBarType: SnackBarType.error,
-                      ),
-                    );
-                }
-              },
-        child: SvgPicture.asset(
-          MyIcon.save.getPath(),
-          color: const Color(0xffffffff),
-        ),
+      floatingActionButton: MyFloatingButton(
+        icon: Assets.icons.save,
+        onPressed: () {
+          if (!status.isSaving) {
+            if (!state.isFilled()) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(
+                  MySnackBar.showSnackBar(
+                    context: context,
+                    content: state.initDevice == null
+                        ? 'Some fields are empty'
+                        : 'No field has edited',
+                    snackBarType: SnackBarType.error,
+                  ),
+                );
+            } else if (!state.isLegal()) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(
+                  MySnackBar.showSnackBar(
+                    context: context,
+                    content: 'Topic name is illegal',
+                    snackBarType: SnackBarType.error,
+                  ),
+                );
+            } else {
+              context.read<EditDeviceBloc>().add(const EditDeviceSubmitted());
+            }
+          }
+        },
       ),
-      body: !status.isInitialized
-          ? const Center(child: MyCircularProgress(size: 24))
-          : WillPopScope(
-              onWillPop: () async {
-                if (state.isEdited()) {
-                  final value = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => const MyConfirmDialog(),
-                      ) ??
-                      false;
-                  return value;
-                }
-                return true;
-              },
-              child: CupertinoScrollbar(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: Space.contentPaddingTop.value +
-                          MediaQuery.of(context).viewPadding.top,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Headline(),
-                        SizedBox(height: Space.contentItemGap.value),
-                        const TitleField(),
-                        Divider(
-                          height: Space.contentItemGap.value * 2,
-                          thickness: Space.globalBorderWidth.value,
-                        ),
-                        const TopicField(),
-                        const JsonVariableField()
-                      ],
-                    ),
+      body: BlocBuilder<EditDeviceBloc, EditDeviceState>(
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, state) {
+          if (status.isInitializing) {
+            return const MyCircularProgress(size: 24);
+          }
+          return WillPopScope(
+            onWillPop: () async {
+              if (state.isEdited()) {
+                final value = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => const MyConfirmDialog(),
+                    ) ??
+                    false;
+                return value;
+              }
+              return true;
+            },
+            child: CupertinoScrollbar(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: Space.contentPaddingTop.value +
+                        MediaQuery.of(context).viewPadding.top,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Headline(),
+                      SizedBox(height: Space.contentItemGap.value),
+                      const NameField(),
+                      Divider(
+                        height: Space.contentItemGap.value * 2,
+                        thickness: Space.globalBorderWidth.value,
+                      ),
+                      const KeyField(),
+                      const JsonVariableField()
+                    ],
                   ),
                 ),
               ),
             ),
+          );
+        },
+      ),
     );
   }
 }

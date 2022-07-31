@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyFloatingButton extends StatelessWidget {
   const MyFloatingButton({
     super.key,
     required this.onPressed,
-    this.icon = MyIcon.add,
+    this.icon,
   });
 
   final Function() onPressed;
-  final MyIcon icon;
+  final String? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class MyFloatingButton extends StatelessWidget {
       onPressed: onPressed,
       backgroundColor: Theme.of(context).primaryColor,
       child: SvgPicture.asset(
-        MyIcon.add.getPath(),
+        icon ?? Assets.icons.add,
         color: const Color(0xffffffff),
       ),
     );

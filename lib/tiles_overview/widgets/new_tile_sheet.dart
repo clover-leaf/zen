@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
@@ -56,10 +57,10 @@ class NewTileSheet extends StatelessWidget {
                       late String icon;
                       switch (tileType) {
                         case TileType.text:
-                          icon = MyIcon.textSize.getPath();
+                          icon = Assets.icons.textSize;
                           break;
                         case TileType.toggle:
-                          icon = MyIcon.toggle.getPath();
+                          icon = Assets.icons.toggle;
                           break;
                       }
                       return TileIconBox(

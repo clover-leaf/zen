@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/edit_device/bloc/bloc.dart';
 import 'package:flutter_firestore/edit_device/widgets/widgets.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
@@ -110,7 +111,7 @@ class JsonVariableField extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
-                  MyIcon.add.getPath(),
+                  Assets.icons.add,
                   color: const Color(0xffffffff),
                 ),
               ),
@@ -162,7 +163,7 @@ class _VariableBox extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              jsonVariable.title,
+              jsonVariable.name,
               style: textTheme.bodyMedium!.copyWith(
                 color:
                     enabled ? const Color(0xff212121) : const Color(0xff676767),

@@ -1,126 +1,127 @@
-import 'package:flutter_firestore/tiles_overview/bloc/tiles_overview_bloc.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:iot_api/iot_api.dart';
-import 'package:mocktail/mocktail.dart';
+// import 'package:flutter_firestore/tiles_overview/bloc/tiles_overview_bloc.dart';
+// import 'package:flutter_test/flutter_test.dart';
 
-class MockTileConfig extends Mock implements TileConfig {}
-
-void main() {
-  late MockTileConfig mockTileConfig;
-  setUp(() {
-    mockTileConfig = MockTileConfig();
-  });
-  group('BrokerSubscriptionRequested', () {
-    test('supports value equality', () {
-      expect(
-        const BrokerSubscriptionRequested(),
-        equals(const BrokerSubscriptionRequested()),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        const BrokerSubscriptionRequested().props,
-        equals(<Object>[]),
-      );
-    });
-  });
-  group('MqttDeviceSubscriptionRequested', () {
-    test('supports value equality', () {
-      expect(
-        const MqttDeviceSubscriptionRequested(),
-        equals(const MqttDeviceSubscriptionRequested()),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        const MqttDeviceSubscriptionRequested().props,
-        equals(<Object>[]),
-      );
-    });
-  });
-  group('TileConfigSubscriptionRequested', () {
-    test('supports value equality', () {
-      expect(
-        const TileConfigSubscriptionRequested(),
-        equals(const TileConfigSubscriptionRequested()),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        const TileConfigSubscriptionRequested().props,
-        equals(<Object>[]),
-      );
-    });
-  });
-  group('GatewayClientInitialized', () {
-    test('supports value equality', () {
-      expect(
-        const GatewayClientInitialized(
-          brokerView: {},
-          mqttDeviceView: {},
-          tileConfigView: {},
-        ),
-        equals(
-          const GatewayClientInitialized(
-            brokerView: {},
-            mqttDeviceView: {},
-            tileConfigView: {},
-          ),
-        ),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        const GatewayClientInitialized(
-          brokerView: {},
-          mqttDeviceView: {},
-          tileConfigView: {},
-        ).props,
-        equals([
-          <FieldId, Broker>{},
-          <FieldId, MqttDevice>{},
-          <FieldId, TileConfig>{}
-        ]),
-      );
-    });
-  });
-  group('MqttSubscribed', () {
-    test('supports value equality', () {
-      expect(
-        const MqttSubscribed(),
-        equals(const MqttSubscribed()),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        const MqttSubscribed().props,
-        equals(<Object>[]),
-      );
-    });
-  });
-  group('ActionPublished', () {
-    test('supports value equality', () {
-      expect(
-        ActionPublished(
-          tileConfig: mockTileConfig,
-          payload: '',
-        ),
-        equals(
-          ActionPublished(
-            tileConfig: mockTileConfig,
-            payload: '',
-          ),
-        ),
-      );
-    });
-    test('props are correct', () {
-      expect(
-        ActionPublished(
-          tileConfig: mockTileConfig,
-          payload: '',
-        ).props,
-        equals([mockTileConfig, '']),
-      );
-    });
-  });
-}
+// void main() {
+//   group('BrokerSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const InitializeRequested(),
+//         equals(const InitializeRequested()),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const InitializeRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('ClientConnectionStatusSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const ClientConnectionStatusSubscriptionRequested(),
+//         equals(const ClientConnectionStatusSubscriptionRequested()),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const ClientConnectionStatusSubscriptionRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('ProjectSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const ProjectSubscriptionRequested(),
+//         equals(const ProjectSubscriptionRequested()),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const ProjectSubscriptionRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('DeviceSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const DeviceSubscriptionRequested(),
+//         equals(
+//           const DeviceSubscriptionRequested(),
+//         ),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const DeviceSubscriptionRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('TileConfigSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const TileConfigSubscriptionRequested(),
+//         equals(
+//           const TileConfigSubscriptionRequested(),
+//         ),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const TileConfigSubscriptionRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('ConnectionStatusSubscriptionRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const ConnectionStatusSubscriptionRequested(),
+//         equals(
+//           const ConnectionStatusSubscriptionRequested(),
+//         ),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const ConnectionStatusSubscriptionRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+//   group('ProjectChangeRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const ProjectChangeRequested('FieldID'),
+//         equals(
+//           const ProjectChangeRequested('FieldID'),
+//         ),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const ProjectChangeRequested('FieldID').props,
+//         equals(<Object>['FieldID']),
+//       );
+//     });
+//   });
+//   group('BrokerConnectRequested', () {
+//     test('supports value equality', () {
+//       expect(
+//         const BrokerConnectRequested(),
+//         equals(
+//           const BrokerConnectRequested(),
+//         ),
+//       );
+//     });
+//     test('props are correct', () {
+//       expect(
+//         const BrokerConnectRequested().props,
+//         equals(<Object>[]),
+//       );
+//     });
+//   });
+// }

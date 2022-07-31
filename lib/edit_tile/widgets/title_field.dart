@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/common/widgets/widgets.dart';
 import 'package:flutter_firestore/edit_tile/bloc/edit_tile_bloc.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 
 class TitleField extends StatelessWidget {
   const TitleField({super.key});
@@ -31,7 +32,7 @@ class TitleField extends StatelessWidget {
             child: MyTextField(
               initText: hintTitle,
               labelText: 'Tile name',
-              prefixIcon: MyIcon.tag.getPath(),
+              prefixIcon: Assets.icons.tag,
               horizontalPadding: 0,
               enabled: !state.status.isSaving,
               onChanged: (value) =>

@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:iot_api/iot_api.dart';
 import 'package:iot_gateway/src/models/models.dart';
-import 'package:mqtt5_client/mqtt5_client.dart';
-import 'package:mqtt5_client/mqtt5_server_client.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:typed_data/typed_buffers.dart';
 import 'package:uuid/uuid.dart';
@@ -80,6 +79,11 @@ class GatewayClient {
     }
   }
 
+  /// Unsubscribes to given topic
+  void unsubscribe(String topic) {
+    _client.unsubscribe(topic);
+  }
+
   /// Publishes message to given topic
   void published(String payload, String topic, {bool retain = true}) {
     final encoded = Uint8Buffer()..addAll(utf8.encode(payload));
@@ -95,28 +99,28 @@ class GatewayClient {
   Stream<List<String>> getPublishMessages() {
     return _client.published!.map((MqttPublishMessage message) {
       final topic = message.variableHeader!.topicName;
-      final payload = utf8.decode(message.payload.message!.toList());
+      final payload = utf8.decode(message.payload.message.toList());
       return [topic, payload];
     });
   }
 
   /// Connection callback
   void onConnected() {
-    log('::MQTT_CLIENT ${broker.title}:: Ket noi thanh cong...');
+    log('::MQTT_CLIENT:: Ket noi thanh cong...');
     _connectionStatusStreamController.add(ConnectionStatus.connected);
   }
 
   /// Subscribe callback
-  void onSubscribe(MqttSubscription whatever) {
+  void onSubscribe(whatever) {
     log(
-      '::MQTT_CLIENT ${broker.title}::'
-      ' Subscribe thanh cong... ${whatever.topic}',
+      '::MQTT_CLIENT::'
+      ' Subscribe thanh cong... $whatever',
     );
   }
 
   /// Disconnect callback
   void onDisconnect() {
-    log('::MQTT_CLIENT ${broker.title}:: Ngat ket noi...');
+    log('::MQTT_CLIENT:: Ngat ket noi...');
     _connectionStatusStreamController.add(ConnectionStatus.disconnected);
   }
 }

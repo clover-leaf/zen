@@ -32,7 +32,7 @@ class EditTileTitleChanged extends EditTileEvent {
 class EditTileDeviceIdChanged extends EditTileEvent {
   const EditTileDeviceIdChanged(this.deviceID);
 
-  final String deviceID;
+  final FieldId deviceID;
 
   @override
   List<Object> get props => [deviceID];

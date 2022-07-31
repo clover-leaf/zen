@@ -24,48 +24,49 @@ class ToggleTileData extends Equatable implements TileData {
   /// The constructor that creates empty instance
   factory ToggleTileData.placeholder() {
     return const ToggleTileData(
-      onLabel: 'ON',
-      onValue: '1',
-      offLabel: 'OFF',
-      offValue: '0',
-      jsonVariableID: '',
+      onLabel: null,
+      onValue: null,
+      offLabel: null,
+      offValue: null,
+      jsonVariableID: null,
     );
   }
 
   /// The label of tile when button on
-  final String onLabel;
+  final String? onLabel;
 
   /// The value of tile when button on
-  final String onValue;
+  final String? onValue;
 
   /// The label of tile when button off
-  final String offLabel;
+  final String? offLabel;
 
   /// The value of tile when button off
-  final String offValue;
+  final String? offValue;
 
   /// The ID [JsonVariable] that tile monitoring
-  final FieldId jsonVariableID;
+  final FieldId? jsonVariableID;
 
   @override
-  FieldId getFieldId() => jsonVariableID;
+  FieldId? getFieldId() => jsonVariableID;
 
   @override
   bool isFilled(Device device) {
-    final valueCondition = onValue != '' && offValue != '';
     final jsonCondition =
-        !device.jsonEnable || (device.jsonEnable && jsonVariableID != '');
-    return valueCondition && jsonCondition;
+        !device.jsonEnable || (device.jsonEnable && jsonVariableID != null);
+    final onValueCondition = onValue != null && onValue != '';
+    final offValueCondition = offValue != null && offValue != '';
+    return onValueCondition && offValueCondition && jsonCondition;
   }
 
   /// Deserializes the given [JsonMap] into a [ToggleTileData].
   static ToggleTileData fromJson(JsonMap json) {
-    final _json = Map<String, dynamic>.from(json)..remove('type');
+    final _json = Map<String, dynamic>.from(json)..remove('tileType');
     return _$ToggleTileDataFromJson(_json);
   }
 
   @override
-  ToggleTileData setFieldId(FieldId id) => copyWith(
+  ToggleTileData setFieldId(FieldId? id) => copyWith(
         jsonVariableID: id,
       );
 
@@ -76,7 +77,7 @@ class ToggleTileData extends Equatable implements TileData {
     final json = _$ToggleTileDataToJson(this);
 
     /// add type info into json
-    json['type'] = TileType.toggle.toJsonKey();
+    json['tileType'] = TileType.toggle.toJsonKey();
     return json;
   }
 
@@ -87,7 +88,7 @@ class ToggleTileData extends Equatable implements TileData {
     String? offLabel,
     String? offValue,
     bool? jsonEnable,
-    String? jsonVariableID,
+    FieldId? jsonVariableID,
   }) {
     return ToggleTileData(
       onLabel: onLabel ?? this.onLabel,

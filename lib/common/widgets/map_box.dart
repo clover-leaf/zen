@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/common/constants/icons.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapBox extends StatelessWidget {
@@ -31,13 +29,14 @@ class MapBox extends StatelessWidget {
           ),
           MarkerLayerOptions(
             markers: [
-              Marker(
-                point: LatLng(latitude, longitude),
-                builder: (context) => SvgPicture.asset(
-                  SvgIcon.pin.getPath(),
-                  color: Theme.of(context).primaryColor,
-                ),
-              )
+              // Marker(
+              //   point: LatLng(latitude, longitude),
+              //   builder: (context) => Assets.icons.
+              //   SvgPicture.asset(
+              //     SvgIcon.pin.getPath(),
+              //     color: Theme.of(context).primaryColor,
+              //   ),
+              // )
             ],
           )
         ],

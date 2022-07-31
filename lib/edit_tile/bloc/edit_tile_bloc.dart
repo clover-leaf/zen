@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'edit_tile_event.dart';
 part 'edit_tile_state.dart';
@@ -9,11 +9,13 @@ part 'edit_tile_state.dart';
 class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
   EditTileBloc({
     required this.repository,
+    required FieldId projectID,
     required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
     required TileType tileType,
   }) : super(
           EditTileState(
+            projectID: projectID,
             deviceView: deviceView,
             initTileConfig: initTileConfig,
             tileType: tileType,
@@ -28,7 +30,7 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     on<EditTileSubmitted>(_onEditTileSummited);
   }
 
-  final IotRepository repository;
+  final UserRepository repository;
 
   void _onInitialized(
     EditTileInitialized event,
@@ -71,10 +73,10 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     }
     final device = state.deviceView[event.deviceID];
     late TileData tileData;
-    if (device!.jsonEnable && state.tileData.getFieldId() == '') {
+    if (device!.jsonEnable && state.tileData.getFieldId() == null) {
       tileData = state.tileData.setFieldId(device.jsonVariables.first.id);
     } else {
-      tileData = state.tileData.setFieldId('');
+      tileData = state.tileData.setFieldId(null);
     }
     emit(
       state.copyWith(

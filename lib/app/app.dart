@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-export 'cubit/theme_cubit.dart';
+export 'bloc/app_bloc.dart';
 export 'model/model.dart';
-export 'view/app.dart';
+export 'routes/routes.dart';
+export 'view/view.dart';

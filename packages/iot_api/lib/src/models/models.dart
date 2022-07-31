@@ -1,4 +1,3 @@
-export 'broker.dart';
 export 'device.dart';
 export 'enum/enum.dart';
 export 'json_variable.dart';

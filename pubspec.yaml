@@ -10,35 +10,48 @@ dependencies:
   badges: ^2.0.3
   bloc: ^8.0.3
   bloc_concurrency: ^0.2.0
+  email_launcher:
+    path: packages/email_launcher
   equatable: ^2.0.3
+  flow_builder: ^0.0.9
   fl_chart: ^0.55.0
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
   flutter_map: ^1.1.1
   flutter_svg: ^1.1.0
+  form_inputs:
+    path: packages/form_inputs
   font_awesome_flutter: ^10.1.0
   google_fonts: ^3.0.1
   http: ^ 0.13.4
+  formz: ^0.4.1
+  mockingjay: ^0.3.0
+  mocktail_image_network: ^0.3.1
   intl: ^0.17.0
   iot_api:
     path: packages/iot_api
   iot_gateway:
     path: packages/iot_gateway
-  iot_repository:
-    path: packages/iot_repository
   latlong2: ^0.8.1
-  remote_storage_iot_api:
-    path: packages/remote_storage_iot_api
+  supabase_auth_client:
+    path: packages/supabase_auth_client
+  supabase_database_client:
+    path: packages/supabase_database_client
+  supabase_flutter: ^0.3.1+3
+  user_repository:
+    path: packages/user_repository
   json_annotation: ^4.6.0
   json_path: ^0.4.1
   url_launcher: ^6.1.5
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   bloc_test: ^9.0.3
   build_runner: ^2.2.0
   flutter_test:
     sdk: flutter
+  flutter_gen_runner: ^4.3.0
   json_serializable: ^6.3.1
   mocktail: ^0.3.0
   very_good_analysis: ^3.0.0
@@ -46,8 +59,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/.env
     - assets/icons/
-    - assets/icon/
+    - assets/images/
   fonts:
     - family: Montserrat
       fonts:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/edit_tile/bloc/bloc.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
@@ -37,7 +38,7 @@ class VariableField extends StatelessWidget {
                     right: 16,
                   ),
                   child: SvgPicture.asset(
-                    MyIcon.code.getPath(),
+                    Assets.icons.code,
                     color: enabled
                         ? const Color(0xff676767)
                         : const Color(0xff989898),
@@ -122,7 +123,7 @@ class VariableBox extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              jsonVariable.title,
+              jsonVariable.name,
               style: textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w600,
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/common/widgets/widgets.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:iot_api/iot_api.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -21,13 +22,13 @@ class JsonExtractionSheet extends StatefulWidget {
 }
 
 class _JsonExtractionSheetState extends State<JsonExtractionSheet> {
-  late String title;
+  late String name;
   late String jsonExtraction;
 
   @override
   void initState() {
     super.initState();
-    title = widget.initJsonVariable?.title ?? '';
+    name = widget.initJsonVariable?.name ?? '';
     jsonExtraction = widget.initJsonVariable?.jsonExtraction ?? '';
   }
 
@@ -35,30 +36,30 @@ class _JsonExtractionSheetState extends State<JsonExtractionSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        Space.contentPaddingHorizontal.value,
+        16,
         32,
-        Space.contentPaddingHorizontal.value,
+        16,
         32 + MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           MyTextField(
-            initText: title,
+            initText: name,
             labelText: 'Name',
-            prefixIcon: MyIcon.tag.getPath(),
+            prefixIcon: Assets.icons.tag,
             horizontalPadding: 0,
             onChanged: (newTitle) {
               setState(() {
-                title = newTitle;
+                name = newTitle;
               });
             },
           ),
           SizedBox(height: Space.contentItemGap.value),
           MyTextField(
-            initText: title,
+            initText: jsonExtraction,
             labelText: 'JSON path',
-            prefixIcon: MyIcon.code.getPath(),
+            prefixIcon: Assets.icons.code,
             horizontalPadding: 0,
             onChanged: (newJsonExtraction) {
               setState(() {
@@ -110,8 +111,8 @@ class _JsonExtractionSheetState extends State<JsonExtractionSheet> {
                   onPressed: () {
                     final jsonVariable = JsonVariable(
                       id: widget.initJsonVariable?.id,
-                      deviceID: widget.initJsonVariable?.deviceID ?? '',
-                      title: title,
+                      deviceID: widget.initJsonVariable?.deviceID,
+                      name: name,
                       jsonExtraction: jsonExtraction,
                     );
                     widget.onDeleted(jsonVariable);
@@ -128,8 +129,8 @@ class _JsonExtractionSheetState extends State<JsonExtractionSheet> {
                 onPressed: () {
                   final jsonVariable = JsonVariable(
                     id: widget.initJsonVariable?.id,
-                    deviceID: widget.initJsonVariable?.deviceID ?? '',
-                    title: title,
+                    deviceID: widget.initJsonVariable?.deviceID,
+                    name: name,
                     jsonExtraction: jsonExtraction,
                   );
                   widget.onSaved(jsonVariable);

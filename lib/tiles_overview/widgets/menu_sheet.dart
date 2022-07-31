@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/common/widgets/widgets.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_firestore/projects_overview/view/projects_overview_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
@@ -64,14 +65,14 @@ class MenuSheet extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Text(
-                              project.title[0].toUpperCase(),
+                              project.name[0].toUpperCase(),
                               style: textTheme.titleMedium!
                                   .copyWith(color: const Color(0xffffffff)),
                             ),
                           ),
                         ),
                         Text(
-                          project.title,
+                          project.name,
                           style: textTheme.titleMedium,
                         ),
                       ],
@@ -94,16 +95,16 @@ class MenuSheet extends StatelessWidget {
                 .then((value) => Navigator.of(context).pop()),
           ),
           Divider(
-            height: 8,
+            height: 24,
             thickness: Space.globalBorderWidth.value,
           ),
-          const _MenuOptionBox(
+          _MenuOptionBox(
             title: 'Setting',
-            icon: MyIcon.setting,
+            icon: Assets.icons.settings,
           ),
-          const _MenuOptionBox(
+           _MenuOptionBox(
             title: 'Dark mode',
-            icon: MyIcon.night,
+            icon: Assets.icons.night,
           )
         ],
       ),
@@ -118,7 +119,7 @@ class _MenuOptionBox extends StatelessWidget {
   });
 
   final String title;
-  final MyIcon icon;
+  final String icon;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +136,7 @@ class _MenuOptionBox extends StatelessWidget {
               right: 16,
             ),
             child: SvgPicture.asset(
-              icon.getPath(),
+              icon,
               color: const Color(0xff212121),
             ),
           ),

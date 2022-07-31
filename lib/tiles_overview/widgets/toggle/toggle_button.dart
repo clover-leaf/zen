@@ -47,8 +47,8 @@ class _ToggleButtonState extends State<ToggleButton> {
 
     isOn = updateState(
       value: widget.value,
-      onValue: onValue,
-      offValue: offValue,
+      onValue: onValue!,
+      offValue: offValue!,
       oldState: isOn,
     );
     return GestureDetector(
@@ -115,7 +115,7 @@ class _Label extends StatelessWidget {
     required this.color,
   });
 
-  final String label;
+  final String? label;
   final Color color;
 
   @override
@@ -124,13 +124,15 @@ class _Label extends StatelessWidget {
     return Container(
       width: 64,
       alignment: Alignment.center,
-      child: Text(
-        label,
-        style: textTheme.labelLarge!.copyWith(
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: label != null
+          ? Text(
+              label!,
+              style: textTheme.labelLarge!.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          : null,
     );
   }
 }

@@ -6,59 +6,23 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/app/app.dart';
-import 'package:flutter_firestore/tiles_overview/view/tiles_overview_page.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 class App extends StatelessWidget {
-  const App({
-    super.key,
-    required this.iotRepository,
-  });
+  const App({super.key, required this.userRepository});
 
-  final IotRepository iotRepository;
+  final UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
-      value: iotRepository,
+      value: userRepository,
       child: BlocProvider(
-        create: (context) => ThemeCubit(),
+        create: (context) => AppBloc(),
         child: const AppView(),
       ),
-    );
-  }
-}
-
-class AppView extends StatelessWidget {
-  const AppView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = context.select((ThemeCubit cubit) => cubit.state.isDark);
-    if (isDark) {
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.light, // dark text for status bar
-          statusBarColor: Colors.transparent,
-        ),
-      );
-    } else {
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.dark, // dark text for status bar
-          statusBarColor: Colors.transparent,
-        ),
-      );
-    }
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: isDark ? AppTheme.dark : AppTheme.light,
-      // home: const GatewayPage(),
-      home: const TilesOverviewPage(),
-      // home: const DashboardPage(),
     );
   }
 }

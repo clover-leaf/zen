@@ -24,21 +24,21 @@ void main() {
     group('fromJson', () {
       test('works correctly with ToggleTileData', () {
         final json = <String, dynamic>{
-          'type': 0,
+          'tileType': 0,
           'onLabel': 'onLabel',
           'onValue': 'onValue',
           'offLabel': 'offLabel',
           'offValue': 'offValue',
-          'jsonVariableID': 'jsonVariableID',
+          'jsonVariableID': 1,
         };
         expect(TileData.fromJson(json), ToggleTileData.fromJson(json));
       });
       test('works correctly with TextTileData', () {
         final json = <String, dynamic>{
-          'type': 1,
+          'tileType': 1,
           'prefix': 'prefix',
           'postfix': 'postfix',
-          'jsonVariableID': 'jsonVariableID',
+          'jsonVariableID': 1,
         };
         expect(TileData.fromJson(json), TextTileData.fromJson(json));
       });
@@ -46,12 +46,12 @@ void main() {
     group('toJson', () {
       test('works correctly with ToggleTileData', () {
         final json = <String, dynamic>{
-          'type': 0,
+          'tileType': 0,
           'onLabel': 'onLabel',
           'onValue': 'onValue',
           'offLabel': 'offLabel',
           'offValue': 'offValue',
-          'jsonVariableID': 'jsonVariableID',
+          'jsonVariableID': 1,
         };
         expect(
           TileData.fromJson(json).toJson(),
@@ -60,10 +60,10 @@ void main() {
       });
       test('works correctly with TextTileData', () {
         final json = <String, dynamic>{
-          'type': 1,
+          'tileType': 1,
           'prefix': 'prefix',
           'postfix': 'postfix',
-          'jsonVariableID': 'jsonVariableID',
+          'jsonVariableID': 1,
         };
         expect(
           TileData.fromJson(json).toJson(),

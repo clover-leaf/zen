@@ -1,13 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/edit_tile/edit_tile.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 class EditTilePage extends StatelessWidget {
   const EditTilePage({
@@ -15,6 +13,7 @@ class EditTilePage extends StatelessWidget {
   });
 
   static Route route({
+    required FieldId projectID,
     required TileType tileType,
     required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
@@ -22,7 +21,8 @@ class EditTilePage extends StatelessWidget {
     return PageRouteBuilder<void>(
       pageBuilder: (context, animation, secondaryAnimation) => BlocProvider(
         create: (_) => EditTileBloc(
-          repository: context.read<IotRepository>(),
+          repository: context.read<UserRepository>(),
+          projectID: projectID,
           deviceView: deviceView,
           initTileConfig: initTileConfig,
           tileType: tileType,
@@ -77,112 +77,110 @@ class EditTileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditTileBloc>().state;
-    final theme = Theme.of(context);
     final status = state.status;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: MyBottomAppbar(
-        prefixIcon: MyIcon.leftButton.getPath(),
+        prefixIcon: Assets.icons.leftButton,
         prefixOnTapped: () async {
-          if (state.isEditted) {
+          if (state.isEdited) {
+            final navigator = Navigator.of(context);
             final value = await showDialog<bool>(
                   context: context,
                   builder: (context) => const MyConfirmDialog(),
                 ) ??
                 false;
-            if (value) Navigator.pop(context);
+            if (value) navigator.pop();
           } else {
             Navigator.pop(context);
           }
         },
-        postfixIcon: MyIcon.faq.getPath(),
+        postfixIcon: Assets.icons.faq,
         postfixOnTapped: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: status.isSaving
-            ? theme.primaryColor.withOpacity(0.5)
-            : theme.primaryColor,
-        onPressed: status.isSaving
-            ? null
-            : () {
-                if (state.isFilled()) {
-                  context.read<EditTileBloc>().add(const EditTileSubmitted());
-                } else {
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(
-                      MySnackBar.showSnackBar(
-                        context: context,
-                        content: state.initTileConfig == null
-                            ? 'Some fields are empty'
-                            : 'No field has edited',
-                        snackBarType: SnackBarType.error,
-                      ),
-                    );
-                }
-              },
-        child: status.isSaving
-            ? const CupertinoActivityIndicator()
-            : SvgPicture.asset(
-                MyIcon.save.getPath(),
-                color: const Color(0xffffffff),
-              ),
+      floatingActionButton: MyFloatingButton(
+        icon: Assets.icons.save,
+        onPressed: () {
+          if (!status.isSaving) {
+            if (state.isFilled()) {
+              context.read<EditTileBloc>().add(const EditTileSubmitted());
+            } else {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(
+                  MySnackBar.showSnackBar(
+                    context: context,
+                    content: state.initTileConfig == null
+                        ? 'Some fields are empty'
+                        : 'No field has edited',
+                    snackBarType: SnackBarType.error,
+                  ),
+                );
+            }
+          }
+        },
       ),
-      body: !status.isInitialized
-          ? const Center(child: MyCircularProgress(size: 32))
-          : WillPopScope(
-              onWillPop: () async {
-                if (state.isEditted) {
-                  final value = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => const MyConfirmDialog(),
-                      ) ??
-                      false;
-                  return value;
-                }
-                return true;
-              },
-              child: CupertinoScrollbar(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: Space.contentPaddingTop.value +
-                          MediaQuery.of(context).viewPadding.top,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _Headline(),
-                        SizedBox(height: Space.contentItemGap.value),
-                        const TitleField(),
-                        Divider(
-                          height: Space.contentItemGap.value * 2,
-                          thickness: Space.globalBorderWidth.value,
-                        ),
-                        const DeviceField(),
-                        Divider(
-                          indent: Space.contentPaddingHorizontal.value,
-                          endIndent: Space.contentPaddingHorizontal.value,
-                          height: Space.contentItemGap.value * 2,
-                          thickness: Space.globalBorderWidth.value,
-                        ),
-                        const VariableField(),
-                        Divider(
-                          indent: Space.contentPaddingHorizontal.value,
-                          endIndent: Space.contentPaddingHorizontal.value,
-                          height: Space.contentItemGap.value * 2,
-                          thickness: Space.globalBorderWidth.value,
-                        ),
-                        const TileDataField(),
-                      ],
-                    ),
+      body: BlocBuilder<EditTileBloc, EditTileState>(
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, state) {
+          if (status.isInitializing) {
+            return const MyCircularProgress(size: 24);
+          }
+          return WillPopScope(
+            onWillPop: () async {
+              if (state.isEdited) {
+                final value = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => const MyConfirmDialog(),
+                    ) ??
+                    false;
+                return value;
+              }
+              return true;
+            },
+            child: CupertinoScrollbar(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: Space.contentPaddingTop.value +
+                        MediaQuery.of(context).viewPadding.top,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Headline(),
+                      SizedBox(height: Space.contentItemGap.value),
+                      const TitleField(),
+                      Divider(
+                        height: Space.contentItemGap.value * 2,
+                        thickness: Space.globalBorderWidth.value,
+                      ),
+                      const DeviceField(),
+                      Divider(
+                        indent: Space.contentPaddingHorizontal.value,
+                        endIndent: Space.contentPaddingHorizontal.value,
+                        height: Space.contentItemGap.value * 2,
+                        thickness: Space.globalBorderWidth.value,
+                      ),
+                      const VariableField(),
+                      Divider(
+                        indent: Space.contentPaddingHorizontal.value,
+                        endIndent: Space.contentPaddingHorizontal.value,
+                        height: Space.contentItemGap.value * 2,
+                        thickness: Space.globalBorderWidth.value,
+                      ),
+                      const TileDataField(),
+                    ],
                   ),
                 ),
               ),
             ),
+          );
+        },
+      ),
     );
   }
 }

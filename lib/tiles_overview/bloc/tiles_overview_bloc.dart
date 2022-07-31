@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:iot_api/iot_api.dart';
 import 'package:iot_gateway/iot_gateway.dart';
-import 'package:iot_repository/iot_repository.dart';
 import 'package:json_path/json_path.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'tiles_overview_event.dart';
 part 'tiles_overview_state.dart';
@@ -23,11 +22,12 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
     on<TileConfigSubscriptionRequested>(_onTileConfigSubscriptionRequested);
     on<ProjectChangeRequested>(_onProjectChangeRequested);
     on<BrokerConnectRequested>(_onBrokerConnectRequested);
+    on<TileConfigDeleteRequested>(_onTileConfigDeleteRequested);
     on<BrokerListened>(_onBrokerListened);
   }
 
   /// The IoT repository instance
-  final IotRepository repository;
+  final UserRepository repository;
 
   /// Subcribes [Stream] of [List] of [Project]
   Future<void> _onConnectionSubcriptionRequested(
@@ -47,13 +47,21 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
   }
 
   /// Publishes payload to given topic
+  Future<void> _onTileConfigDeleteRequested(
+    TileConfigDeleteRequested event,
+    Emitter<TilesOverviewState> emit,
+  ) async {
+    await repository.deleteTileConfig(event.tileConfig);
+  }
+
+  /// Publishes payload to given topic
   void _onMessagePublishRequested(
     MessagePublishRequested event,
     Emitter<TilesOverviewState> emit,
   ) {
     final device = state.deviceView[event.deviceID];
     if (state.gatewayClient != null && device != null) {
-      state.gatewayClient!.published(event.payload, device.topic);
+      state.gatewayClient!.published(event.payload, getDeviceTopic(device));
     }
   }
 
@@ -75,15 +83,16 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
 
       final subscribedTopics =
           Map<String, String?>.from(state.subscribedTopics);
-      for (final tileConfig in state.tileConfigs) {
-        final device = state.deviceView[tileConfig.deviceID];
-        if (device != null) {
-          // because before gateway client is connected
-          // none of topic was subcribed
-          // so we subscribe every topic from tileConfigs
-          state.gatewayClient!.subscribe(device.topic);
-          subscribedTopics[device.topic] = null;
-        }
+
+      for (final device in state.devices) {
+        // because before gateway client is connected or reconnected
+        // none of topic was subcribed
+        // so we subscribe every topic from tileConfigs
+        state.gatewayClient!.subscribe(getDeviceTopic(device));
+        // we also subscribe status topic of device
+        // state.gatewayClient!.subscribe(formatStatusTopic(device.key));
+        subscribedTopics[getDeviceTopic(device)] = null;
+        // subscribedTopics[formatStatusTopic(device.key)] = null;
       }
       emit(
         state.copyWith(
@@ -104,49 +113,20 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
     Emitter<TilesOverviewState> emit,
   ) async {
     // Gets initialized broker
-    final broker = repository.getBroker();
-    final gatewayClient = repository.createClient(broker);
+    await repository.refresh();
+    add(const ProjectSubscriptionRequested());
+    add(const DeviceSubscriptionRequested());
+    add(const TileConfigSubscriptionRequested());
 
-    // Gets initialized projects
-    final projects = repository.refreshProject();
-    final projectView = {for (final project in projects) project.id: project};
-
-    // initializes projectID
-    final projectID = projects.isNotEmpty ? projects.first.id : null;
-
-    // Gets initialized devices
-    final devices = repository.refreshDevice();
-    final deviceView = {for (final device in devices) device.id: device};
-
-    // Gets initialized tileConfigs
-    final tileConfigs = repository.refreshTileConfig();
-    final tileConfigView = {
-      for (final tileConfig in tileConfigs) tileConfig.id: tileConfig
-    };
-
-    // Initializes tile config
-    final tileValueView = <FieldId, String?>{};
-    for (final tileConfig in tileConfigs) {
-      tileValueView[tileConfig.id] = null;
-    }
-
+    final gatewayClient = repository.createClient();
+    add(const BrokerConnectRequested());
+    add(const ClientConnectionStatusSubscriptionRequested());
     emit(
       state.copyWith(
         status: TilesOverviewStatus.initialized,
         gatewayClient: gatewayClient,
-        projectView: projectView,
-        projectID: projectID,
-        deviceView: deviceView,
-        tileConfigView: tileConfigView,
-        tileValueView: tileValueView,
       ),
     );
-
-    add(const BrokerConnectRequested());
-    add(const ClientConnectionStatusSubscriptionRequested());
-    add(const ProjectSubscriptionRequested());
-    add(const DeviceSubscriptionRequested());
-    add(const TileConfigSubscriptionRequested());
   }
 
   /// Subcribes [Stream] of [List] of [Project]
@@ -158,7 +138,15 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
       repository.getProjects(),
       onData: (projects) {
         final projectView = {for (var project in projects) project.id: project};
-        return state.copyWith(projectView: projectView);
+        if (state.projectID == null && projects.isNotEmpty) {
+          final projectID = projects.first.id;
+          return state.copyWith(
+            projectView: projectView,
+            projectID: projectID,
+          );
+        } else {
+          return state.copyWith(projectView: projectView);
+        }
       },
     );
   }
@@ -172,7 +160,64 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
       repository.getDevices(),
       onData: (devices) {
         final deviceView = {for (var device in devices) device.id: device};
-        return state.copyWith(deviceView: deviceView);
+
+        // Creates copy of deviceStatusView
+        final deviceStatusView =
+            Map<FieldId, bool?>.from(state.deviceStatusView);
+
+        // Creates copy of subscribedTopics
+        final subscribedTopics =
+            Map<String, String?>.from(state.subscribedTopics);
+
+        // Finds and handles new and edited [Device]
+        final newDevice = devices.where(
+          (device) => !state.deviceView.keys.contains(device.id),
+        );
+        final editedDevice = devices.where(
+          (device) =>
+              state.deviceView.keys.contains(device.id) &&
+              device.key != state.deviceView[device.id]?.key,
+        );
+        for (final device in [...newDevice, ...editedDevice]) {
+          // Checks whether topic of [Device] was subscribed or not
+          if (!subscribedTopics.keys.contains(formatStatusTopic(device.key))) {
+            // Subscribes topic if gatewayClient has connected successful
+            if (state.status.isConnected) {
+              state.gatewayClient!.subscribe(getDeviceTopic(device));
+              // we also subscribe status topic of device
+              // state.gatewayClient!.subscribe(formatStatusTopic(device.key));
+            }
+            subscribedTopics[getDeviceTopic(device)] = null;
+            // subscribedTopics[formatStatusTopic(device.key)] = null;
+            deviceStatusView[device.id] = null;
+          } else {
+            // Gets last message of this topic
+            final lastMessage = subscribedTopics[formatStatusTopic(device.key)];
+            // Get status of [Device]
+            final status = decodeStatusPayload(payload: lastMessage);
+            deviceStatusView[device.id] = status;
+          }
+        }
+        // Finds and handles deleted [Device]
+        final deletedDevices = state.devices.where(
+          (device) => !deviceView.keys.contains(device.id),
+        );
+        for (final device in deletedDevices) {
+          if (state.status.isConnected) {
+            state.gatewayClient!.unsubscribe(device.key);
+            // we also unsubscribe status topic of device
+            state.gatewayClient!.unsubscribe(formatStatusTopic(device.key));
+          }
+          subscribedTopics
+            ..remove(device.key)
+            ..remove(formatStatusTopic(device.key));
+          deviceStatusView.remove(device.id);
+        }
+        return state.copyWith(
+          deviceView: deviceView,
+          deviceStatusView: deviceStatusView,
+          subscribedTopics: subscribedTopics,
+        );
       },
     );
   }
@@ -190,7 +235,7 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
 
         // Creates copy of subscribedTopics
         final subscribedTopics =
-            Map<FieldId, String?>.from(state.subscribedTopics);
+            Map<String, String?>.from(state.subscribedTopics);
 
         // Creates tileValueView from new data
         final tileConfigView = {
@@ -198,31 +243,30 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
         };
 
         // Finds and handles new and edited [TileConfig]
-        final newTileConfigs = tileConfigs.where(
-          (tileConfig) => !state.tileConfigView.keys.contains(tileConfig.id),
-        );
-        final edittedTileConfigs = tileConfigs.where(
-          (tileConfig) =>
-              state.tileConfigView.keys.contains(tileConfig.id) &&
-              tileConfig != state.tileConfigView[tileConfig.id],
-        );
-        for (final tileConfig in [...newTileConfigs, ...edittedTileConfigs]) {
+        final newTileConfigs = tileConfigs
+            .where(
+              (tileConfig) =>
+                  !state.tileConfigView.keys.contains(tileConfig.id),
+            )
+            .toList();
+        final editedTileConfigs = tileConfigs
+            .where(
+              (tileConfig) =>
+                  state.tileConfigView.keys.contains(tileConfig.id) &&
+                  tileConfig != state.tileConfigView[tileConfig.id],
+            )
+            .toList();
+        for (final tileConfig in [...newTileConfigs, ...editedTileConfigs]) {
           // Retrieves [Device]
           final device = state.deviceView[tileConfig.deviceID];
           if (device == null) {
             throw Exception('can not find device of tile config');
           }
-          // Checks if topic of [Device] is subscribe
-          if (!subscribedTopics.keys.contains(device.topic)) {
-            // Subscribes topic if gatewayClient has connected successful
-            if (state.status.isConnected) {
-              state.gatewayClient!.subscribe(device.topic);
-              subscribedTopics[device.topic] = null;
-            }
-            tileValueView[tileConfig.id] = null;
-          } else if (subscribedTopics[device.topic] != null) {
+          // At here [Device] are 100% connected
+          // so we only check if last message is null or not
+          if (subscribedTopics[getDeviceTopic(device)] != null) {
             // Gets last message of this topic
-            final lastMessage = subscribedTopics[device.topic];
+            final lastMessage = subscribedTopics[getDeviceTopic(device)];
             // Get [JsonVariable] of new tile
             late String value;
             if (device.jsonEnable) {
@@ -248,8 +292,6 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
           (tileConfig) => !tileConfigView.keys.contains(tileConfig.id),
         );
         for (final tileConfig in deletedTileConfigs) {
-          // TODO(me): unsubscribed and delete topic
-          //  if there are none tile listen to it
           tileValueView.remove(tileConfig.id);
         }
         return state.copyWith(
@@ -261,7 +303,7 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
     );
   }
 
-  /// mqtt topic publish handle
+  /// handles message from MQTT broker
   Future<void> _onBrokerListened(
     BrokerListened event,
     Emitter<TilesOverviewState> emit,
@@ -271,6 +313,9 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
         repository.getPublishMsg(state.gatewayClient!),
         onData: (msg) {
           final tileValueView = Map<FieldId, String?>.from(state.tileValueView);
+          final deviceStatusView =
+              Map<FieldId, bool?>.from(state.deviceStatusView);
+
           final subscribedTopics =
               Map<String, String?>.from(state.subscribedTopics);
           // retrieve info from msg
@@ -278,52 +323,80 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
           final topic = msg[0];
           final payload = msg[1];
 
-          // iter through list of tile info to update
-          // using for with i counter to get index and better performance
-          for (var i = 0; i < state.tileConfigs.length; i++) {
-            // retrieve current list of tile info
-            final tileConfig = state.tileConfigs[i];
-            // retrieve matched mqtt device
-            final device = state.deviceView[tileConfig.deviceID];
-            if (device == null) {
-              throw Exception('cant find device info');
-            }
-            // check whether brokerID and topic of message matched
-            // with brokerID and topic of tile
-            if (topic == device.topic) {
+          for (final device in state.devices) {
+            if (topic == getDeviceTopic(device)) {
               // add payload as last message
               subscribedTopics[topic] = payload;
-              // filters payload by tile's type
-              late String value;
-              if (device.jsonEnable) {
-                final jsonVariable = device.jsonVariables.firstWhere(
-                  (jsonVaribale) =>
-                      jsonVaribale.id == tileConfig.tileData.getFieldId(),
-                  orElse: () => throw Exception('can not find json variable'),
-                );
-                value = decodeJsonPayload(
-                  jsonExtraction: jsonVariable.jsonExtraction,
-                  payload: payload,
-                );
-              } else {
-                value = payload;
+              final updatedTileConfigs = state.tileConfigs
+                  .where((tileConfig) => tileConfig.deviceID == device.id);
+              for (final tileConfig in updatedTileConfigs) {
+                late String value;
+                if (device.jsonEnable) {
+                  final jsonVariable = device.jsonVariables.firstWhere(
+                    (jsonVaribale) =>
+                        jsonVaribale.id == tileConfig.tileData.getFieldId(),
+                    orElse: () => throw Exception('can not find json variable'),
+                  );
+                  value = decodeJsonPayload(
+                    jsonExtraction: jsonVariable.jsonExtraction,
+                    payload: payload,
+                  );
+                } else {
+                  value = payload;
+                }
+                tileValueView[tileConfig.id] = value;
               }
-              tileValueView[tileConfig.id] = value;
+            }
+            // handles connection status message
+            else if (topic == formatStatusTopic(device.key)) {
+              final value = decodeStatusPayload(payload: payload);
+              subscribedTopics[formatStatusTopic(device.key)] = payload;
+              deviceStatusView[device.id] = value;
             }
           }
           return state.copyWith(
+            deviceStatusView: deviceStatusView,
             tileValueView: tileValueView,
             subscribedTopics: subscribedTopics,
           );
         },
       );
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      // emit(state.copyWith(status: TilesOverviewStatus.error));
     }
   }
 
+  /// Gets connection status topic from [Device].topic
+  String formatStatusTopic(String topic) => '$topic/<<status>>';
+
+  /// Gets topic of [Device]
+  String getDeviceTopic(Device device) {
+    final project = state.projectView[device.projectID];
+    final prefix = '${state.gatewayClient!.broker.username}/feeds';
+    return '$prefix/${project!.key}.${device.key}';
+  }
+
+  /// Decodes status payload into bool
+  bool? decodeStatusPayload({required String? payload}) {
+    if (payload != null) {
+      final status = decodeJsonPayload(
+        jsonExtraction: r'$["status"]',
+        payload: payload,
+      );
+      switch (status) {
+        case '0':
+          return false;
+        case '1':
+          return true;
+        default:
+          return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  /// Decodes message payload into bool
   String decodeJsonPayload({
     required String jsonExtraction,
     required String payload,

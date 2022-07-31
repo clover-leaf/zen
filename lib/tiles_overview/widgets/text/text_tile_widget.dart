@@ -40,9 +40,23 @@ class TextTileWidget extends StatelessWidget {
           if (value == null)
             const CircularProgressIndicator()
           else
-            Text(
-              '$prefix $value $postfix',
-              style: textTheme.titleLarge,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (prefix != null) Text(
+                  '$prefix ',
+                  style: textTheme.titleLarge,
+                ),
+                Text(
+                  value!,
+                  style: textTheme.titleLarge,
+                ),
+                if (postfix != null) Text(
+                  ' $postfix',
+                  style: textTheme.titleLarge,
+                ),
+              ],
             )
         ],
       ),

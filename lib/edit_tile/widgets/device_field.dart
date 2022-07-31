@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/edit_tile/bloc/edit_tile_bloc.dart';
 import 'package:flutter_firestore/edit_tile/widgets/widgets.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
@@ -16,6 +17,7 @@ class DeviceField extends StatelessWidget {
     final state = context.watch<EditTileBloc>().state;
     final status = state.status;
     final deviceView = state.deviceView;
+    final projectID = state.projectID;
 
     final deviceID = state.deviceID;
     final hintDevice = state.deviceView[deviceID];
@@ -27,6 +29,7 @@ class DeviceField extends StatelessWidget {
           showModalBottomSheet<void>(
             context: context,
             builder: (_) => DeviceListSheet(
+              projectID: projectID,
               paddingTop: MediaQuery.of(context).viewPadding.top,
               deviceView: deviceView,
               onTapped: (deviceID) => context
@@ -63,7 +66,7 @@ class DeviceField extends StatelessWidget {
                       horizontal: 16,
                     ),
                     child: SvgPicture.asset(
-                      MyIcon.cast.getPath(),
+                      Assets.icons.cast,
                       color: !status.isSaving
                           ? const Color(0xff676767)
                           : const Color(0xff989898),
@@ -114,18 +117,18 @@ class DeviceDetailText extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
             child: Text(
-              hintDevice!.topic,
+              hintDevice!.key,
               style: textTheme.labelSmall!.copyWith(
                 color: !status.isSaving
-                      ? const Color(0xff5a5a5a)
-                      : const Color(0xff989898),
+                    ? const Color(0xff5a5a5a)
+                    : const Color(0xff989898),
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.2,
               ),
             ),
           ),
           Text(
-            hintDevice!.title,
+            hintDevice!.name,
             style: textTheme.bodyMedium!.copyWith(
               color: const Color(0xff212121),
               fontWeight: FontWeight.w600,

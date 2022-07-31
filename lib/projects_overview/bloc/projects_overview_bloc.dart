@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'projects_overview_event.dart';
 part 'projects_overview_state.dart';
@@ -18,7 +18,7 @@ class ProjectsOverviewBloc
   }
 
   /// The IoT repository instance
-  final IotRepository repository;
+  final UserRepository repository;
 
   /// Initializes
   void _onInitializeRequested(
@@ -26,7 +26,11 @@ class ProjectsOverviewBloc
     Emitter<ProjectsOverviewState> emit,
   ) {
     add(const ProjectSubscriptionRequested());
-    emit(state.copyWith(status: ProjectsOverviewStatus.initialized));
+    emit(
+      state.copyWith(
+        status: ProjectsOverviewStatus.initialized,
+      ),
+    );
   }
 
   /// Subcribes [Stream] of [List] of [Project]

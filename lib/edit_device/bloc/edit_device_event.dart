@@ -20,22 +20,13 @@ class EditDeviceStatusChanged extends EditDeviceEvent {
   List<Object> get props => [status];
 }
 
-class EditDeviceTitleChanged extends EditDeviceEvent {
-  const EditDeviceTitleChanged(this.title);
+class EditDeviceNameChanged extends EditDeviceEvent {
+  const EditDeviceNameChanged(this.name);
 
-  final String title;
-
-  @override
-  List<Object> get props => [title];
-}
-
-class EditDeviceTopicChanged extends EditDeviceEvent {
-  const EditDeviceTopicChanged(this.topic);
-
-  final String topic;
+  final String name;
 
   @override
-  List<Object> get props => [topic];
+  List<Object> get props => [name];
 }
 
 class EditDeviceJsonEnableChanged extends EditDeviceEvent {

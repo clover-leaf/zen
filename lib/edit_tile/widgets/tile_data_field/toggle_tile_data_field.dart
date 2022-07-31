@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
 import 'package:flutter_firestore/common/widgets/widgets.dart';
 import 'package:flutter_firestore/edit_tile/bloc/edit_tile_bloc.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:iot_api/iot_api.dart';
 
 class ToggleTileDataField extends StatelessWidget {
@@ -11,13 +12,11 @@ class ToggleTileDataField extends StatelessWidget {
     required this.initTileData,
     required this.tileData,
     required this.status,
-    required this.isEditted,
   });
 
   final ToggleTileData tileData;
   final ToggleTileData? initTileData;
   final EditTileStatus status;
-  final bool isEditted;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class ToggleTileDataField extends StatelessWidget {
         MyTextField(
           initText: initTileData?.onLabel ?? tileData.onLabel,
           labelText: 'on label',
-          prefixIcon: MyIcon.textFill.getPath(),
+          prefixIcon: Assets.icons.textFill,
           horizontalPadding: Space.contentPaddingHorizontal.value,
           enabled: !status.isSaving,
           onChanged: (value) {
@@ -41,7 +40,7 @@ class ToggleTileDataField extends StatelessWidget {
           child: MyTextField(
             initText: initTileData?.onValue ?? tileData.onValue,
             labelText: 'on value',
-            prefixIcon: MyIcon.textFill.getPath(),
+            prefixIcon: Assets.icons.textFill,
             horizontalPadding: Space.contentPaddingHorizontal.value,
             enabled: !status.isSaving,
             onChanged: (value) {
@@ -59,7 +58,7 @@ class ToggleTileDataField extends StatelessWidget {
           child: MyTextField(
             initText: initTileData?.offLabel ?? tileData.offLabel,
             labelText: 'off label',
-            prefixIcon: MyIcon.textFill.getPath(),
+            prefixIcon: Assets.icons.textFill,
             horizontalPadding: Space.contentPaddingHorizontal.value,
             enabled: !status.isSaving,
             onChanged: (value) {
@@ -77,7 +76,7 @@ class ToggleTileDataField extends StatelessWidget {
           child: MyTextField(
             initText: initTileData?.offValue ?? tileData.offValue,
             labelText: 'off value',
-            prefixIcon: MyIcon.textFill.getPath(),
+            prefixIcon: Assets.icons.textFill,
             horizontalPadding: Space.contentPaddingHorizontal.value,
             enabled: !status.isSaving,
             onChanged: (value) {

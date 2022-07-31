@@ -1,44 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyOptionBox extends StatelessWidget {
   const MyOptionBox({
     super.key,
     required this.title,
-    required this.icon,
     required this.onPressed,
+    this.icon,
+    this.innerPadding = EdgeInsets.zero,
   });
 
   final String title;
-  final MyIcon icon;
+  final String? icon;
   final Function() onPressed;
+  final EdgeInsets innerPadding;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Material(
+      color: const Color(0xffffffff),
       child: InkWell(
         onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 12,
+            vertical: 16,
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w400,
+          child: Padding(
+            padding: innerPadding,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: textTheme.titleMedium,
                   ),
                 ),
-              ),
-              SvgPicture.asset(
-                icon.getPath(),
-                color: const Color(0xff212121),
-              ),
-            ],
+                SvgPicture.asset(
+                  icon ?? Assets.icons.rightMd,
+                  color: const Color(0xff676767),
+                ),
+              ],
+            ),
           ),
         ),
       ),

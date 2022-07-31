@@ -48,6 +48,15 @@ class BrokerListened extends TilesOverviewEvent {
   const BrokerListened();
 }
 
+class TileConfigDeleteRequested extends TilesOverviewEvent {
+  const TileConfigDeleteRequested(this.tileConfig);
+
+  final TileConfig tileConfig;
+
+  @override
+  List<Object> get props => [tileConfig];
+}
+
 class MessagePublishRequested extends TilesOverviewEvent {
   const MessagePublishRequested({
     required this.payload,

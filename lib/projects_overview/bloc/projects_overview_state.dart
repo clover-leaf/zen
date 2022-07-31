@@ -39,5 +39,5 @@ class ProjectsOverviewState extends Equatable {
       );
 
   @override
-  List<Object> get props => [status, projectView];
+  List<Object?> get props => [status, projectView];
 }

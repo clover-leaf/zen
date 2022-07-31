@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/edit_tile/view/edit_tile_page.dart';
 import 'package:flutter_firestore/tiles_overview/tiles_overview.dart';
 import 'package:flutter_firestore/tiles_overview/widgets/text/text_tile_widget.dart';
@@ -8,12 +9,14 @@ import 'package:iot_api/iot_api.dart';
 class TileWidget extends StatefulWidget {
   const TileWidget({
     super.key,
+    required this.projectID,
     required this.deviceView,
     required this.tileType,
     required this.tileConfig,
     required this.value,
   });
 
+  final FieldId projectID;
   final Map<FieldId, Device> deviceView;
   final TileType tileType;
   final TileConfig tileConfig;
@@ -63,6 +66,7 @@ class TileWidgetState extends State<TileWidget> {
               case EditTileMenuOption.edit:
                 Navigator.of(context).push<void>(
                   EditTilePage.route(
+                    projectID: widget.projectID,
                     tileType: widget.tileType,
                     deviceView: widget.deviceView,
                     initTileConfig: widget.tileConfig,
@@ -70,7 +74,11 @@ class TileWidgetState extends State<TileWidget> {
                 );
                 break;
               case EditTileMenuOption.delete:
-                // context.read<GatewayBloc>().add(event);
+                context.read<TilesOverviewBloc>().add(
+                      TileConfigDeleteRequested(
+                        widget.tileConfig,
+                      ),
+                    );
                 break;
               case EditTileMenuOption.duplicate:
                 // context.read<GatewayBloc>().add(event);

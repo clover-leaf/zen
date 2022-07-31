@@ -17,10 +17,15 @@ class Device extends Equatable {
   Device({
     FieldId? id,
     required this.projectID,
-    required this.topic,
-    required this.title,
+    required this.key,
+    required this.name,
+    this.description,
     required this.jsonEnable,
     required this.jsonVariables,
+    this.createdAt,
+    this.createdBy,
+    this.updatedAt,
+    this.updatedBy,
   })  : assert(
           id == null || id.isNotEmpty,
           'id can not be null and should be empty',
@@ -31,19 +36,41 @@ class Device extends Equatable {
   final FieldId id;
 
   /// The ID [Project] that device is belonged to
+  @JsonKey(name: 'project_id')
   final FieldId projectID;
 
-  /// The name of topic on broker
-  final String topic;
+  /// The name of key on broker
+  final String key;
 
-  /// The title of device
-  final String title;
+  /// The name of device
+  final String name;
+
+  /// The description of device
+  final String? description;
 
   /// The boolean that determines whether using JSON extraction
+  @JsonKey(name: 'json_enable')
   final bool jsonEnable;
 
   /// The list of [JsonVariable] of device
+  @JsonKey(name: 'json_variables')
   final List<JsonVariable> jsonVariables;
+
+  /// The list of [JsonVariable] of device
+  @JsonKey(name: 'created_at')
+  final DateTime? createdAt;
+
+  /// The list of [JsonVariable] of device
+  @JsonKey(name: 'created_by')
+  final FieldId? createdBy;
+
+  /// The list of [JsonVariable] of device
+  @JsonKey(name: 'updated_at')
+  final DateTime? updatedAt;
+
+  /// The list of [JsonVariable] of device
+  @JsonKey(name: 'updated_by')
+  final FieldId? updatedBy;
 
   /// Deserializes the given [JsonMap] into a [Device].
   static Device fromJson(JsonMap json) => _$DeviceFromJson(json);
@@ -55,28 +82,43 @@ class Device extends Equatable {
   Device copyWith({
     FieldId? id,
     FieldId? projectID,
-    String? topic,
-    String? title,
+    String? key,
+    String? name,
+    String? description,
     bool? jsonEnable,
     List<JsonVariable>? jsonVariables,
+    DateTime? createdAt,
+    FieldId? createdBy,
+    DateTime? updatedAt,
+    FieldId? updatedBy,
   }) {
     return Device(
       id: id ?? this.id,
       projectID: projectID ?? this.projectID,
-      topic: topic ?? this.topic,
-      title: title ?? this.title,
+      key: key ?? this.key,
+      name: name ?? this.name,
+      description: description ?? this.description,
       jsonEnable: jsonEnable ?? this.jsonEnable,
       jsonVariables: jsonVariables ?? this.jsonVariables,
+      createdAt: createdAt ?? this.createdAt,
+      createdBy: createdBy ?? this.createdBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      updatedBy: updatedBy ?? this.updatedBy,
     );
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         projectID,
-        topic,
-        title,
+        key,
+        name,
+        description,
         jsonEnable,
         jsonVariables,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
       ];
 }

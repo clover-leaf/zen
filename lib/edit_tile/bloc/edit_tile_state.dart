@@ -17,6 +17,7 @@ extension EditTileStatusX on EditTileStatus {
 class EditTileState extends Equatable {
   /// {macro EditTileState}
   EditTileState({
+    this.projectID,
     this.deviceView = const {},
     this.initTileConfig,
     required this.tileType,
@@ -27,13 +28,16 @@ class EditTileState extends Equatable {
   });
 
   // <<< IMMUTABLE >>>
+  /// The ID of showed [Project]
+  final FieldId? projectID;
+
   /// The map of [FieldId] of [Device] and it
   ///
   /// <Device.id, Device>
   final Map<FieldId, Device> deviceView;
 
   /// The [List] of [Device]
-  late final List<Device> mqttDevices = deviceView.values.toList();
+  late final List<Device> devices = deviceView.values.toList();
 
   /// The initial tile config
   final TileConfig? initTileConfig;
@@ -50,7 +54,7 @@ class EditTileState extends Equatable {
   final String? title;
 
   /// The tile config's device ID
-  final String? deviceID;
+  final FieldId? deviceID;
 
   /// The tile config's data
   final TileData tileData;
@@ -63,39 +67,43 @@ class EditTileState extends Equatable {
       return tileData.isFilled(device!);
     } else {
       final titleFilled = title != null && title != '';
-      final deviceIdFilled = deviceID != null && deviceID != '';
+      final deviceIdFilled = deviceID != null && deviceID != null;
       final device = deviceView[deviceID];
       if (device == null) {
         return false;
       }
-      return titleFilled && deviceIdFilled && tileData.isFilled(device); 
+      return titleFilled && deviceIdFilled && tileData.isFilled(device);
     }
   }
 
   /// Whether any field had edited or not
-  bool get isEditted {
+  bool get isEdited {
     if (initTileConfig != null) {
       return title != initTileConfig!.title ||
           deviceID != initTileConfig!.deviceID ||
           tileData != initTileConfig!.tileData;
     } else {
-      final placeholadTileConfig = TileConfig.placeholder(tileType: tileType);
-      return title != placeholadTileConfig.title ||
-          deviceID != placeholadTileConfig.deviceID ||
-          tileData != placeholadTileConfig.tileData;
+      final placeholadTileData = TileData.placeholder(tileType: tileType);
+      final isTitleEdited = title != null && title != '';
+      final isDeviceIdEdited = deviceID != null;
+      return isTitleEdited ||
+          isDeviceIdEdited ||
+          tileData != placeholadTileData;
     }
   }
 
   EditTileState copyWith({
+    FieldId? projectID,
     EditTileStatus? status,
     Map<FieldId, Device>? deviceView,
     TileConfig? initTileConfig,
     String? title,
-    String? deviceID,
+    FieldId? deviceID,
     TileType? tileType,
     TileData? tileData,
   }) {
     return EditTileState(
+      projectID: projectID ?? this.projectID,
       status: status ?? this.status,
       deviceView: deviceView ?? this.deviceView,
       initTileConfig: initTileConfig ?? this.initTileConfig,
@@ -109,6 +117,7 @@ class EditTileState extends Equatable {
   @override
   List<Object?> get props {
     return [
+      projectID,
       status,
       deviceView,
       title,

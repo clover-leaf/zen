@@ -21,7 +21,7 @@ class TileData {
 
   /// Deserializes the given [JsonMap] into a [TileData]
   factory TileData.fromJson(JsonMap json) {
-    final type = TileTypeX.fromJsonKey(json['type'] as int);
+    final type = TileTypeX.fromJsonKey(json['tileType'] as int);
     switch (type) {
       case TileType.toggle:
         return ToggleTileData.fromJson(json);
@@ -31,10 +31,10 @@ class TileData {
   }
 
   /// Gets the id [JsonVariable] of tile
-  FieldId getFieldId() => '';
+  FieldId? getFieldId() => null;
 
   /// Sets the id [JsonVariable] of tile
-  TileData setFieldId(FieldId id) => this;
+  TileData setFieldId(FieldId? id) => this;
 
   /// Converts this [TileConfig] into a [JsonMap]
   JsonMap toJson() => <String, dynamic>{};

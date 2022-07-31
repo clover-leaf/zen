@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'edit_device_event.dart';
 part 'edit_device_state.dart';
@@ -11,24 +10,23 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
   EditDeviceBloc({
     required this.repository,
     required Device? initDevice,
-    required FieldId projectID,
+    required Project project,
   }) : super(
           EditDeviceState(
             initDevice: initDevice,
-            projectID: projectID,
+            project: project,
           ),
         ) {
     on<EditDeviceInitialized>(_onInitialized);
     on<EditDeviceStatusChanged>(_onStatusChanged);
-    on<EditDeviceTitleChanged>(_onTitleChanged);
-    on<EditDeviceTopicChanged>(_onEditDeviceTopicChanged);
+    on<EditDeviceNameChanged>(_onNameChanged);
     on<EditDeviceJsonEnableChanged>(_onEditDeviceJsonEnableChanged);
     on<EditDeviceJsonVariableSaved>(_onEditDeviceJsonVariableSaved);
     on<EditDeviceJsonVariableDeleted>(_onEditDeviceJsonVariableDeleted);
     on<EditDeviceSubmitted>(_onEditDeviceSummited);
   }
 
-  final IotRepository repository;
+  final UserRepository repository;
 
   void _onInitialized(
     EditDeviceInitialized event,
@@ -38,8 +36,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
       emit(
         state.copyWith(
           status: EditDeviceStatus.initialized,
-          title: state.initDevice!.title,
-          topic: state.initDevice!.topic,
+          name: state.initDevice!.name,
           jsonEnable: state.initDevice!.jsonEnable,
           jsonVariables: state.initDevice!.jsonVariables,
         ),
@@ -56,18 +53,11 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(state.copyWith(status: event.status));
   }
 
-  void _onTitleChanged(
-    EditDeviceTitleChanged event,
+  void _onNameChanged(
+    EditDeviceNameChanged event,
     Emitter<EditDeviceState> emit,
   ) {
-    emit(state.copyWith(title: event.title));
-  }
-
-  void _onEditDeviceTopicChanged(
-    EditDeviceTopicChanged event,
-    Emitter<EditDeviceState> emit,
-  ) {
-    emit(state.copyWith(topic: event.topic));
+    emit(state.copyWith(name: event.name));
   }
 
   void _onEditDeviceJsonEnableChanged(
@@ -112,28 +102,36 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(state.copyWith(status: EditDeviceStatus.saving));
     late Device device;
     if (state.initDevice != null) {
-      device = Device(
-        id: state.initDevice!.id,
-        title: state.title ?? state.initDevice!.title,
-        projectID: state.projectID ?? state.initDevice!.projectID,
-        topic: state.topic ?? state.initDevice!.topic,
+      device = state.initDevice!.copyWith(
+        name: state.name ?? state.initDevice!.name,
+        projectID: state.project.id,
         jsonEnable: state.jsonEnable,
         jsonVariables: state.jsonVariables,
       );
+      try {
+        await repository.updateDevice(
+          device,
+          state.project.key,
+          state.initDevice!.key,
+        );
+        emit(state.copyWith(status: EditDeviceStatus.success));
+      } catch (e) {
+        emit(state.copyWith(status: EditDeviceStatus.failure));
+      }
     } else {
       device = Device(
-        title: state.title ?? state.initDevice!.title,
-        projectID: state.projectID ?? state.initDevice!.projectID,
-        topic: state.topic ?? state.initDevice!.topic,
+        name: state.name!,
+        key: state.name!,
+        projectID: state.project.id,
         jsonEnable: state.jsonEnable,
         jsonVariables: state.jsonVariables,
       );
-    }
-    try {
-      await repository.saveDevice(device);
-      emit(state.copyWith(status: EditDeviceStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: EditDeviceStatus.failure));
+      try {
+        await repository.saveDevice(device, state.project.key);
+        emit(state.copyWith(status: EditDeviceStatus.success));
+      } catch (e) {
+        emit(state.copyWith(status: EditDeviceStatus.failure));
+      }
     }
   }
 }

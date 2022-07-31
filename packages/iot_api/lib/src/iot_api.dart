@@ -7,17 +7,20 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
-  /// Gets the [Broker]
-  Broker getBroker();
+  /// Initializes [Stream]
+  Future<void> initialized();
+
+  /// Refresh all [Project] and [Device]
+  Future<void> refresh();
 
   /// Get latest [List] of [Project]
-  List<Project> refreshProject();
+  Future<List<Project>> fetchProjects();
 
   /// Get latest [List] of [Device]
-  List<Device> refreshDevice();
-  
+  Future<List<Device>> fetchDevices(List<Project> projects);
+
   /// Get latest [List] of [TileConfig]
-  List<TileConfig> refreshTileConfig();
+  Future<List<TileConfig>> fetchTileConfigs();
 
   /// Gets the [Stream] of [List] of [Project]
   Stream<List<Project>> getProjects();
@@ -32,9 +35,26 @@ abstract class IotApi {
   /// else saves it
   Future<void> saveTileConfig(TileConfig tileConfig);
 
-  /// If this [Device] existed in db, updates it,
-  /// else saves it
-  Future<void> saveDevice(Device device);
+  /// If this [TileConfig] existed in db, deletes it
+  Future<void> deleteTileConfig(TileConfig tileConfig);
+
+  /// Saves [Device]
+  Future<void> saveDevice(Device device, String projectKey);
+
+  /// Updates [Device]
+  Future<void> updateDevice(Device device, String projectKey, String oldKey);
+
+  /// If this [Device] existed in db, deletes it
+  Future<void> deleteDevice(Device device);
+
+  /// Saves new [Project]
+  Future<void> saveProject(Project project);
+
+  /// Updates new [Project]
+  Future<void> updateProject(Project project, String oldKey);
+
+  /// If this [Project] existed in db, deletes it
+  Future<void> deleteProject(Project project);
 }
 
 /// Error throw when request failure

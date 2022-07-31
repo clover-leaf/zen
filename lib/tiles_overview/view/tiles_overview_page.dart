@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/edit_tile/view/edit_tile_page.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_firestore/tiles_overview/tiles_overview.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 class TilesOverviewPage extends StatelessWidget {
   const TilesOverviewPage({super.key});
+
+  static Page<void> page() =>
+      const MaterialPage<void>(child: TilesOverviewPage());
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TilesOverviewBloc(
-        repository: context.read<IotRepository>(),
+        repository: context.read<UserRepository>(),
       )..add(const InitializeRequested()),
       child: const TilesOverviewView(),
     );
@@ -32,6 +36,7 @@ class TilesOverviewView extends StatelessWidget {
     final tileValueView = state.tileValueView;
     final tileConfigView = state.tileConfigView;
     final deviceView = state.deviceView;
+    final deviceStatusView = state.deviceStatusView;
     final projects = state.projects;
     final projectView = state.projectView;
     final projectID = state.projectID;
@@ -46,39 +51,68 @@ class TilesOverviewView extends StatelessWidget {
           context: context,
           builder: (_) => const NewTileSheet(),
         ).then((value) {
-          if (value != null) {
-            Navigator.of(context).push<void>(
-              EditTilePage.route(
-                tileType: value,
-                deviceView: deviceView,
-                initTileConfig: null,
-              ),
-            );
+          if (value != null && !status.isInitializing) {
+            if (projectID == null) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  MySnackBar.showSnackBar(
+                    context: context,
+                    content: 'There are no projects',
+                    snackBarType: SnackBarType.error,
+                  ),
+                );
+            } else {
+              Navigator.of(context).push<void>(
+                EditTilePage.route(
+                  projectID: projectID,
+                  tileType: value,
+                  deviceView: deviceView,
+                  initTileConfig: null,
+                ),
+              );
+            }
           }
         }),
       ),
       bottomNavigationBar: MyBottomAppbar(
-        prefixIcon: MyIcon.justify.getPath(),
-        prefixOnTapped: () => status.isInitializing
-            ? null
-            : showModalBottomSheet<FieldId>(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (_) => MenuSheet(
-                  projects: projects,
-                  projectView: projectView,
-                  deviceView: deviceView,
-                ),
-              ).then((projectID) {
-                if (projectID != null) {
-                  context
-                      .read<TilesOverviewBloc>()
-                      .add(ProjectChangeRequested(projectID));
-                }
-              }),
-        postfixIcon: MyIcon.template.getPath(),
-        postfixOnTapped: () {},
+        prefixIcon: Assets.icons.justify,
+        prefixOnTapped: () {
+          if (!status.isInitializing) {
+            showModalBottomSheet<FieldId>(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (_) => MenuSheet(
+                projects: projects,
+                projectView: projectView,
+                deviceView: deviceView,
+              ),
+            ).then((projectID) {
+              if (projectID != null) {
+                context
+                    .read<TilesOverviewBloc>()
+                    .add(ProjectChangeRequested(projectID));
+              }
+            });
+          }
+        },
+        postfixIcon: Assets.icons.template,
+        postfixOnTapped: () {
+          if (!status.isInitializing) {
+            showModalBottomSheet<FieldId>(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (_) => DeviceStatusSheet(
+                project: projectView[projectID]!,
+                deviceStatusView: deviceStatusView,
+                paddingTop: MediaQuery.of(context).viewPadding.top,
+                deviceView: deviceView,
+              ),
+            );
+          }
+        },
       ),
       body: BlocBuilder<TilesOverviewBloc, TilesOverviewState>(
         buildWhen: (previous, current) => previous.status != current.status,
@@ -120,10 +154,17 @@ class TilesOverviewView extends StatelessWidget {
                     ),
                   ),
                 if (projectID == null)
-                  Center(
-                    child: Text(
-                      'There is no project',
-                      style: textTheme.displaySmall,
+                  const Expanded(
+                    child: MyEmptyPage(
+                      message: 'There are no projects.'
+                          ' \nCreate a new ones to start!',
+                    ),
+                  )
+                else if (showedTileConfigIDs.isEmpty)
+                  const Expanded(
+                    child: MyEmptyPage(
+                      message: 'There are no tile configs.'
+                          ' \nCreate a new ones to start!',
                     ),
                   )
                 else
@@ -144,6 +185,7 @@ class TilesOverviewView extends StatelessWidget {
                               final tileType = tileConfig.tileType;
                               final value = tileValueView[tileConfigID];
                               return TileWidget(
+                                projectID: projectID,
                                 deviceView: deviceView,
                                 tileType: tileType,
                                 tileConfig: tileConfig,
@@ -177,7 +219,7 @@ class _Headline extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: Space.contentItemGap.value),
       child: Text(
-        projectView[projectID]!.title,
+        projectView[projectID]!.name,
         style: textTheme.headlineSmall,
       ),
     );

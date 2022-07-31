@@ -21,6 +21,7 @@ class TilesOverviewState extends Equatable {
     this.projectID,
     this.projectView = const {},
     this.deviceView = const {},
+    this.deviceStatusView = const {},
     this.tileConfigView = const {},
     this.tileValueView = const {},
     this.subscribedTopics = const {},
@@ -64,6 +65,14 @@ class TilesOverviewState extends Equatable {
   /// The list of [TileConfig]
   late final List<TileConfig> tileConfigs = tileConfigView.values.toList();
 
+  /// The map of [Device] with its connection status
+  ///
+  /// There is a bijection from deviceView to deviceStatusView
+  /// When deviceView changes, it also changes
+  /// Beside, it only change value of pair when coming payload listened,
+  /// but never change its size in this case
+  final Map<FieldId, bool?> deviceStatusView;
+
   /// The map of [TileConfig] with its latest value
   ///
   /// There is a bijection from tileConfigView to TileValueView
@@ -93,7 +102,6 @@ class TilesOverviewState extends Equatable {
       for (final device in devices) device.id: device.projectID
     };
     final showedTileConfigIDs = <FieldId>[];
-    // print(projectID);
     for (final tileConfig in tileConfigs) {
       if (deviceToProjectView[tileConfig.deviceID] == projectID) {
         showedTileConfigIDs.add(tileConfig.id);
@@ -109,6 +117,7 @@ class TilesOverviewState extends Equatable {
     FieldId? projectID,
     Map<FieldId, Project>? projectView,
     Map<FieldId, Device>? deviceView,
+    Map<FieldId, bool?>? deviceStatusView,
     Map<FieldId, TileConfig>? tileConfigView,
     Map<FieldId, String?>? tileValueView,
     Map<String, String?>? subscribedTopics,
@@ -119,6 +128,7 @@ class TilesOverviewState extends Equatable {
         projectID: projectID ?? this.projectID,
         projectView: projectView ?? this.projectView,
         deviceView: deviceView ?? this.deviceView,
+        deviceStatusView: deviceStatusView ?? this.deviceStatusView,
         tileConfigView: tileConfigView ?? this.tileConfigView,
         tileValueView: tileValueView ?? this.tileValueView,
         subscribedTopics: subscribedTopics ?? this.subscribedTopics,
@@ -131,6 +141,7 @@ class TilesOverviewState extends Equatable {
         projectID,
         projectView,
         deviceView,
+        deviceStatusView,
         tileConfigView,
         tileValueView,
         subscribedTopics,

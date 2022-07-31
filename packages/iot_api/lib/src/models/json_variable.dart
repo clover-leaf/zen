@@ -15,9 +15,9 @@ part 'generated/json_variable.g.dart';
 class JsonVariable extends Equatable {
   /// {macro JsonVariable}
   JsonVariable({
-    FieldId? id,
+    String? id,
     required this.deviceID,
-    required this.title,
+    required this.name,
     required this.jsonExtraction,
   })  : assert(
           id == null || id.isNotEmpty,
@@ -26,21 +26,25 @@ class JsonVariable extends Equatable {
         id = id ?? const Uuid().v4();
 
   /// The json variable ID
+  @JsonKey(name: 'id')
   final FieldId id;
 
   /// The ID of [Device] that variable is belonged to
-  final FieldId deviceID;
+  @JsonKey(name: 'device_id')
+  final FieldId? deviceID;
 
-  /// The title of variable
-  final String title;
+  /// The name of variable
+  @JsonKey(name: 'name')
+  final String name;
 
   /// The JSON extraction value
   ///
   /// more info at https://github.com/f3ath/jessie
+  @JsonKey(name: 'json_extraction')
   final String jsonExtraction;
 
   /// Whether every needed fields had filled or not
-  bool get isFilled => title != '' && jsonExtraction != '';
+  bool get isFilled => name != '' && jsonExtraction != '';
 
   /// Deserializes the given [JsonMap] into a [JsonVariable].
   static JsonVariable fromJson(JsonMap json) => _$JsonVariableFromJson(json);
@@ -52,17 +56,17 @@ class JsonVariable extends Equatable {
   JsonVariable copyWith({
     FieldId? id,
     FieldId? deviceID,
-    String? title,
+    String? name,
     String? jsonExtraction,
   }) {
     return JsonVariable(
       id: id ?? this.id,
       deviceID: deviceID ?? this.deviceID,
-      title: title ?? this.title,
+      name: name ?? this.name,
       jsonExtraction: jsonExtraction ?? this.jsonExtraction,
     );
   }
 
   @override
-  List<Object> get props => [id, deviceID, title, jsonExtraction];
+  List<Object?> get props => [id, deviceID, name, jsonExtraction];
 }

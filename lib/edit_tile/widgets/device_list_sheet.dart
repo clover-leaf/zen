@@ -1,24 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/common/widgets/my_empty_page.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
 class DeviceListSheet extends StatelessWidget {
   DeviceListSheet({
     super.key,
+    required this.projectID,
     required this.paddingTop,
     required this.deviceView,
     required this.onTapped,
   });
 
+  /// The ID of showed [Project]
+  final FieldId? projectID;
+
+  /// The top padding
   final double paddingTop;
 
-  /// <deviceId, Device>
+  /// The map of [FieldId] of [Device] and it
+  ///
+  /// <Device.id, Device>
   final Map<FieldId, Device> deviceView;
+
+  /// The [List] of [Device]
   late final List<Device> devices = deviceView.values.toList();
 
-  /// update deviceId function
-  final Function(String) onTapped;
+  /// The [List] of showed [Device]
+  late final List<Device> showedDevices = deviceView.values
+      .where((device) => device.projectID == projectID)
+      .toList();
+
+  /// The update deviceId function
+  final Function(FieldId) onTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +53,15 @@ class DeviceListSheet extends StatelessWidget {
         children: [
           const _Headline(),
           if (devices.isEmpty)
-            const Center(
-              child: Text(
-                'There are no devices in this project',
+            const Expanded(
+              child: MyEmptyPage(
+                message: 'There are no devices.'
+                    ' \nCreate a new ones to start!',
               ),
             )
           else
             _DeviceList(
-              devices: devices,
+              devices: showedDevices,
               onTapped: onTapped,
             )
         ],
@@ -71,7 +88,7 @@ class _Headline extends StatelessWidget {
                 right: 12,
               ),
               child: SvgPicture.asset(
-                MyIcon.leftButton.getPath(),
+                Assets.icons.leftButton,
                 color: const Color(0xff757575),
               ),
             ),
@@ -93,7 +110,7 @@ class _DeviceList extends StatelessWidget {
   });
 
   final List<Device> devices;
-  final Function(String) onTapped;
+  final Function(FieldId) onTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +139,9 @@ class _DeviceList extends StatelessWidget {
             },
             behavior: HitTestBehavior.opaque,
             child: DeviceLine(
-              title: device.title,
+              title: device.name,
               titleStyle: titleStyle,
-              subtitle: device.topic,
+              subtitle: device.key,
               subtitleStyle: subtitleStyle,
             ),
           );

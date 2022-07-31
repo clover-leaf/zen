@@ -11,6 +11,10 @@ class InitializeRequested extends DevicesOverviewEvent {
   const InitializeRequested();
 }
 
+class ProjectSubscriptionRequested extends DevicesOverviewEvent {
+  const ProjectSubscriptionRequested();
+}
+
 class DeviceSubscriptionRequested extends DevicesOverviewEvent {
   const DeviceSubscriptionRequested();
 }

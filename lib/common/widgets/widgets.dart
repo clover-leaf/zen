@@ -3,6 +3,7 @@ export 'my_bottom_appbar.dart';
 export 'my_circular_progress.dart';
 export 'my_confirm_dialog.dart';
 export 'my_elevated_button.dart';
+export 'my_empty_page.dart';
 export 'my_floating_button.dart';
 export 'my_option_box.dart';
 export 'my_outline_button.dart';

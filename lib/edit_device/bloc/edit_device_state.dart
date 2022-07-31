@@ -14,14 +14,12 @@ extension EditDeviceStatusX on EditDeviceStatus {
   bool get isFailure => this == EditDeviceStatus.failure;
 }
 
-@immutable
 class EditDeviceState extends Equatable {
-  const EditDeviceState({
+  EditDeviceState({
     this.status = EditDeviceStatus.initializing,
-    required this.projectID,
+    required this.project,
     this.initDevice,
-    this.title,
-    this.topic,
+    this.name,
     this.jsonEnable = false,
     this.jsonVariables = const [],
   });
@@ -30,19 +28,19 @@ class EditDeviceState extends Equatable {
   /// The initial device
   final Device? initDevice;
 
-  /// The [Project] ID
-  final FieldId? projectID;
+  /// The [Project]
+  final Project project;
   // <<< IMMUTABLE >>>
 
   // <<< MUTABLE >>>
   /// The status of state
   final EditDeviceStatus status;
 
-  /// The device's title
-  final String? title;
+  /// The device's name
+  final String? name;
 
-  /// The device's topic
-  final String? topic;
+  /// The device's key
+  late final String? key = initDevice?.key ?? name?.replaceAll(' ', '-');
 
   /// The device's json enable
   final bool jsonEnable;
@@ -51,45 +49,48 @@ class EditDeviceState extends Equatable {
   final List<JsonVariable> jsonVariables;
   // <<< MUTABLE >>>
 
+  /// Whether key name is legal
+  bool isLegal() {
+    return key != null && !key!.endsWith('<<status>>');
+  }
+
   /// Whether every needed fields had filled or not
   bool isFilled() {
-    final titleFilled = title != null && title != '';
-    final topicFilled = topic != null && topic != '';
+    final nameFilled = name != null && name != '';
+    final keyFilled = key != null && key != '';
     final jsonVariablesFilled = !jsonVariables
         .map((jsonVariable) => jsonVariable.isFilled)
         .contains(false);
-    return titleFilled && topicFilled && jsonVariablesFilled;
+    return nameFilled && keyFilled && jsonVariablesFilled;
   }
 
   /// Whether any field had edited or not
   bool isEdited() {
     if (initDevice != null) {
-      return title != initDevice!.title ||
-          topic != initDevice!.topic ||
+      return name != initDevice!.name ||
+          key != initDevice!.key ||
           jsonEnable != initDevice!.jsonEnable ||
           jsonVariables != initDevice!.jsonVariables;
     } else {
-      return (title != null && title != '') &&
-          (topic != null && topic != '') &&
+      return (name != null && name != '') &&
+          (key != null && key != '') &&
           jsonVariables != <JsonVariable>[];
     }
   }
 
   EditDeviceState copyWith({
     Device? initDevice,
-    FieldId? projectID,
+    Project? project,
     EditDeviceStatus? status,
-    String? title,
-    String? topic,
+    String? name,
     bool? jsonEnable,
     List<JsonVariable>? jsonVariables,
   }) {
     return EditDeviceState(
       initDevice: initDevice ?? this.initDevice,
-      projectID: projectID ?? this.projectID,
+      project: project ?? this.project,
       status: status ?? this.status,
-      title: title ?? this.title,
-      topic: topic ?? this.topic,
+      name: name ?? this.name,
       jsonEnable: jsonEnable ?? this.jsonEnable,
       jsonVariables: jsonVariables ?? this.jsonVariables,
     );
@@ -99,10 +100,9 @@ class EditDeviceState extends Equatable {
   List<Object?> get props {
     return [
       initDevice,
-      projectID,
+      project,
       status,
-      title,
-      topic,
+      name,
       jsonEnable,
       jsonVariables,
     ];

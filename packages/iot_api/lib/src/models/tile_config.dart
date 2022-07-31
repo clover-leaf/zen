@@ -15,7 +15,7 @@ part 'generated/tile_config.g.dart';
 class TileConfig extends Equatable {
   /// {@macro TileConfig}
   TileConfig({
-    String? id,
+    FieldId? id,
     required this.title,
     required this.deviceID,
     required this.tileType,
@@ -26,24 +26,14 @@ class TileConfig extends Equatable {
         ),
         id = id ?? const Uuid().v4();
 
-  /// The factory that creates empty instance
-  factory TileConfig.placeholder({required TileType tileType}) {
-    return TileConfig(
-      title: '',
-      deviceID: '',
-      tileType: tileType,
-      tileData: TileData.placeholder(tileType: tileType),
-    );
-  }
-
   /// The id of tile
-  final String id;
+  final FieldId id;
 
   /// The title of tile
   final String title;
 
   /// The id of [Device] that tile monitored
-  final String deviceID;
+  final FieldId deviceID;
 
   /// The type of tile
   final TileType tileType;
@@ -59,9 +49,9 @@ class TileConfig extends Equatable {
 
   /// Returns a copy of [TileConfig] with given parameters
   TileConfig copyWith({
-    String? id,
+    FieldId? id,
     String? title,
-    String? deviceID,
+    FieldId? deviceID,
     TileType? tileType,
     TileData? tileData,
   }) {
@@ -75,7 +65,7 @@ class TileConfig extends Equatable {
   }
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [id, title, deviceID, tileType, tileData];
   }
 }

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:iot_api/iot_api.dart';
-import 'package:iot_repository/iot_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'project_detail_event.dart';
 part 'project_detail_state.dart';
@@ -10,17 +10,13 @@ class ProjectDetailBloc extends Bloc<ProjectDetailEvent, ProjectDetailState> {
   ProjectDetailBloc({
     required this.repository,
     required FieldId projectID,
-  }) : super(
-          ProjectDetailState(
-            projectID: projectID,
-          ),
-        ) {
+  }) : super(ProjectDetailState(projectID: projectID)) {
     on<InitializeRequested>(_onInitializeRequested);
     on<ProjectSubscriptionRequested>(_onProjectSubscriptionRequested);
   }
 
   /// The IoT repository instance
-  final IotRepository repository;
+  final UserRepository repository;
 
   /// Initializes
   void _onInitializeRequested(

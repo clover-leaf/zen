@@ -46,6 +46,7 @@ class _MyOutlineButtonState extends State<MyOutlineButton> {
 
     return Padding(
       padding: widget.padding,
+      // ignore: use_decorated_box
       child: Container(
         // alignment: Alignment.centerLeft,
         decoration: ShapeDecoration(
