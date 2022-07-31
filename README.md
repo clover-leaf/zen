@@ -4,7 +4,7 @@
 ## Project
 ### Get all project
 ```sh
-# GET /api/projects
+GET /api/projects
 ```
 Output body
 ```json
@@ -26,7 +26,7 @@ Output body
 ```
 ### Create project
 ```sh
-# POST /api/projects
+POST /api/projects
 ```
 Input body
 ```json
@@ -56,7 +56,7 @@ Output body
 ```
 ### Update project
 ```sh
-# PUT /api/projects/<old-key>
+PUT /api/projects/<old-key>
 ```
 Input body
 ```json
@@ -89,7 +89,7 @@ Output body
 ## Device
 ### Get all device
 ```sh
-# GET /api/devices
+GET /api/devices
 ```
 Output body
 ```json
@@ -121,7 +121,7 @@ Output body
 ```
 ### Create device
 ```sh
-# POST /api/devices
+POST /api/devices
 ```
 Input body
 ```json
@@ -145,7 +145,7 @@ Input body
 },
 ```
 Output body
-```
+```json
 {
     "success": true,
     "data": {            
@@ -172,7 +172,7 @@ Output body
 ```
 ### Update device
 ```sh
-# PUT /api/devices/<old-key>
+PUT /api/devices/<old-key>
 ```
 Input body
 ```json
@@ -215,7 +215,7 @@ Output body
 ## Tile-config
 ### Get all tile-config
 ```sh
-# GET /api/tile-configs
+GET /api/tile-configs
 ```
 Output body
 ```json
@@ -238,7 +238,7 @@ Output body
 ```
 ### Create tile-config
 ```sh
-# POST /api/tile-configs
+POST /api/tile-configs
 ```
 Input body
 ```json
@@ -273,7 +273,7 @@ Output body
 ```
 ### Update tile-config
 ```sh
-# PUT /api/tile-configs
+PUT /api/tile-configs
 ```
 Input body
 ```json
