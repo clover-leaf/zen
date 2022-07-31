@@ -277,13 +277,16 @@ Output body
 ```
 Input body
 ```json
-{
+{            
     "id": "uuid",
-    "key": "string",
     "name": "string",
-    "created_by": "uuid",
-    "description": "string",
-    "user_id": "uuid"
+    "tile_type": int,
+    "device_id": "uuid",
+    "tile_data":{
+        "prefix": "uuid",
+        "postfix": "string",
+        "json_variable_id": "uuid",
+    },
 }
 ```
 Output body
