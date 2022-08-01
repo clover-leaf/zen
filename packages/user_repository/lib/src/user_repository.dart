@@ -40,9 +40,6 @@ class UserRepository {
   /// Method to do signOut.
   Future<void> signOut() async => _authClient.signOut();
 
-  /// Initializes [Stream]
-  Future<void> initialized() => _databaseClient.initialized();
-
   /// Get latest [List] of [Project]
   Future<void> refresh() => _databaseClient.refresh();
 
@@ -59,10 +56,13 @@ class UserRepository {
   /// Gets the [Stream] of [List] of [TileConfig]
   Stream<List<TileConfig>> getTileConfigs() => _databaseClient.getTileConfigs();
 
-  /// If this [TileConfig] existed in db, updates it,
-  /// else saves it
+  /// Saves [TileConfig]
   Future<void> saveTileConfig(TileConfig tileConfig) {
     return _databaseClient.saveTileConfig(tileConfig);
+  }
+  /// Updates [TileConfig]
+  Future<void> updateTileConfig(TileConfig tileConfig) {
+    return _databaseClient.updateTileConfig(tileConfig);
   }
 
   /// If this [TileConfig] existed in db, deletes it

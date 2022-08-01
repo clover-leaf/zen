@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firestore/common/constants/constants.dart';
+import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_firestore/tiles_overview/widgets/toggle/toggle_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
 
 class ToggleTileWidget extends StatelessWidget {
@@ -15,33 +16,49 @@ class ToggleTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = tileConfig.title;
+    final name = tileConfig.name;
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      height: 144,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-        border: Border.all(
-          color: const Color(0xffd3d3d3),
-          width: Space.globalBorderWidth.value,
-        ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 24,
       ),
       alignment: Alignment.center,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Text(title, style: textTheme.titleMedium),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Text(
+              name,
+              style: textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-          if (value == null)
-            const CircularProgressIndicator()
-          else
-            ToggleButton(
-              value: value,
-              tileConfig: tileConfig,
-            )
+          Flexible(
+            flex: 4,
+            fit: FlexFit.tight,
+            child: SvgPicture.asset(
+              Assets.icons.lightbulb,
+              height: 40,
+              width: 40,
+            ),
+          ),
+          Flexible(
+            flex: 4,
+            fit: FlexFit.tight,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: (value == null)
+                ? const CircularProgressIndicator()
+                : ToggleButton(
+                    value: value,
+                    tileConfig: tileConfig,
+                  ),
+            ),
+          ),
         ],
       ),
     );

@@ -16,7 +16,7 @@ class TileConfig extends Equatable {
   /// {@macro TileConfig}
   TileConfig({
     FieldId? id,
-    required this.title,
+    required this.name,
     required this.deviceID,
     required this.tileType,
     required this.tileData,
@@ -29,15 +29,18 @@ class TileConfig extends Equatable {
   /// The id of tile
   final FieldId id;
 
-  /// The title of tile
-  final String title;
+  /// The name of tile
+  final String name;
 
+  @JsonKey(name: 'device_id')
   /// The id of [Device] that tile monitored
   final FieldId deviceID;
 
+  @JsonKey(name: 'tile_type')
   /// The type of tile
   final TileType tileType;
 
+  @JsonKey(name: 'tile_data')
   /// The data of tile
   final TileData tileData;
 
@@ -50,14 +53,14 @@ class TileConfig extends Equatable {
   /// Returns a copy of [TileConfig] with given parameters
   TileConfig copyWith({
     FieldId? id,
-    String? title,
+    String? name,
     FieldId? deviceID,
     TileType? tileType,
     TileData? tileData,
   }) {
     return TileConfig(
       id: id ?? this.id,
-      title: title ?? this.title,
+      name: name ?? this.name,
       deviceID: deviceID ?? this.deviceID,
       tileType: tileType ?? this.tileType,
       tileData: tileData ?? this.tileData,
@@ -66,6 +69,6 @@ class TileConfig extends Equatable {
 
   @override
   List<Object?> get props {
-    return [id, title, deviceID, tileType, tileData];
+    return [id, name, deviceID, tileType, tileData];
   }
 }

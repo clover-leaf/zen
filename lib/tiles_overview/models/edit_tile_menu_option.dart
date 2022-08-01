@@ -1,11 +1,8 @@
-
 /// The enum option of edit tile dialog
 enum EditTileMenuOption {
   edit,
   delete,
-  duplicate,
 }
-
 
 /// helper
 extension EditTileMenuOptionX on EditTileMenuOption {
@@ -16,8 +13,6 @@ extension EditTileMenuOptionX on EditTileMenuOption {
         return 'Edit';
       case EditTileMenuOption.delete:
         return 'Delete';
-      case EditTileMenuOption.duplicate:
-        return 'Duplicate';
     }
   }
 }

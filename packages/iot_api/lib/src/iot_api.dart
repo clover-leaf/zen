@@ -7,9 +7,6 @@ abstract class IotApi {
   /// {@macro iot_api}
   const IotApi();
 
-  /// Initializes [Stream]
-  Future<void> initialized();
-
   /// Refresh all [Project] and [Device]
   Future<void> refresh();
 
@@ -17,7 +14,7 @@ abstract class IotApi {
   Future<List<Project>> fetchProjects();
 
   /// Get latest [List] of [Device]
-  Future<List<Device>> fetchDevices(List<Project> projects);
+  Future<List<Device>> fetchDevices();
 
   /// Get latest [List] of [TileConfig]
   Future<List<TileConfig>> fetchTileConfigs();
@@ -31,9 +28,11 @@ abstract class IotApi {
   /// Gets the [Stream] of [List] of [TileConfig]
   Stream<List<TileConfig>> getTileConfigs();
 
-  /// If this [TileConfig] existed in db, updates it,
-  /// else saves it
+  /// Saves [TileConfig]
   Future<void> saveTileConfig(TileConfig tileConfig);
+
+  /// Updates [TileConfig]
+  Future<void> updateTileConfig(TileConfig tileConfig);
 
   /// If this [TileConfig] existed in db, deletes it
   Future<void> deleteTileConfig(TileConfig tileConfig);

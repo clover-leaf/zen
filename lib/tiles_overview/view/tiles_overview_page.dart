@@ -41,6 +41,10 @@ class TilesOverviewView extends StatelessWidget {
     final projectView = state.projectView;
     final projectID = state.projectID;
 
+    final mediaWidth = MediaQuery.of(context).size.width;
+    final tileWidgetWidth =
+        (mediaWidth - Space.contentPaddingHorizontal.value * 2.5) / 2;
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -65,7 +69,7 @@ class TilesOverviewView extends StatelessWidget {
             } else {
               Navigator.of(context).push<void>(
                 EditTilePage.route(
-                  projectID: projectID,
+                  project: projectView[projectID]!,
                   tileType: value,
                   deviceView: deviceView,
                   initTileConfig: null,
@@ -118,7 +122,7 @@ class TilesOverviewView extends StatelessWidget {
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
           if (status.isInitializing) {
-            return const MyCircularProgress(size: 24);
+            return const Center(child: MyCircularProgress(size: 24));
           }
           return Padding(
             padding: EdgeInsets.fromLTRB(
@@ -160,40 +164,43 @@ class TilesOverviewView extends StatelessWidget {
                           ' \nCreate a new ones to start!',
                     ),
                   )
-                else if (showedTileConfigIDs.isEmpty)
-                  const Expanded(
-                    child: MyEmptyPage(
-                      message: 'There are no tile configs.'
-                          ' \nCreate a new ones to start!',
-                    ),
-                  )
                 else
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const _Headline(),
-                        Expanded(
-                          child: ListView.separated(
-                            padding: EdgeInsets.zero,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 24),
-                            itemCount: showedTileConfigIDs.length,
-                            itemBuilder: (context, index) {
-                              final tileConfigID = showedTileConfigIDs[index];
-                              final tileConfig = tileConfigView[tileConfigID]!;
-                              final tileType = tileConfig.tileType;
-                              final value = tileValueView[tileConfigID];
-                              return TileWidget(
-                                projectID: projectID,
-                                deviceView: deviceView,
-                                tileType: tileType,
-                                tileConfig: tileConfig,
-                                value: value,
-                              );
-                            },
+                        if (showedTileConfigIDs.isEmpty)
+                          const Expanded(
+                            child: MyEmptyPage(
+                              message: 'There are no tile configs.'
+                                  ' \nCreate a new ones to start!',
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: Wrap(
+                              spacing: Space.contentPaddingHorizontal.value / 2,
+                              runSpacing:
+                                  Space.contentPaddingHorizontal.value / 2,
+                              children: [
+                                ...showedTileConfigIDs.map((tileConfigID) {
+                                  final tileConfig =
+                                      tileConfigView[tileConfigID]!;
+                                  final tileType = tileConfig.tileType;
+                                  final value = tileValueView[tileConfigID];
+                                  return TileWidget(
+                                    project: projectView[projectID]!,
+                                    deviceView: deviceView,
+                                    tileType: tileType,
+                                    tileConfig: tileConfig,
+                                    value: value,
+                                    width: tileWidgetWidth,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

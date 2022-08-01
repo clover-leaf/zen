@@ -8,14 +8,14 @@ import 'package:iot_api/iot_api.dart';
 class DeviceListSheet extends StatelessWidget {
   DeviceListSheet({
     super.key,
-    required this.projectID,
+    required this.project,
     required this.paddingTop,
     required this.deviceView,
     required this.onTapped,
   });
 
   /// The ID of showed [Project]
-  final FieldId? projectID;
+  final Project project;
 
   /// The top padding
   final double paddingTop;
@@ -30,7 +30,7 @@ class DeviceListSheet extends StatelessWidget {
 
   /// The [List] of showed [Device]
   late final List<Device> showedDevices = deviceView.values
-      .where((device) => device.projectID == projectID)
+      .where((device) => device.projectID == project.id)
       .toList();
 
   /// The update deviceId function
@@ -61,6 +61,7 @@ class DeviceListSheet extends StatelessWidget {
             )
           else
             _DeviceList(
+              project: project,
               devices: showedDevices,
               onTapped: onTapped,
             )
@@ -105,10 +106,12 @@ class _Headline extends StatelessWidget {
 
 class _DeviceList extends StatelessWidget {
   const _DeviceList({
+    required this.project,
     required this.devices,
     required this.onTapped,
   });
 
+  final Project project;
   final List<Device> devices;
   final Function(FieldId) onTapped;
 
@@ -141,7 +144,7 @@ class _DeviceList extends StatelessWidget {
             child: DeviceLine(
               title: device.name,
               titleStyle: titleStyle,
-              subtitle: device.key,
+              subtitle: '${project.key}.${device.key}',
               subtitleStyle: subtitleStyle,
             ),
           );

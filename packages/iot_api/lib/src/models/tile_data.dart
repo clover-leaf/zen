@@ -21,7 +21,7 @@ class TileData {
 
   /// Deserializes the given [JsonMap] into a [TileData]
   factory TileData.fromJson(JsonMap json) {
-    final type = TileTypeX.fromJsonKey(json['tileType'] as int);
+    final type = TileTypeX.fromJsonKey(json['tile_type'] as int);
     switch (type) {
       case TileType.toggle:
         return ToggleTileData.fromJson(json);

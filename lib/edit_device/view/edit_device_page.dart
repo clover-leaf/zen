@@ -73,6 +73,7 @@ class EditDeviceView extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<EditDeviceBloc>().state;
     final status = state.status;
+    final isEdited = state.isEdited;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -80,7 +81,7 @@ class EditDeviceView extends StatelessWidget {
       bottomNavigationBar: MyBottomAppbar(
         prefixIcon: Assets.icons.leftButton,
         prefixOnTapped: () async {
-          if (state.isEdited()) {
+          if (isEdited) {
             final navigator = Navigator.of(context);
             final value = await showDialog<bool>(
                   context: context,
@@ -112,16 +113,6 @@ class EditDeviceView extends StatelessWidget {
                     snackBarType: SnackBarType.error,
                   ),
                 );
-            } else if (!state.isLegal()) {
-              ScaffoldMessenger.of(context)
-                ..removeCurrentSnackBar()
-                ..showSnackBar(
-                  MySnackBar.showSnackBar(
-                    context: context,
-                    content: 'Topic name is illegal',
-                    snackBarType: SnackBarType.error,
-                  ),
-                );
             } else {
               context.read<EditDeviceBloc>().add(const EditDeviceSubmitted());
             }
@@ -136,7 +127,7 @@ class EditDeviceView extends StatelessWidget {
           }
           return WillPopScope(
             onWillPop: () async {
-              if (state.isEdited()) {
+              if (isEdited) {
                 final value = await showDialog<bool>(
                       context: context,
                       builder: (context) => const MyConfirmDialog(),

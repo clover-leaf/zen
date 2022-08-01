@@ -9,13 +9,13 @@ part 'edit_tile_state.dart';
 class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
   EditTileBloc({
     required this.repository,
-    required FieldId projectID,
+    required Project project,
     required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
     required TileType tileType,
   }) : super(
           EditTileState(
-            projectID: projectID,
+            project: project,
             deviceView: deviceView,
             initTileConfig: initTileConfig,
             tileType: tileType,
@@ -24,7 +24,7 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
         ) {
     on<EditTileInitialized>(_onInitialized);
     on<EditTileStatusChanged>(_onStatusChanged);
-    on<EditTileTitleChanged>(_onTitleChanged);
+    on<EditTileNameChanged>(_onNameChanged);
     on<EditTileDeviceIdChanged>(_onDeviceIdChanged);
     on<EditTileDataChanged>(_onEditTileDataChanged);
     on<EditTileSubmitted>(_onEditTileSummited);
@@ -40,7 +40,7 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
       emit(
         state.copyWith(
           status: EditTileStatus.initialized,
-          title: state.initTileConfig!.title,
+          name: state.initTileConfig!.name,
           deviceID: state.initTileConfig!.deviceID,
           tileData: state.initTileConfig!.tileData,
         ),
@@ -57,11 +57,11 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     emit(state.copyWith(status: event.status));
   }
 
-  void _onTitleChanged(
-    EditTileTitleChanged event,
+  void _onNameChanged(
+    EditTileNameChanged event,
     Emitter<EditTileState> emit,
   ) {
-    emit(state.copyWith(title: event.title));
+    emit(state.copyWith(name: event.name));
   }
 
   void _onDeviceIdChanged(
@@ -102,24 +102,30 @@ class EditTileBloc extends Bloc<EditTileEvent, EditTileState> {
     if (state.initTileConfig != null) {
       tileConfig = TileConfig(
         id: state.initTileConfig!.id,
-        title: state.title ?? state.initTileConfig!.title,
+        name: state.name ?? state.initTileConfig!.name,
         deviceID: state.deviceID ?? state.initTileConfig!.deviceID,
         tileType: state.tileType,
         tileData: state.tileData,
       );
+      try {
+        await repository.updateTileConfig(tileConfig);
+        emit(state.copyWith(status: EditTileStatus.success));
+      } catch (e) {
+        emit(state.copyWith(status: EditTileStatus.failure));
+      }
     } else {
       tileConfig = TileConfig(
-        title: state.title!,
+        name: state.name!,
         deviceID: state.deviceID!,
         tileType: state.tileType,
         tileData: state.tileData,
       );
-    }
-    try {
-      await repository.saveTileConfig(tileConfig);
-      emit(state.copyWith(status: EditTileStatus.success));
-    } catch (e) {
-      emit(state.copyWith(status: EditTileStatus.failure));
+      try {
+        await repository.saveTileConfig(tileConfig);
+        emit(state.copyWith(status: EditTileStatus.success));
+      } catch (e) {
+        emit(state.copyWith(status: EditTileStatus.failure));
+      }
     }
   }
 }

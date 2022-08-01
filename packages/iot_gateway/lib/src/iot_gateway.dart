@@ -11,8 +11,8 @@ class IotGateway {
   static final json = {
     'url': 'io.adafruit.com',
     'port': 1883,
-    'username': 'relax1903',
-    'password': 'aio_pqbx54X7PwrJfbqb5ndRDWEDxikz'
+    'username': 'thangnguyen106',
+    'password': 'aio_TanT84FMKkLpM2wYCrOIbOMUCwmW'
   };
 
   /// Creates [GatewayClient]

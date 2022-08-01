@@ -79,7 +79,7 @@ class _JsonExtractionSheetState extends State<JsonExtractionSheet> {
                   baseline: TextBaseline.alphabetic,
                   alignment: PlaceholderAlignment.baseline,
                   child: InkWell(
-                    onTap: () => _launchUrl('https://github.com/f3ath/jessie'),
+                    onTap: () => _launchUrl('https://github.com/json-path/JsonPath'),
                     child: Text(
                       ' this link ',
                       style: Theme.of(context).textTheme.bodySmall!.merge(

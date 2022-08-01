@@ -11,7 +11,7 @@ class TitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EditTileBloc>().state;
-    final hintTitle = state.title;
+    final hintTitle = state.name;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -36,7 +36,7 @@ class TitleField extends StatelessWidget {
               horizontalPadding: 0,
               enabled: !state.status.isSaving,
               onChanged: (value) =>
-                  context.read<EditTileBloc>().add(EditTileTitleChanged(value)),
+                  context.read<EditTileBloc>().add(EditTileNameChanged(value)),
             ),
           ),
         ],

@@ -42,11 +42,11 @@ class Project extends Equatable {
   final String? description;
 
   /// The created date of project
-  @JsonKey(name: 'create_at')
+  @JsonKey(name: 'created_at')
   final DateTime? createdAt;
 
   /// The [FieldId] of user created
-  @JsonKey(name: 'create_by')
+  @JsonKey(name: 'created_by')
   final FieldId? createdBy;
 
   /// The updatedd date of project

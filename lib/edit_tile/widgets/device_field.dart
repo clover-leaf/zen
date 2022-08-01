@@ -17,7 +17,7 @@ class DeviceField extends StatelessWidget {
     final state = context.watch<EditTileBloc>().state;
     final status = state.status;
     final deviceView = state.deviceView;
-    final projectID = state.projectID;
+    final project = state.project;
 
     final deviceID = state.deviceID;
     final hintDevice = state.deviceView[deviceID];
@@ -29,7 +29,7 @@ class DeviceField extends StatelessWidget {
           showModalBottomSheet<void>(
             context: context,
             builder: (_) => DeviceListSheet(
-              projectID: projectID,
+              project: project,
               paddingTop: MediaQuery.of(context).viewPadding.top,
               deviceView: deviceView,
               onTapped: (deviceID) => context
@@ -73,6 +73,7 @@ class DeviceField extends StatelessWidget {
                     ),
                   ),
                   DeviceDetailText(
+                    project: project,
                     hintDevice: hintDevice,
                   ),
                 ],
@@ -92,9 +93,11 @@ class DeviceField extends StatelessWidget {
 class DeviceDetailText extends StatelessWidget {
   const DeviceDetailText({
     super.key,
+    required this.project,
     required this.hintDevice,
   });
 
+  final Project project;
   final Device? hintDevice;
 
   @override
@@ -117,7 +120,7 @@ class DeviceDetailText extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
             child: Text(
-              hintDevice!.key,
+              '${project.key}.${hintDevice!.key}',
               style: textTheme.labelSmall!.copyWith(
                 color: !status.isSaving
                     ? const Color(0xff5a5a5a)

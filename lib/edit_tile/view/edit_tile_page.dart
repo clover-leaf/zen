@@ -13,7 +13,7 @@ class EditTilePage extends StatelessWidget {
   });
 
   static Route route({
-    required FieldId projectID,
+    required Project project,
     required TileType tileType,
     required Map<FieldId, Device> deviceView,
     required TileConfig? initTileConfig,
@@ -22,7 +22,7 @@ class EditTilePage extends StatelessWidget {
       pageBuilder: (context, animation, secondaryAnimation) => BlocProvider(
         create: (_) => EditTileBloc(
           repository: context.read<UserRepository>(),
-          projectID: projectID,
+          project: project,
           deviceView: deviceView,
           initTileConfig: initTileConfig,
           tileType: tileType,
@@ -165,14 +165,14 @@ class EditTileView extends StatelessWidget {
                         height: Space.contentItemGap.value * 2,
                         thickness: Space.globalBorderWidth.value,
                       ),
-                      const VariableField(),
+                      const TileDataField(),
                       Divider(
                         indent: Space.contentPaddingHorizontal.value,
                         endIndent: Space.contentPaddingHorizontal.value,
                         height: Space.contentItemGap.value * 2,
                         thickness: Space.globalBorderWidth.value,
                       ),
-                      const TileDataField(),
+                      const VariableField(),
                     ],
                   ),
                 ),

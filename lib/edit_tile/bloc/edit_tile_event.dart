@@ -20,13 +20,13 @@ class EditTileStatusChanged extends EditTileEvent {
   List<Object> get props => [status];
 }
 
-class EditTileTitleChanged extends EditTileEvent {
-  const EditTileTitleChanged(this.title);
+class EditTileNameChanged extends EditTileEvent {
+  const EditTileNameChanged(this.name);
 
-  final String title;
+  final String name;
 
   @override
-  List<Object> get props => [title];
+  List<Object> get props => [name];
 }
 
 class EditTileDeviceIdChanged extends EditTileEvent {

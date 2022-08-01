@@ -114,6 +114,7 @@ class TilesOverviewBloc extends Bloc<TilesOverviewEvent, TilesOverviewState> {
   ) async {
     // Gets initialized broker
     await repository.refresh();
+    // await repository.getUser();
     add(const ProjectSubscriptionRequested());
     add(const DeviceSubscriptionRequested());
     add(const TileConfigSubscriptionRequested());

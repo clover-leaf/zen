@@ -9,18 +9,20 @@ import 'package:iot_api/iot_api.dart';
 class TileWidget extends StatefulWidget {
   const TileWidget({
     super.key,
-    required this.projectID,
+    required this.project,
     required this.deviceView,
     required this.tileType,
     required this.tileConfig,
     required this.value,
+    required this.width,
   });
 
-  final FieldId projectID;
+  final Project project;
   final Map<FieldId, Device> deviceView;
   final TileType tileType;
   final TileConfig tileConfig;
   final String? value;
+  final double width;
 
   @override
   State<TileWidget> createState() => TileWidgetState();
@@ -46,47 +48,54 @@ class TileWidgetState extends State<TileWidget> {
         );
         break;
     }
-    return Material(
-      child: InkWell(
-        onTapDown: (detail) {
-          setState(() {
-            _tapPostion = detail.globalPosition;
-          });
-        },
-        onTap: () => showMenu<EditTileMenuOption>(
-          context: context,
-          position: RelativeRect.fromRect(
-            _tapPostion & const Size(20, 20),
-            Offset.zero & MediaQuery.of(context).size,
-          ),
-          items: [const EditTileEntry()],
-        ).then((value) {
-          if (value != null) {
-            switch (value) {
-              case EditTileMenuOption.edit:
-                Navigator.of(context).push<void>(
-                  EditTilePage.route(
-                    projectID: widget.projectID,
-                    tileType: widget.tileType,
-                    deviceView: widget.deviceView,
-                    initTileConfig: widget.tileConfig,
-                  ),
-                );
-                break;
-              case EditTileMenuOption.delete:
-                context.read<TilesOverviewBloc>().add(
-                      TileConfigDeleteRequested(
-                        widget.tileConfig,
+    return SizedBox(
+      height: 225,
+      width: widget.width,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        child: Material(
+          color: const Color(0xffb6e1f5).withAlpha(106),
+          child: InkWell(
+            highlightColor: const Color(0xffb6e1f5).withAlpha(106),
+            splashColor: const Color(0xffb6e1f5),
+            onTapDown: (detail) {
+              setState(() {
+                _tapPostion = detail.globalPosition;
+              });
+            },
+            onTap: () => showMenu<EditTileMenuOption>(
+              context: context,
+              position: RelativeRect.fromRect(
+                _tapPostion & const Size(20, 20),
+                Offset.zero & MediaQuery.of(context).size,
+              ),
+              items: [const EditTileEntry()],
+            ).then((value) {
+              if (value != null) {
+                switch (value) {
+                  case EditTileMenuOption.edit:
+                    Navigator.of(context).push<void>(
+                      EditTilePage.route(
+                        project: widget.project,
+                        tileType: widget.tileType,
+                        deviceView: widget.deviceView,
+                        initTileConfig: widget.tileConfig,
                       ),
                     );
-                break;
-              case EditTileMenuOption.duplicate:
-                // context.read<GatewayBloc>().add(event);
-                break;
-            }
-          }
-        }),
-        child: childWidget,
+                    break;
+                  case EditTileMenuOption.delete:
+                    context.read<TilesOverviewBloc>().add(
+                          TileConfigDeleteRequested(
+                            widget.tileConfig,
+                          ),
+                        );
+                    break;
+                }
+              }
+            }),
+            child: childWidget,
+          ),
+        ),
       ),
     );
   }

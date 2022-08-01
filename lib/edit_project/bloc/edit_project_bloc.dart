@@ -74,7 +74,7 @@ class EditProjectBloc extends Bloc<EditProjectEvent, EditProjectState> {
         name: state.name ?? state.initProject!.name,
         key: state.key ?? state.initProject!.key,
         description: state.description ?? state.initProject!.description,
-      );
+    );
       try {
         await repository.updateProject(project, state.initProject!.key);
         emit(state.copyWith(status: EditProjectStatus.success));

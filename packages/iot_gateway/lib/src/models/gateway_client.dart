@@ -111,7 +111,7 @@ class GatewayClient {
   }
 
   /// Subscribe callback
-  void onSubscribe(whatever) {
+  void onSubscribe(dynamic whatever) {
     log(
       '::MQTT_CLIENT::'
       ' Subscribe thanh cong... $whatever',

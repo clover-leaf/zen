@@ -7,7 +7,8 @@
 
 // class MockGoTrueClient extends Mock implements GoTrueClient {}
 
-// class MockSupabaseQueryBuilder extends Mock implements SupabaseQueryBuilder {}
+// class MockSupabaseQueryBuilder extends Mock
+// implements SupabaseQueryBuilder {}
 
 // class MockPostgrestFilterBuilder extends Mock
 //     implements PostgrestFilterBuilder {}
@@ -15,14 +16,16 @@
 // class MockPostgrestTransformBuilder extends Mock
 //     implements PostgrestTransformBuilder<dynamic> {}
 
-// class MockPostgrestBuilder extends Mock implements PostgrestBuilder<dynamic> {}
+// class MockPostgrestBuilder extends Mock
+// implements PostgrestBuilder<dynamic> {}
 
 // class FakeUser extends Fake implements User {
 //   @override
 //   String id = 'id';
 // }
 
-// class FakePostgrestResponse extends Fake implements PostgrestResponse<dynamic> {
+// class FakePostgrestResponse extends Fake
+// implements PostgrestResponse<dynamic> {
 //   @override
 //   final Map<String, dynamic> data = <String, String>{
 //     'username': 'username',
@@ -77,6 +80,7 @@
 
 //     supabaseDatabaseClient = SupabaseDatabaseClient(
 //       supabaseClient: supabaseClient,
+//       httpClient: anything,
 //     );
 //   });
 

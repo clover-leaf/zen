@@ -34,6 +34,7 @@ class TextTileData extends Equatable implements TileData {
   /// The postfix of value
   final String? postfix;
 
+  @JsonKey(name: 'json_variable_id')
   /// The ID [JsonVariable] that tile monitoring
   final FieldId? jsonVariableID;
 
@@ -47,7 +48,7 @@ class TextTileData extends Equatable implements TileData {
 
   /// Deserializes the given [JsonMap] into a [TextTileData].
   static TextTileData fromJson(JsonMap json) {
-    final _json = Map<String, dynamic>.from(json)..remove('tileType');
+    final _json = Map<String, dynamic>.from(json)..remove('tile_type');
     return _$TextTileDataFromJson(_json);
   }
 
@@ -63,7 +64,7 @@ class TextTileData extends Equatable implements TileData {
     final json = _$TextTileDataToJson(this);
 
     /// add type info into json
-    json['tileType'] = TileType.text.toJsonKey();
+    json['tile_type'] = TileType.text.toJsonKey();
     return json;
   }
 

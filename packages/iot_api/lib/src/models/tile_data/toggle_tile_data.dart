@@ -32,18 +32,23 @@ class ToggleTileData extends Equatable implements TileData {
     );
   }
 
+  @JsonKey(name: 'on_label')
   /// The label of tile when button on
   final String? onLabel;
 
+  @JsonKey(name: 'on_value')
   /// The value of tile when button on
   final String? onValue;
 
+  @JsonKey(name: 'off_label')
   /// The label of tile when button off
   final String? offLabel;
 
+  @JsonKey(name: 'off_value')
   /// The value of tile when button off
   final String? offValue;
 
+  @JsonKey(name: 'json_variable_id')
   /// The ID [JsonVariable] that tile monitoring
   final FieldId? jsonVariableID;
 
@@ -61,7 +66,7 @@ class ToggleTileData extends Equatable implements TileData {
 
   /// Deserializes the given [JsonMap] into a [ToggleTileData].
   static ToggleTileData fromJson(JsonMap json) {
-    final _json = Map<String, dynamic>.from(json)..remove('tileType');
+    final _json = Map<String, dynamic>.from(json)..remove('tile_type');
     return _$ToggleTileDataFromJson(_json);
   }
 
@@ -77,7 +82,7 @@ class ToggleTileData extends Equatable implements TileData {
     final json = _$ToggleTileDataToJson(this);
 
     /// add type info into json
-    json['tileType'] = TileType.toggle.toJsonKey();
+    json['tile_type'] = TileType.toggle.toJsonKey();
     return json;
   }
 

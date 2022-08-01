@@ -7,9 +7,7 @@ void main() {
       test('Creates TextTileData.placeholder with TileType.text', () {
         expect(
           TileData.placeholder(tileType: TileType.text),
-          equals(
-            TextTileData.placeholder(),
-          ),
+          equals(TextTileData.placeholder()),
         );
       });
       test('creates placeholder with TileType.toggle', () {

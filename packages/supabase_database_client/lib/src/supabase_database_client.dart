@@ -45,10 +45,7 @@ class SupabaseDatabaseClient extends IotApi {
         _httpClient = httpClient;
 
   /// The Adafruit.io url
-  static const String kBaseURL = 'io.adafruit.com';
-
-  /// The Adafruit.io url
-  static const String ioKey = 'aio_pqbx54X7PwrJfbqb5ndRDWEDxikz';
+  static const String kBaseURL = 'supademo1903.herokuapp.com';
 
   /// The http client object
   final http.Client _httpClient;
@@ -68,31 +65,17 @@ class SupabaseDatabaseClient extends IotApi {
   @override
   Future<List<Project>> fetchProjects() async {
     final response = await _httpClient.get(
-      Uri.http(kBaseURL, '/api/v2/relax1903/groups'),
-      headers: {
-        'X-AIO-Key': ioKey,
-      },
+      Uri.http(kBaseURL, '/api/projects'),
     );
     if (response.statusCode == 200) {
-      final body = jsonDecode(response.body) as List<dynamic>;
-      final projects = body.map<Project>((dynamic json) {
-        final _json = json as Map<String, dynamic>;
-        final key = _json['key'] as String;
-        final name = _json['name'] as String;
-        final description = _json['description'] as String?;
-        final updatedAt = _json['updated_at'] as String;
-        final createdAt = _json['created_at'] as String;
-        return Project(
-          key: key,
-          name: name,
-          description: description,
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt),
-        );
-      }).toList();
-      final noneDefaults =
-          projects.where((project) => project.key != 'default').toList();
-      return noneDefaults;
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = body['data'] as List<dynamic>;
+      final projects = data
+          .map<Project>(
+            (dynamic json) => Project.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+      return projects;
     } else {
       throw Exception('can not parse json');
     }
@@ -103,34 +86,16 @@ class SupabaseDatabaseClient extends IotApi {
     final projects = [..._projectStreamController.value];
     final idx = projects.indexWhere((t) => t.id == project.id);
     if (idx >= 0) {
-      final body = {
-        'key': project.key,
-        'name': project.name,
-      };
-      if (project.description != null) {
-        body['description'] = project.description!;
-      }
+      final body = project.toJson();
+      body['user_id'] = _supabaseClient.auth.currentUser!.id;
       final response = await _httpClient.put(
-        Uri.http(kBaseURL, '/api/v2/relax1903/groups/$oldKey'),
-        body: body,
-        headers: {
-          'X-AIO-Key': ioKey,
-        },
+        Uri.http(kBaseURL, '/api/projects/$oldKey'),
+        body: jsonEncode(body),
       );
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
-        final updatedAt = body['updated_at'] as String;
-        final createdAt = body['created_at'] as String;
-        final description = body['description'] as String?;
-        final name = body['name'] as String;
-        final key = body['key'] as String;
-        final updatedProject = project.copyWith(
-          name: name,
-          key: key,
-          description: description,
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt),
-        );
+        final data = body['data'] as Map<String, dynamic>;
+        final updatedProject = Project.fromJson(data);
         projects[idx] = updatedProject;
         _projectStreamController.add(projects);
       } else {
@@ -144,25 +109,17 @@ class SupabaseDatabaseClient extends IotApi {
     final projects = [..._projectStreamController.value];
     final idx = projects.indexWhere((t) => t.id == project.id);
     if (idx == -1) {
+      final body = project.toJson();
+      body['user_id'] = _supabaseClient.auth.currentUser!.id;
       final response = await _httpClient.post(
-        Uri.http(kBaseURL, '/api/v2/relax1903/groups'),
-        body: {
-          'name': project.name,
-          'key': project.key,
-        },
-        headers: {
-          'X-AIO-Key': ioKey,
-        },
+        Uri.http(kBaseURL, '/api/projects'),
+        body: jsonEncode(body),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
-        final createdAt = body['created_at'] as String;
-        final updatedAt = body['updated_at'] as String;
-        final createdProject = project.copyWith(
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt),
-        );
-        projects.add(createdProject);
+        final data = body['data'] as Map<String, dynamic>;
+        final newProject = Project.fromJson(data);
+        projects.add(newProject);
         _projectStreamController.add(projects);
       } else {
         throw Exception('can not parse json');
@@ -170,6 +127,7 @@ class SupabaseDatabaseClient extends IotApi {
     }
   }
 
+  // TODO(me): implement
   @override
   Future<void> deleteProject(Project project) async {
     final projects = [..._projectStreamController.value];
@@ -181,40 +139,20 @@ class SupabaseDatabaseClient extends IotApi {
   }
 
   @override
-  Future<List<Device>> fetchDevices(List<Project> projects) async {
+  Future<List<Device>> fetchDevices() async {
     final devices = <Device>[];
-    for (final project in projects) {
-      final response = await _httpClient.get(
-        Uri.http(kBaseURL, '/api/v2/relax1903/groups/${project.key}/feeds'),
-        headers: {
-          'X-AIO-Key': ioKey,
-        },
-      );
-      if (response.statusCode == 200) {
-        final body = jsonDecode(response.body) as List<dynamic>;
-        final _devices = body.map<Device>((dynamic json) {
-          final _json = json as Map<String, dynamic>;
-          final _key = _json['key'] as String;
-          final key = _key.split('.').last;
-          final name = _json['name'] as String;
-          final description = _json['description'] as String?;
-          final updatedAt = _json['updated_at'] as String;
-          final createdAt = _json['created_at'] as String;
-          return Device(
-            projectID: project.id,
-            key: key,
-            name: name,
-            description: description,
-            jsonEnable: false,
-            jsonVariables: const [],
-            createdAt: DateTime.parse(createdAt),
-            updatedAt: DateTime.parse(updatedAt),
-          );
-        }).toList();
-        devices.addAll(_devices);
-      } else {
-        throw Exception('can not parse json');
-      }
+    final response = await _httpClient.get(Uri.http(kBaseURL, '/api/devices'));
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = body['data'] as List<dynamic>;
+      final _devices = data
+          .map<Device>(
+            (dynamic json) => Device.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+      devices.addAll(_devices);
+    } else {
+      throw Exception('can not parse json');
     }
     return devices;
   }
@@ -224,28 +162,17 @@ class SupabaseDatabaseClient extends IotApi {
     final devices = [..._deviceStreamController.value];
     final idx = devices.indexWhere((t) => t.id == device.id);
     if (idx == -1) {
+      final body = device.toJson();
+      body['project_key'] = projectKey;
+      body['user_id'] = _supabaseClient.auth.currentUser!.id;
       final response = await _httpClient.post(
-        Uri.http(kBaseURL, '/api/v2/relax1903/groups/$projectKey/feeds'),
-        body: jsonEncode({
-          'feed': {
-            'name': device.name,
-            'description': device.description,
-            'key': device.key,
-          }
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-AIO-Key': ioKey,
-        },
+        Uri.http(kBaseURL, '/api/devices'),
+        body: jsonEncode(body),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
-        final createdAt = body['created_at'] as String;
-        final updatedAt = body['updated_at'] as String;
-        final createdDevice = device.copyWith(
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt),
-        );
+        final data = body['data'] as Map<String, dynamic>;
+        final createdDevice = Device.fromJson(data);
         devices.add(createdDevice);
         _deviceStreamController.add(devices);
       } else {
@@ -263,33 +190,20 @@ class SupabaseDatabaseClient extends IotApi {
     final devices = [..._deviceStreamController.value];
     final idx = devices.indexWhere((t) => t.id == device.id);
     if (idx >= 0) {
-      final body = {
-        'key': device.key,
-        'name': device.name,
-      };
+      final body = device.toJson();
+      body['project_key'] = projectKey;
+      body['user_id'] = _supabaseClient.auth.currentUser!.id;
       if (device.description != null) {
-        body['description'] = device.description!;
+        body['description'] = device.description;
       }
       final response = await _httpClient.put(
-        Uri.http(kBaseURL, '/api/v2/relax1903/feeds/$projectKey.$oldKey'),
+        Uri.http(kBaseURL, '/api/devices/$oldKey'),
         body: jsonEncode(body),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-AIO-Key': ioKey,
-        },
       );
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body) as Map<String, dynamic>;
-        final updatedAt = body['updated_at'] as String;
-        final createdAt = body['created_at'] as String;
-        final description = body['description'] as String?;
-        final name = body['name'] as String;
-        final updatedDevice = device.copyWith(
-          name: name,
-          description: description ?? device.description,
-          createdAt: DateTime.parse(createdAt),
-          updatedAt: DateTime.parse(updatedAt),
-        );
+        final data = body['data'] as Map<String, dynamic>;
+        final updatedDevice = Device.fromJson(data);
         devices[idx] = updatedDevice;
         _deviceStreamController.add(devices);
       } else {
@@ -298,6 +212,7 @@ class SupabaseDatabaseClient extends IotApi {
     }
   }
 
+  // TODO(me): implement
   @override
   Future<void> deleteDevice(Device device) async {
     final devices = [..._deviceStreamController.value];
@@ -311,19 +226,66 @@ class SupabaseDatabaseClient extends IotApi {
 
   @override
   Future<List<TileConfig>> fetchTileConfigs() async {
-    return [];
+    final tileConfigs = <TileConfig>[];
+    final response =
+        await _httpClient.get(Uri.http(kBaseURL, '/api/tile-configs'));
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = body['data'] as List<dynamic>;
+      final _tileConfigs = data
+          .map<TileConfig>(
+            (dynamic json) => TileConfig.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+      tileConfigs.addAll(_tileConfigs);
+    } else {
+      throw Exception('can not parse json');
+    }
+    return tileConfigs;
   }
 
   @override
   Future<void> saveTileConfig(TileConfig tileConfig) async {
     final tileConfigs = [..._tileConfigStreamController.value];
     final idx = tileConfigs.indexWhere((t) => t.id == tileConfig.id);
-    if (idx >= 0) {
-      tileConfigs[idx] = tileConfig;
-    } else {
-      tileConfigs.add(tileConfig);
+    if (idx == -1) {
+      final body = tileConfig.toJson();
+      final response = await _httpClient.post(
+        Uri.http(kBaseURL, '/api/tile-configs'),
+        body: jsonEncode(body),
+      );
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final data = body['data'] as Map<String, dynamic>;
+        final createdTieConfig = TileConfig.fromJson(data);
+        tileConfigs.add(createdTieConfig);
+        _tileConfigStreamController.add(tileConfigs);
+      } else {
+        throw Exception('can not parse json');
+      }
     }
-    _tileConfigStreamController.add(tileConfigs);
+  }
+
+  @override
+  Future<void> updateTileConfig(TileConfig tileConfig) async {
+    final tileConfigs = [..._tileConfigStreamController.value];
+    final idx = tileConfigs.indexWhere((t) => t.id == tileConfig.id);
+    if (idx >= 0) {
+      final body = tileConfig.toJson();
+      final response = await _httpClient.put(
+        Uri.http(kBaseURL, '/api/tile-configs'),
+        body: jsonEncode(body),
+      );
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final data = body['data'] as Map<String, dynamic>;
+        final createdTieConfig = TileConfig.fromJson(data);
+        tileConfigs.add(createdTieConfig);
+        _tileConfigStreamController.add(tileConfigs);
+      } else {
+        throw Exception('can not parse json');
+      }
+    }
   }
 
   @override
@@ -331,9 +293,23 @@ class SupabaseDatabaseClient extends IotApi {
     final tileConfigs = [..._tileConfigStreamController.value];
     final idx = tileConfigs.indexWhere((t) => t.id == tileConfig.id);
     if (idx >= 0) {
-      tileConfigs.removeAt(idx);
+      final response = await _httpClient.delete(
+        Uri.http(kBaseURL, '/api/tile-configs'),
+        body: jsonEncode({'id': tileConfig.id}),
+      );
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final success = body['success'] as bool;
+        if (success) {
+          tileConfigs.removeAt(idx);
+          _tileConfigStreamController.add(tileConfigs);
+        } else {
+          throw Exception('can not parse json');
+        }
+      } else {
+        throw Exception('can not parse json');
+      }
     }
-    _tileConfigStreamController.add(tileConfigs);
   }
 
   @override
@@ -341,18 +317,11 @@ class SupabaseDatabaseClient extends IotApi {
     final projects = await fetchProjects();
     _projectStreamController.add(projects);
 
-    final devices = await fetchDevices(projects);
+    final devices = await fetchDevices();
     _deviceStreamController.add(devices);
-  }
 
-  @override
-  Future<void> initialized() async {
-    await refresh();
-
-    // final tileConfigs = await fetchTileConfigs();
-    // if (tileConfigs.isNotEmpty) {
-    //   _tileConfigStreamController.add(tileConfigs);
-    // }
+    final tilesConfigs = await fetchTileConfigs();
+    _tileConfigStreamController.add(tilesConfigs);
   }
 
   @override

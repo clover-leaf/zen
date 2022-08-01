@@ -17,19 +17,19 @@ extension EditTileStatusX on EditTileStatus {
 class EditTileState extends Equatable {
   /// {macro EditTileState}
   EditTileState({
-    this.projectID,
+    required this.project,
     this.deviceView = const {},
     this.initTileConfig,
     required this.tileType,
     this.status = EditTileStatus.initializing,
-    this.title,
+    this.name,
     this.deviceID,
     required this.tileData,
   });
 
   // <<< IMMUTABLE >>>
-  /// The ID of showed [Project]
-  final FieldId? projectID;
+  /// The showed [Project]
+  final Project project;
 
   /// The map of [FieldId] of [Device] and it
   ///
@@ -50,8 +50,8 @@ class EditTileState extends Equatable {
   /// The status of state
   final EditTileStatus status;
 
-  /// The tile config's title
-  final String? title;
+  /// The tile config's name
+  final String? name;
 
   /// The tile config's device ID
   final FieldId? deviceID;
@@ -66,7 +66,7 @@ class EditTileState extends Equatable {
       final device = deviceView[deviceID ?? initTileConfig!.deviceID];
       return tileData.isFilled(device!);
     } else {
-      final titleFilled = title != null && title != '';
+      final titleFilled = name != null && name != '';
       final deviceIdFilled = deviceID != null && deviceID != null;
       final device = deviceView[deviceID];
       if (device == null) {
@@ -79,12 +79,12 @@ class EditTileState extends Equatable {
   /// Whether any field had edited or not
   bool get isEdited {
     if (initTileConfig != null) {
-      return title != initTileConfig!.title ||
+      return name != initTileConfig!.name ||
           deviceID != initTileConfig!.deviceID ||
           tileData != initTileConfig!.tileData;
     } else {
       final placeholadTileData = TileData.placeholder(tileType: tileType);
-      final isTitleEdited = title != null && title != '';
+      final isTitleEdited = name != null && name != '';
       final isDeviceIdEdited = deviceID != null;
       return isTitleEdited ||
           isDeviceIdEdited ||
@@ -93,21 +93,21 @@ class EditTileState extends Equatable {
   }
 
   EditTileState copyWith({
-    FieldId? projectID,
+    Project? project,
     EditTileStatus? status,
     Map<FieldId, Device>? deviceView,
     TileConfig? initTileConfig,
-    String? title,
+    String? name,
     FieldId? deviceID,
     TileType? tileType,
     TileData? tileData,
   }) {
     return EditTileState(
-      projectID: projectID ?? this.projectID,
+      project: project ?? this.project,
       status: status ?? this.status,
       deviceView: deviceView ?? this.deviceView,
       initTileConfig: initTileConfig ?? this.initTileConfig,
-      title: title ?? this.title,
+      name: name ?? this.name,
       deviceID: deviceID ?? this.deviceID,
       tileType: tileType ?? this.tileType,
       tileData: tileData ?? this.tileData,
@@ -117,10 +117,10 @@ class EditTileState extends Equatable {
   @override
   List<Object?> get props {
     return [
-      projectID,
+      project,
       status,
       deviceView,
-      title,
+      name,
       deviceID,
       tileType,
       tileData,
