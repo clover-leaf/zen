@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firestore/common/common.dart';
 import 'package:flutter_firestore/gen/assets.gen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iot_api/iot_api.dart';
@@ -52,7 +53,10 @@ class TextTileWidget extends StatelessWidget {
             fit: FlexFit.tight,
             flex: 3,
             child: (value == null)
-                ? const CircularProgressIndicator()
+                ?  Container(
+                  alignment: Alignment.center,
+                  child: const MyCircularProgress(size: 24),
+                )
                 : Container(
                     alignment: Alignment.bottomCenter,
                     child: Row(

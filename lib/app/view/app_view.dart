@@ -21,6 +21,7 @@ class _AppViewState extends AuthStateSupabase<AppView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Very Good Supabase',
       theme: AppTheme.light,
       home: FlowBuilder<AppStatus>(
